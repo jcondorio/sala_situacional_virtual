@@ -22,6 +22,7 @@ const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [dataInsidencias, setDataInsidencias] = useState();
+  const [dataUltimaSemana, setDataUltimaSemana] = useState();
 
   const getIras = async () => {
     try {
@@ -32,9 +33,19 @@ const Dashboard = () => {
       console.error("Error fetching estudiantes data:", error);
     }
   };
+  const getUltimaSemanaIras = async () =>{
+    try{
+      const response = await axios.get(`${API_URL}/iras/ultimasemana`);
+      setDataUltimaSemana(response.data.data);
+      console.log("getUltimaSemanaIras",response.data.data)
+    } catch (error){
+
+    }
+  };
 
   useEffect(() => {
     getIras();
+    getUltimaSemanaIras();
   }, []);
   useEffect(() => {
     console.log("dataInsidencias:", dataInsidencias);
@@ -209,9 +220,9 @@ const Dashboard = () => {
               Casos por distrito en la ultima semana
             </Typography>
           </Box>
-          {mockTransactions.map((transaction, i) => (
+          {dataUltimaSemana && dataUltimaSemana.map((transaction, i) => (
             <Box
-              key={`${transaction.txId}-${i}`}
+              key={`${transaction.Distrit}-${i}`}
               display="flex"
               justifyContent="space-between"
               alignItems="center"
@@ -224,19 +235,19 @@ const Dashboard = () => {
                   variant="h5"
                   fontWeight="600"
                 >
-                  {transaction.txId}
+                  {transaction.Dpto}
                 </Typography>
                 <Typography color={colors.grey[100]}>
-                  {transaction.user}
+                  {transaction.Prov}
                 </Typography>
               </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
+              <Box color={colors.grey[100]}>{transaction.Distrit}</Box>
               <Box
                 backgroundColor={colors.greenAccent[500]}
                 p="5px 10px"
                 borderRadius="4px"
               >
-                ${transaction.cost}
+                {transaction.total_registros}
               </Box>
             </Box>
           ))}

@@ -1,12 +1,8 @@
-
-
-
-
+// models/provicionalModel.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db.js');
 
 const Provicional = sequelize.define('Provicional', {
-
     subregion: DataTypes.STRING,
     red: DataTypes.STRING,
     microred: DataTypes.STRING,

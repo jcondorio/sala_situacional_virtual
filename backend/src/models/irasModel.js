@@ -69,6 +69,6 @@ const Iras = sequelize.define('Iras', {
     tableName: 'iras',
     timestamps: false
 });
-Iras.belongsTo(Provicional, { foreignKey: 'E_SALUD' });
+Iras.belongsTo(Provicional, { foreignKey: 'E_SALUD', targetKey: 'COD_EST', as: 'provicional' });
 
 module.exports = Iras;
