@@ -118,63 +118,72 @@ const getTotalCasosIrasUltimaSemana = async () => {
 
 const getTotalDistritosCasosUltimaSemana = async () => {
   try {
-    const maxWeekSubquery = `(SELECT MAX(i.SEMANA) FROM iras AS i)`;
-
-    const result = await Iras.count({
-      distinct: true,
-      col: 'provicional.Distrit',
+    const totalRegistros = await Iras.findOne({
+      attributes: [
+        [
+          sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('provicional.Distrit'))),
+          'total_registros'
+        ]
+      ],
       include: [
         {
           model: Provicional,
           as: 'provicional',
-          attributes: []
+          attributes: [],
+          where: {
+            COD_EST: sequelize.col('iras.E_SALUD')
+          }
         }
       ],
       where: {
-        SEMANA: literal(`(${maxWeekSubquery})`),
-        [Op.and]: [
-          literal('(IRA_M2 + IRA_2_11 + IRA_1_4A) > 0')
-        ]
-      }
+        SEMANA: {
+          [Op.eq]: sequelize.literal('(SELECT MAX(SEMANA) FROM iras)')
+        },
+        [Op.and]: sequelize.literal('(IRA_M2 + IRA_2_11 + IRA_1_4A) > 0')
+      },
+      raw: true
     });
 
-    console.log(result);
-    return result;
+    return totalRegistros.total_registros;
   } catch (error) {
-    // Maneja cualquier error que pueda ocurrir durante la consulta
-    console.error('Error al ejecutar la consulta:', error);
-    throw error; // Puedes relanzar el error para manejarlo en otro lugar si es necesario
+    console.error('Error al obtener el total de registros:', error);
+    throw error;
   }
 };
+  
 
 const getTotalEstrablecimientosCasosUltimaSemana = async () => {
   try {
-    const maxWeekSubquery = `(SELECT MAX(i.SEMANA) FROM iras AS i)`;
-
-    const result = await Iras.count({
-      distinct: true,
-      col: 'provicional.N_EESS',
+    const totalRegistros = await Iras.findOne({
+      attributes: [
+        [
+          sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('provicional.N_EESS'))),
+          'total_registros'
+        ]
+      ],
       include: [
         {
           model: Provicional,
           as: 'provicional',
-          attributes: []
+          attributes: [],
+          where: {
+            COD_EST: sequelize.col('iras.E_SALUD')
+          }
         }
       ],
       where: {
-        SEMANA: literal(`(${maxWeekSubquery})`),
-        [Op.and]: [
-          literal('(IRA_M2 + IRA_2_11 + IRA_1_4A) > 0')
-        ]
-      }
+        SEMANA: {
+          [Op.eq]: sequelize.literal('(SELECT MAX(SEMANA) FROM iras)')
+        },
+        [Op.and]: sequelize.literal('(IRA_M2 + IRA_2_11 + IRA_1_4A) > 0')
+      },
+      raw: true
     });
 
-    console.log(result);
-    return result;
+    return totalRegistros.total_registros;
   } catch (error) {
-    // Maneja cualquier error que pueda ocurrir durante la consulta
-    console.error('Error al ejecutar la consulta:', error);
-    throw error; // Puedes relanzar el error para manejarlo en otro lugar si es necesario
+    console.error('Error al obtener el total de registros:', error);
+    throw error;
   }
 };
 
