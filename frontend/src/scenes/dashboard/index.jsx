@@ -17,6 +17,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { API_URL } from "../../auth/contacts";
 import BarSimpleChart from "../../components/BarSimpleChart";
+import MyResponsiveStream from "../../components/MyResponsiveStream";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -291,9 +292,6 @@ const Dashboard = () => {
           <Box height="250px" m="-20px 0 0 0">
             {/* <LineChart isDashboard={true} /> */}
             {dataInsidencias && <BarSimpleChart data={dataInsidencias} />}
-
-
-            {/* <BarSimpleChart barchartSimple={dataInsidencias} /> */}
           </Box>
         </Box>
         <Box
@@ -363,6 +361,8 @@ const Dashboard = () => {
             Sales Quantity
           </Typography>
           <Box height="250px" mt="-20px">
+            <MyResponsiveStream></MyResponsiveStream>
+          <LineChart isDashboard={true} />
             <BarChart isDashboard={true} />
           </Box>
         </Box>
