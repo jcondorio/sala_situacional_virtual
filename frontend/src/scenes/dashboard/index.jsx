@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography, useTheme, Grid } from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme, Grid, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { tokens } from "../../theme";
 import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
@@ -28,6 +28,20 @@ const Dashboard = () => {
   const [totIrasSem, setTotIrasSem] = useState();
   const [totIrasEstSem, setTotIrasEstSem] = useState();
   const [totIrasDistSem, setTotIrasDistSem] = useState();
+  const [totEst2024, setTotEst2024] = useState();
+  const [dataTotEst, setDataTot2024] = useState();
+  const [dataCurvEpi, setDataCurvEpi] = useState();
+
+  const getTotEst2024 = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/iras/totest2024`);
+      setTotEst2024(response.data.data);
+      console.log("getTotEst2024:", response.data.data);
+    } catch (error) {
+      console.error("Error fetching estudiantes data:", error);
+    }
+  };
+
 
   const getIras = async () => {
     try {
@@ -85,6 +99,18 @@ const Dashboard = () => {
     }
   };
 
+  const curvaEpidemiologica = async () => {
+    try {
+      console.log("dataTotEst", dataTotEst)
+      const response = await axios.get(`${API_URL}/iras/establecimientos2024/${dataTotEst}`);
+      setDataCurvEpi(response.data.data);
+      console.log("curvaEpidemiologica", response.data.data);
+      console.log("dataCirvaEpi;", dataCurvEpi)
+    } catch (error) {
+
+    }
+  }
+
   useEffect(() => {
     getIras();
     getUltimaSemanaIras();
@@ -92,6 +118,7 @@ const Dashboard = () => {
     getTotEstSemana();
     getTotIras();
     getTotIrasSemana();
+    getTotEst2024();
   }, []);
   useEffect(() => {
     console.log("dataInsidencias:", dataInsidencias);
@@ -100,7 +127,7 @@ const Dashboard = () => {
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+        <Header title="DASHBOARD" subtitle="IRAS D.E.E.P.I. - TACNA" />
 
         <Box>
           <Button
@@ -113,7 +140,7 @@ const Dashboard = () => {
             }}
           >
             <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Download Reports
+            Descargar reporte
           </Button>
         </Box>
       </Box>
@@ -271,21 +298,17 @@ const Dashboard = () => {
                 fontWeight="600"
                 color={colors.grey[100]}
               >
-                Revenue Generated
               </Typography>
               <Typography
                 variant="h3"
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                $59,342.32
+                Grafico de casos de IRAS del año 2024
               </Typography>
             </Box>
             <Box>
               <IconButton>
-                <DownloadOutlinedIcon
-                  sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
-                />
               </IconButton>
             </Box>
           </Box>
@@ -346,9 +369,9 @@ const Dashboard = () => {
         </Box>
 
         {/* ROW 3 */}
-        
+
         <Box
-        
+
           gridColumn="span 8"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
@@ -358,12 +381,57 @@ const Dashboard = () => {
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           >
-            Sales Quantity
+
           </Typography>
           <Box height="250px" mt="-20px">
-            <MyResponsiveStream></MyResponsiveStream>
-          <LineChart isDashboard={true} />
-            <BarChart isDashboard={true} />
+            <Grid container>
+              <Grid item xs={3}>
+                <Typography
+                  variant="h3"
+                  fontWeight="bold"
+                  color={colors.greenAccent[500]}
+                >
+                  Reporte anual por semanas en Establecimiento
+                </Typography>
+              </Grid>
+              <Grid item xs={1}>
+              </Grid>
+              <Grid item xs={5}>
+                <FormControl fullWidth>
+                  <InputLabel id="nivel1">Establecimiento</InputLabel>
+                  <Select
+                    labelId="seccion"
+                    label="Sección"
+                    value={dataTotEst}
+                    onChange={(e) => setDataTot2024(e.target.value)}
+                  >
+                    <MenuItem value="" disabled>
+
+                    </MenuItem>
+                    {Array.isArray(totEst2024) && totEst2024.map((item) => (
+                      <MenuItem key={item.COD_EST} value={item.COD_EST}>
+                        {item.N_EESS}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={1}>
+              </Grid>
+              <Grid item xs={2}>
+                <Button
+                  onClick={curvaEpidemiologica}
+                  variant="contained"
+                  color="secondary"
+                  style={{ height: "50px" }}
+                >
+                  Seleccionar
+
+                </Button>
+              </Grid>
+
+            </Grid>
+            {dataCurvEpi && <BarSimpleChart data={dataCurvEpi} />}
           </Box>
         </Box>
         <Box

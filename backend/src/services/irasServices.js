@@ -1,5 +1,6 @@
 const Iras = require("../models/irasModel");
-const sequelize = require('sequelize'); // Asegúrate de importar Sequelize
+const   sequelize = require('sequelize'); // Asegúrate de importar Sequelize
+const Sequelize = require("../config/db")
 const Provicional = require("../models/provicionalModel");
 const { Op, fn, col, literal } = require('sequelize');
 // Importa Provicional si es necesario
@@ -150,7 +151,7 @@ const getTotalDistritosCasosUltimaSemana = async () => {
     throw error;
   }
 };
-  
+
 
 const getTotalEstrablecimientosCasosUltimaSemana = async () => {
   try {
@@ -187,6 +188,61 @@ const getTotalEstrablecimientosCasosUltimaSemana = async () => {
   }
 };
 
+
+const getTotalEstService = async () => {
+
+  try {
+    const result = await Provicional.findAll({
+      attributes: ['COD_EST', 'N_EESS'],
+      where: {
+        Dpto: "TACNA"
+      },
+    });
+    console.log("getTotalEstService", result);
+
+    return result;
+  } catch (error) {
+    console.error('Error al obtener el total de registros:', error);
+    throw error;
+  }
+};
+
+const getTotSemIrasEstService = async (data) => {
+  console.log("getTotSemIrasEstService",data)
+  try {
+    const query = `
+SELECT weeks.num AS SEMANA, COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS cantidad_registros
+FROM (
+    SELECT 
+        ones.num + tens.num * 10 + hundreds.num * 100 AS num
+    FROM
+        (SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS ones
+        CROSS JOIN
+        (SELECT 0 AS num UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS tens
+        CROSS JOIN
+        (SELECT 0 AS num UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS hundreds
+    WHERE 
+        ones.num + tens.num * 10 + hundreds.num * 100 <= (
+            SELECT MAX(SEMANA) FROM iras
+        )
+) AS weeks
+LEFT JOIN iras ON weeks.num = iras.SEMANA AND iras.E_SALUD = ?
+GROUP BY weeks.num 
+ORDER BY semana;
+`;
+
+    // Ejecutar la consulta
+    studentsWithDetails = await Sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+      replacements: [data.id]
+    });
+    console.log("superconsulta:",studentsWithDetails)
+    return studentsWithDetails;
+  } catch (error) {
+    console.error('Error al obtener el total de registros:', error);
+    throw error;
+  }
+};
 module.exports = {
   getIrasSemanasServices,
   getIrasUltimaSemanaDistrit,
@@ -194,4 +250,6 @@ module.exports = {
   getTotalCasosIrasUltimaSemana,
   getTotalDistritosCasosUltimaSemana,
   getTotalEstrablecimientosCasosUltimaSemana,
+  getTotalEstService,
+  getTotSemIrasEstService,
 };
