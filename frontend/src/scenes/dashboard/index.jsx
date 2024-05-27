@@ -319,7 +319,7 @@ const Dashboard = () => {
         </Box>
         <Box
           gridColumn="span 4"
-          gridRow="span 2"
+          gridRow="span 7"
           backgroundColor={colors.primary[400]}
           overflow="auto"
         >
@@ -435,8 +435,8 @@ const Dashboard = () => {
           </Box>
         </Box>
         <Box
-          gridColumn="span 4"
-          gridRow="span 2"
+          gridColumn="span 8"
+          gridRow="span 3"
           backgroundColor={colors.primary[400]}
           padding="30px"
         >

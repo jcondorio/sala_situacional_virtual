@@ -1,5 +1,5 @@
 const Iras = require("../models/irasModel");
-const   sequelize = require('sequelize'); // Asegúrate de importar Sequelize
+const sequelize = require('sequelize'); // Asegúrate de importar Sequelize
 const Sequelize = require("../config/db")
 const Provicional = require("../models/provicionalModel");
 const { Op, fn, col, literal } = require('sequelize');
@@ -208,7 +208,7 @@ const getTotalEstService = async () => {
 };
 
 const getTotSemIrasEstService = async (data) => {
-  console.log("getTotSemIrasEstService",data)
+  console.log("getTotSemIrasEstService", data)
   try {
     const query = `
 SELECT weeks.num AS SEMANA, COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS cantidad_registros
@@ -236,13 +236,45 @@ ORDER BY semana;
       type: sequelize.QueryTypes.SELECT,
       replacements: [data.id]
     });
-    console.log("superconsulta:",studentsWithDetails)
+    console.log("superconsulta:", studentsWithDetails)
     return studentsWithDetails;
   } catch (error) {
     console.error('Error al obtener el total de registros:', error);
     throw error;
   }
 };
+
+const getDataDistritService = async () => {
+  console.log("getDataDistritService");
+  try {
+    const maxSemana = await Iras.max('SEMANA');
+    console.log("maxSemana: ", maxSemana);
+
+    const results = await Sequelize.query(`
+      SELECT 
+          prov.Distrit,
+          COALESCE(SUM(i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A), 0) AS casos
+      FROM 
+          provicional AS prov
+      LEFT JOIN 
+          iras AS i ON i.E_SALUD = prov.COD_EST
+                  AND i.SEMANA = ${maxSemana}
+      WHERE 
+          prov.subregion = 23
+      GROUP BY 
+          prov.Distrit
+      ORDER BY 
+          casos DESC;
+    `, { type: sequelize.QueryTypes.SELECT });
+
+    console.log(results);
+    return results;
+  } catch (error) {
+    console.error('Error al obtener el total de registros:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   getIrasSemanasServices,
   getIrasUltimaSemanaDistrit,
@@ -252,4 +284,5 @@ module.exports = {
   getTotalEstrablecimientosCasosUltimaSemana,
   getTotalEstService,
   getTotSemIrasEstService,
+  getDataDistritService,
 };

@@ -1,4 +1,4 @@
-const { getIrasSemanasServices, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService } = require("../services/irasServices");
+const { getIrasSemanasServices, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService } = require("../services/irasServices");
 const getIrasSemanasController = async (req, res) => {
     console.log("en el controlador::")
     try {
@@ -83,6 +83,16 @@ const getTotSemIrasEstController = async (req,res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+const getDataDistritController = async (req,res) => {
+    console.log("getTotSemIrasEstController")
+    try {
+        const getIras = await getDataDistritService();
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 module.exports = { 
     getIrasSemanasController, 
     getIrasUltimaSemanaDistritController, 
@@ -92,4 +102,5 @@ module.exports = {
     getTotEstCasosController,
     getTotalEstController,
     getTotSemIrasEstController,
+    getDataDistritController,
 };
