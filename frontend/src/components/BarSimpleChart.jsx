@@ -50,6 +50,7 @@ const BarSimpleChart = ({ data }) => {
             indexBy={(item) => item.SEMANA}
             margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
             padding={0.3}
+             groupMode="grouped"
             valueScale={{ type: "linear" }}
             indexScale={{ type: "band", round: true }}
             colors={{ scheme: "nivo" }}
@@ -60,6 +61,7 @@ const BarSimpleChart = ({ data }) => {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
+                legend: 'clasificado por años',
                 legendPosition: "middle",
                 legendOffset: 32,
             }}
@@ -67,6 +69,7 @@ const BarSimpleChart = ({ data }) => {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
+                legend: 'Casos',
                 legendPosition: "middle",
                 legendOffset: -40,
             }}
@@ -98,6 +101,9 @@ const BarSimpleChart = ({ data }) => {
                     ],
                 },
             ]}
+            animate={true}
+            motionStiffness={90}
+            motionDamping={15}
             role="application"
             barAriaLabel={(e) => {
                 return `${e.id}: ${e.formattedValue} in country: ${e.indexValue}`;
