@@ -26,6 +26,7 @@ app.use(cors({
 
 app.use("/api/import", require("./src/routes/importRoutes"));
 app.use("/api/iras",require("./src/routes/irasRoutes"));
+app.use("/api/edas",require("./src/routes/edasRoutes"));
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
 import axios from 'axios';
+import CSVReader from 'react-csv-reader';
 import './App.css';
 const API_URL = "http://localhost:5000/api"
 function App() {
@@ -68,8 +69,10 @@ function App() {
 
   const importData = async (data) => {
     try {
-      if (datosCSV) {
-        const response = await axios.post(`${API_URL}/import`, data);
+      console.log(data);
+      console.log(csvData);
+      if (csvData) {
+        const response = await axios.post(`${API_URL}/import`, csvData);
         console.log("todo salio bien", response);
       }
       else {
@@ -78,10 +81,45 @@ function App() {
     } catch (error) {
 
     }
+  };
+  const [csvData, setCsvData] = useState(null);
+
+  function handleFile(data) {
+    // Extract headers (first row)
+    const headers = data[0];
+  
+    // Remove headers from data
+    const rows = data.slice(1);
+  
+    // Construct objects with headers as keys
+    const formattedData = rows.reduce((acc, row) => {
+      // Check if row has the same number of columns as headers
+      if (row.length === headers.length) {
+        const obj = {};
+        headers.forEach((header, index) => {
+          obj[header] = row[index];
+        });
+        acc.push(obj);
+      } else {
+        console.warn(`Ignoring row: ${row} - mismatch with headers`);
+      }
+      return acc;
+    }, []);
+  
+    // Set formatted data to state
+    setCsvData(formattedData);
+    console.log(formattedData);
   }
+  
 
   return (
     <div>
+      <h2>Nueva version</h2>
+      <CSVReader
+        onFileLoaded={handleFile}
+        inputId="csv-input"
+        inputStyle={{color: 'red'}}
+      />
       <h2>Seleccionar archivo CSV:</h2>
       <input type="file" accept=".csv" onChange={manejarCambioArchivo} />
       <h2>Datos del archivo CSV:</h2>

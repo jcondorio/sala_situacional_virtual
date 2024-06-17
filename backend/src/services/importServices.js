@@ -9,11 +9,29 @@ const Localidad = require("../models/localidadModel.js");
 const Microred = require("../models/microredModel.js");
 const Establecimiento = require("../models/establecimientoModel.js");
 const Provicional = require("../models/provicionalModel.js");
+const Edas = require("../models/edasModel.js");
 
-const importDataServices = async (data, blockSize) => {
-  console.log("importDataServices: ");
-  blockSize = 10;
+// Función para eliminar los registros por año
+const deleteIrasRecordsByYear = async (year) => {
   try {
+    await Iras.destroy({
+      where: {
+        ANO: year
+      }
+    });
+    console.log(`Registros del año ${year} eliminados correctamente.`);
+  } catch (error) {
+    console.error('Error eliminando registros:', error);
+    throw error;
+  }
+};
+
+const importDataServices = async (data, blockSize = 10) => {
+  console.log("importDataServices: ");
+  try {
+    const year = data[0].ANO; // Se asume que todos los registros tienen el mismo año
+    await deleteIrasRecordsByYear(year); // Elimina los registros del año específico
+
     const totalRecords = data.length;
     let insertedCount = 0;
 
@@ -73,9 +91,7 @@ const importDataServices = async (data, blockSize) => {
           const etniaprocValue = rowData.ETNIAPROC === "" ? null : rowData.ETNIAPROC;
           const etniasValue = rowData.ETNIAS === "" ? null : rowData.ETNIAS;
           const procedeValue = rowData.PROCEDE === "" ? null : rowData.PROCEDE;
-          const otroprocValue = rowData.ETNIAPROC === "" ? null : rowData.ETNIAPROC;
-
-
+          const otroprocValue = rowData.OTROPROC === "" ? null : rowData.OTROPROC;
 
           await Iras.create({
             ID: idValue,
@@ -131,6 +147,175 @@ const importDataServices = async (data, blockSize) => {
             ETNIAS: etniasValue,
             PROCEDE: procedeValue,
             OTROPROC: otroprocValue,
+          });
+        } catch (error) {
+          console.error('Error en la inserción:', error);
+          throw error;
+        }
+      }));
+
+      insertedCount += block.length;
+      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+    }
+
+    console.log("Operación de importación de datos completada.");
+  } catch (error) {
+    console.error('Error general:', error);
+    throw error;
+  }
+};
+
+const deleteEdasRecordsByYear = async (year) => {
+  try {
+    await Edas.destroy({
+      where: {
+        ANO: year
+      }
+    });
+    console.log(`Registros del año ${year} eliminados correctamente.`);
+  } catch (error) {
+    console.error('Error eliminando registros:', error);
+    throw error;
+  }
+};
+
+const importDataEdasServices = async (data, blockSize = 10) => {
+  console.log("importDataServices: ");
+  try {
+    const year = data[0].ANO; // Se asume que todos los registros tienen el mismo año
+    await deleteEdasRecordsByYear(year); // Elimina los registros del año específico
+
+    const totalRecords = data.length;
+    let insertedCount = 0;
+
+    while (insertedCount < totalRecords) {
+      const block = data.slice(insertedCount, insertedCount + blockSize);
+      await Promise.all(block.map(async (rowData) => {
+        try {
+          const idValue = rowData.ID === "" ? null : rowData.ID;
+          const anoValue = rowData.ANO === "" ? null : rowData.ANO;
+          const semanaValue = rowData.SEMANA === "" ? null : rowData.SEMANA;
+          const subregValue = rowData.SUB_REG_NT === "" ? null : rowData.SUB_REG_NT;
+          const redValue = rowData.RED === "" ? null : rowData.RED;
+          const microredValue = rowData.MICRORED === "" ? null : rowData.MICRORED;
+          const esaludValue = rowData.E_SALUD === "" ? null : rowData.E_SALUD;
+          const ubigeoValue = rowData.UBIGEO === "" ? null : rowData.UBIGEO;
+          const DAA_C1Value = rowData.DAA_C1 === "" ? null : rowData.DAA_C1;
+          const DAA_C1_4Value = rowData.DAA_C1_4 === "" ? null : rowData.DAA_C1_4;
+          const DAA_C5Value = rowData.DAA_C5 === "" ? null : rowData.DAA_C5;
+          const DAA_C5_11Value = rowData.DAA_C5_11 === "" ? null : rowData.DAA_C5_11;
+          const DAA_C12_17Value = rowData.DAA_C12_17 === "" ? null : rowData.DAA_C12_17;
+          const DAA_C18_29Value = rowData.DAA_C18_29 === "" ? null : rowData.DAA_C18_29;
+          const DAA_C30_59Value = rowData.DAA_C30_59 === "" ? null : rowData.DAA_C30_59;
+          const DAA_C60Value = rowData.DAA_C60 === "" ? null : rowData.DAA_C60;
+          const DAA_D1Value = rowData.DAA_D1 === "" ? null : rowData.DAA_D1;
+          const DAA_D1_4Value = rowData.DAA_D1_4 === "" ? null : rowData.DAA_D1_4;
+          const DAA_D5Value = rowData.DAA_D5 === "" ? null : rowData.DAA_D5;
+          const DAA_D5_11Value = rowData.DAA_D5_11 === "" ? null : rowData.DAA_D5_11;
+          const DAA_D12_17Value = rowData.DAA_D12_17 === "" ? null : rowData.DAA_D12_17;
+          const DAA_D18_29Value = rowData.DAA_D18_29 === "" ? null : rowData.DAA_D18_29;
+          const DAA_D30_59Value = rowData.DAA_D30_59 === "" ? null : rowData.DAA_D30_59;
+          const DAA_D60Value = rowData.DAA_D60 === "" ? null : rowData.DAA_D60;
+          const DAA_H1Value = rowData.DAA_H1 === "" ? null : rowData.DAA_H1;
+          const DAA_H1_4Value = rowData.DAA_H1_4 === "" ? null : rowData.DAA_H1_4;
+          const DAA_H5Value = rowData.DAA_H5 === "" ? null : rowData.DAA_H5;
+          const DAA_H5_11Value = rowData.DAA_H5_11 === "" ? null : rowData.DAA_H5_11;
+          const DAA_H12_17Value = rowData.DAA_H12_17 === "" ? null : rowData.DAA_H12_17;
+          const DAA_H18_29Value = rowData.DAA_H18_29 === "" ? null : rowData.DAA_H18_29;
+          const DAA_H30_59Value = rowData.DAA_H30_59 === "" ? null : rowData.DAA_H30_59;
+          const DAA_H60Value = rowData.DAA_H60 === "" ? null : rowData.DAA_H60;
+          const DIS_C1Value = rowData.DIS_C1 === "" ? null : rowData.DIS_C1;
+          const DIS_C1_4Value = rowData.DIS_C1_4 === "" ? null : rowData.DIS_C1_4;
+          const DIS_C5Value = rowData.DIS_C5 === "" ? null : rowData.DIS_C5;
+          const DIS_C5_11Value = rowData.DIS_C5_11 === "" ? null : rowData.DIS_C5_11;
+          const DIS_C12_17Value = rowData.DIS_C12_17 === "" ? null : rowData.DIS_C12_17;
+          const DIS_C18_29Value = rowData.DIS_C18_29 === "" ? null : rowData.DIS_C18_29;
+          const DIS_C30_59Value = rowData.DIS_C30_59 === "" ? null : rowData.DIS_C30_59;
+          const DIS_C60Value = rowData.DIS_C60 === "" ? null : rowData.DIS_C60;
+          const DIS_D1Value = rowData.DIS_D1 === "" ? null : rowData.DIS_D1;
+          const DIS_D1_4Value = rowData.DIS_D1_4 === "" ? null : rowData.DIS_D1_4;
+          const DIS_D5Value = rowData.DIS_D5 === "" ? null : rowData.DIS_D5;
+          const DIS_D5_11Value = rowData.DIS_D5_11 === "" ? null : rowData.DIS_D5_11;
+          const DIS_D12_17Value = rowData.DIS_D12_17 === "" ? null : rowData.DIS_D12_17;
+          const DIS_D18_29Value = rowData.DIS_D18_29 === "" ? null : rowData.DIS_D18_29;
+          const DIS_D30_59Value = rowData.DIS_D30_59 === "" ? null : rowData.DIS_D30_59;
+          const DIS_D60Value = rowData.DIS_D60 === "" ? null : rowData.DIS_D60;
+          const DIS_H1Value = rowData.DIS_H1 === "" ? null : rowData.DIS_H1;
+          const DIS_H1_4Value = rowData.DIS_H1_4 === "" ? null : rowData.DIS_H1_4;
+          const DIS_H5Value = rowData.DIS_H5 === "" ? null : rowData.DIS_H5;
+          const DIS_H5_11Value = rowData.DIS_H5_11 === "" ? null : rowData.DIS_H5_11;
+          const DIS_H12_17Value = rowData.DIS_H12_17 === "" ? null : rowData.DIS_H12_17;
+          const DIS_H18_29Value = rowData.DIS_H18_29 === "" ? null : rowData.DIS_H18_29;
+          const DIS_H30_59Value = rowData.DIS_H30_59 === "" ? null : rowData.DIS_H30_59;
+          const DIS_H60Value = rowData.DIS_H60 === "" ? null : rowData.DIS_H60;
+          const FECHA_INGValue = rowData.FECHA_ING === "" ? null : rowData.FECHA_ING;
+          const ETNIAPROCValue = rowData.ETNIAPROC === "" ? null : rowData.ETNIAPROC;
+          const ETNIASValue = rowData.ETNIAS === "" ? null : rowData.ETNIAS;
+          const PROCEDEValue = rowData.PROCEDE === "" ? null : rowData.PROCEDE;
+          const OTROPROCValue = rowData.OTROPROC === "" ? null : rowData.OTROPROC;
+
+          await Edas.create({
+            ID: idValue,
+            ANO: anoValue,
+            SEMANA: semanaValue,
+            SUB_REG_NT: subregValue,
+            RED: redValue,
+            MICRORED: microredValue,
+            E_SALUD: esaludValue,
+            UBIGEO: ubigeoValue,
+            DAA_C1: DAA_C1Value,
+            DAA_C1_4: DAA_C1_4Value,
+            DAA_C5: DAA_C5Value,
+            DAA_C5_11: DAA_C5_11Value,
+            DAA_C12_17: DAA_C12_17Value,
+            DAA_C18_29: DAA_C18_29Value,
+            DAA_C30_59: DAA_C30_59Value,
+            DAA_C60: DAA_C60Value,
+            DAA_D1: DAA_D1Value,
+            DAA_D1_4: DAA_D1_4Value,
+            DAA_D5: DAA_D5Value,
+            DAA_D5_11: DAA_D5_11Value,
+            DAA_D12_17: DAA_D12_17Value,
+            DAA_D18_29: DAA_D18_29Value,
+            DAA_D30_59: DAA_D30_59Value,
+            DAA_D60: DAA_D60Value,
+            DAA_H1: DAA_H1Value,
+            DAA_H1_4: DAA_H1_4Value,
+            DAA_H5: DAA_H5Value,
+            DAA_H5_11: DAA_H5_11Value,
+            DAA_H12_17: DAA_H12_17Value,
+            DAA_H18_29: DAA_H18_29Value,
+            DAA_H30_59: DAA_H30_59Value,
+            DAA_H60: DAA_H60Value,
+            DIS_C1: DIS_C1Value,
+            DIS_C1_4: DIS_C1_4Value,
+            DIS_C5: DIS_C5Value,
+            DIS_C5_11: DIS_C5_11Value,
+            DIS_C12_17: DIS_C12_17Value,
+            DIS_C18_29: DIS_C18_29Value,
+            DIS_C30_59: DIS_C30_59Value,
+            DIS_C60: DIS_C60Value,
+            DIS_D1: DIS_D1Value,
+            DIS_D1_4: DIS_D1_4Value,
+            DIS_D5: DIS_D5Value,
+            DIS_D5_11: DIS_D5_11Value,
+            DIS_D12_17: DIS_D12_17Value,
+            DIS_D18_29: DIS_D18_29Value,
+            DIS_D30_59: DIS_D30_59Value,
+            DIS_D60: DIS_D60Value,
+            DIS_H1: DIS_H1Value,
+            DIS_H1_4: DIS_H1_4Value,
+            DIS_H5: DIS_H5Value,
+            DIS_H5_11: DIS_H5_11Value,
+            DIS_H12_17: DIS_H12_17Value,
+            DIS_H18_29: DIS_H18_29Value,
+            DIS_H30_59: DIS_H30_59Value,
+            DIS_H60: DIS_H60Value,
+            FECHA_ING: FECHA_INGValue,
+            ETNIAPROC: ETNIAPROCValue,
+            ETNIAS:ETNIASValue,
+            PROCEDE: PROCEDEValue,
+            OTROPROC: OTROPROCValue,
           });
         } catch (error) {
           console.error('Error en la inserción:', error);
@@ -509,13 +694,13 @@ const importEstablecimientoServices = async (data, blockSize) => {
     throw error;
   }
 };
-
-
-
 const importProvicionalServices = async (data, blockSize) => {
   console.log("importProvicionalServices: ", data);
   blockSize = 10;
   try {
+    // Eliminar registros existentes uno por uno
+    await Provicional.destroy({ where: {} });
+
     const totalRecords = data.length;
     let insertedCount = 0;
 
@@ -552,14 +737,13 @@ const importProvicionalServices = async (data, blockSize) => {
             UBIGEO_RN: UBIGEO_RNValue,
             COD_EST: COD_ESTValue,
           });
+          insertedCount++;
+          console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
         } catch (error) {
           console.error('Error en la inserción:', error);
-          // No se hace nada, simplemente se ignora el error y se continúa con el siguiente registro
+          throw new Error('Error en la inserción de datos.');
         }
       }));
-
-      insertedCount += block.length;
-      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
     console.log("Operación de importación de datos completada.");
@@ -568,7 +752,6 @@ const importProvicionalServices = async (data, blockSize) => {
     throw error;
   }
 };
-
 
 
 module.exports = {
@@ -582,4 +765,5 @@ module.exports = {
   importMicroredServices,
   importEstablecimientoServices,
   importProvicionalServices,
+  importDataEdasServices,
 }; 
