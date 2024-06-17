@@ -25,7 +25,7 @@ const getIrasSemanasServices = async () => {
       attributes: [
         "SEMANA",
         "ANO",
-        [Sequelize.literal("SUM(DAA_C1 + DAA_C1_4 + DAA_C5 + DAA_C5_11 + DAA_C12_17 + DAA_C18_29 + DAA_C30_59 + DAA_C60)"), "Total_IRA"],
+        [Sequelize.literal("SUM(COALESCE(DAA_C1, 0) + COALESCE(DAA_C1_4, 0) + COALESCE(DAA_C5, 0) + COALESCE(DAA_C5_11, 0) + COALESCE(DAA_C12_17, 0) + COALESCE(DAA_C18_29, 0) + COALESCE(DAA_C30_59, 0) + COALESCE(DAA_C60, 0))"), "Total_IRA"],
       ],
       group: ["SEMANA", "ANO"],
       raw: true,
@@ -72,7 +72,7 @@ const getIrasUltimaSemanaDistrit = async () => {
         [col("provicional.Dpto"), "Dpto"],
         [col("provicional.Prov"), "Prov"],
         [col("provicional.Distrit"), "Distrit"],
-        [fn("SUM", literal("DAA_C1 + DAA_C1_4 + DAA_C5 + DAA_C5_11 + DAA_C12_17 + DAA_C18_29 + DAA_C30_59 + DAA_C60")), "total_registros"],
+        [fn("SUM", literal("COALESCE(DAA_C1, 0) + COALESCE(DAA_C1_4, 0) + COALESCE(DAA_C5, 0) + COALESCE(DAA_C5_11, 0) + COALESCE(DAA_C12_17, 0) + COALESCE(DAA_C18_29, 0) + COALESCE(DAA_C30_59, 0) + COALESCE(DAA_C60, 0)")), "total_registros"],
       ],
       include: [
         {
@@ -105,7 +105,7 @@ const getTotalCasosIrasAnualService = async () => {
         [
           sequelize.fn(
             "SUM",
-            sequelize.literal("DAA_C1 + DAA_C1_4 + DAA_C5 + DAA_C5_11 + DAA_C12_17 + DAA_C18_29 + DAA_C30_59 + DAA_C60")
+            sequelize.literal("COALESCE(DAA_C1, 0) + COALESCE(DAA_C1_4, 0) + COALESCE(DAA_C5, 0) + COALESCE(DAA_C5_11, 0) + COALESCE(DAA_C12_17, 0) + COALESCE(DAA_C18_29, 0) + COALESCE(DAA_C30_59, 0) + COALESCE(DAA_C60, 0)")
           ),
           "total_registros",
         ],
@@ -139,7 +139,7 @@ const getTotalCasosIrasUltimaSemana = async () => {
         [
           sequelize.fn(
             "SUM",
-            sequelize.literal("DAA_C1 + DAA_C1_4 + DAA_C5 + DAA_C5_11 + DAA_C12_17 + DAA_C18_29 + DAA_C30_59 + DAA_C60")
+            sequelize.literal("COALESCE(DAA_C1, 0) + COALESCE(DAA_C1_4, 0) + COALESCE(DAA_C5, 0) + COALESCE(DAA_C5_11, 0) + COALESCE(DAA_C12_17, 0) + COALESCE(DAA_C18_29, 0) + COALESCE(DAA_C30_59, 0) + COALESCE(DAA_C60, 0)")
           ),
           "total_casos",
         ],
@@ -192,7 +192,7 @@ const getTotalDistritosCasosUltimaSemana = async () => {
         SEMANA: {
           [Op.eq]: sequelize.literal("(SELECT MAX(SEMANA) FROM edas)"),
         },
-        [Op.and]: sequelize.literal("(DAA_C1 + DAA_C1_4 + DAA_C5 + DAA_C5_11 + DAA_C12_17 + DAA_C18_29 + DAA_C30_59 + DAA_C60) > 0"),
+        [Op.and]: sequelize.literal("(COALESCE(DAA_C1, 0) + COALESCE(DAA_C1_4, 0) + COALESCE(DAA_C5, 0) + COALESCE(DAA_C5_11, 0) + COALESCE(DAA_C12_17, 0) + COALESCE(DAA_C18_29, 0) + COALESCE(DAA_C30_59, 0) + COALESCE(DAA_C60, 0)) > 0"),
       },
       raw: true,
     });
@@ -230,7 +230,7 @@ const getTotalEstrablecimientosCasosUltimaSemana = async () => {
         SEMANA: {
           [Op.eq]: sequelize.literal("(SELECT MAX(SEMANA) FROM edas)"),
         },
-        [Op.and]: sequelize.literal("(DAA_C1 + DAA_C1_4 + DAA_C5 + DAA_C5_11 + DAA_C12_17 + DAA_C18_29 + DAA_C30_59 + DAA_C60) > 0"),
+        [Op.and]: sequelize.literal("(COALESCE(DAA_C1, 0) + COALESCE(DAA_C1_4, 0) + COALESCE(DAA_C5, 0) + COALESCE(DAA_C5_11, 0) + COALESCE(DAA_C12_17, 0) + COALESCE(DAA_C18_29, 0) + COALESCE(DAA_C30_59, 0) + COALESCE(DAA_C60, 0)) > 0"),
       },
       raw: true,
     });
@@ -266,7 +266,7 @@ const getTotSemIrasEstService = async (data) => {
       SELECT 
       all_years.ANO as ANO,
       weeks.num AS SEMANA, 
-      COALESCE(SUM(edas.DAA_C1 + edas.DAA_C1_4 + edas.DAA_C5 + edas.DAA_C5_11 + edas.DAA_C12_17 + edas.DAA_C18_29 + edas.DAA_C30_59 + edas.DAA_C60), 0) AS Total_IRA
+      COALESCE(SUM(COALESCE(edas.DAA_C1, 0) + COALESCE(edas.DAA_C1_4, 0) + COALESCE(edas.DAA_C5, 0) + COALESCE(edas.DAA_C5_11, 0) + COALESCE(edas.DAA_C12_17, 0) + COALESCE(edas.DAA_C18_29, 0) + COALESCE(edas.DAA_C30_59, 0) + COALESCE(edas.DAA_C60, 0)), 0) AS Total_IRA
     
 FROM 
     (
@@ -318,7 +318,7 @@ const getDataDistritService = async () => {
       `
       SELECT 
           prov.Distrit,
-          COALESCE(SUM(e.DAA_C1 + e.DAA_C1_4 + e.DAA_C5 + e.DAA_C5_11 + e.DAA_C12_17 + e.DAA_C18_29 + e.DAA_C30_59 + e.DAA_C60), 0) AS casos,
+          COALESCE(SUM(COALESCE(e.DAA_C1, 0) + COALESCE(e.DAA_C1_4, 0) + COALESCE(e.DAA_C5, 0) + COALESCE(e.DAA_C5_11, 0) + COALESCE(e.DAA_C12_17, 0) + COALESCE(e.DAA_C18_29, 0) + COALESCE(e.DAA_C30_59, 0) + COALESCE(e.DAA_C60, 0)), 0) AS casos,
           ${maxAno} AS maximoAno
       FROM 
           provicional AS prov
