@@ -341,6 +341,141 @@ const getDataDistritService = async () => {
     throw error;
   }
 };
+const getDatosGeneralesServices = async (annio) => {
+  console.log("getDatosGeneralesServices",annio);
+  try {
+    const maxAno = annio.annio;
+    console.log("maxAno: ", maxAno);
+
+    const resultEstDistrit = await Sequelize.query(
+      `
+      SELECT 
+          prov.Distrit,
+          COALESCE(SUM(i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A), 0) AS casos,
+          ${maxAno} AS maximoAno
+      FROM 
+          provicional AS prov
+      LEFT JOIN 
+          iras AS i ON i.E_SALUD = prov.COD_EST
+                  AND i.ANO = ${maxAno}
+      WHERE 
+          prov.subregion = 23
+      GROUP BY 
+          prov.Distrit
+      ORDER BY 
+          casos DESC;
+    `,
+      { type: sequelize.QueryTypes.SELECT }
+    );
+    const resultTotIras = await Sequelize.query(
+      `
+      Select sum(IRA_M2+IRA_2_11+IRA_1_4A) as result FROM iras where ANO=?
+      `,
+      {
+        replacements: [maxAno],
+        type: Sequelize.QueryTypes.SELECT
+      }
+
+    );
+    const resultTotUltimaSemana = await Sequelize.query(
+      `
+      select sum(IRA_M2+IRA_2_11+IRA_1_4A) as result from iras where ANO=? and SEMANA=(select max(SEMANA) from iras where ANO=?)
+     `,
+     {
+      replacements:[maxAno,maxAno],
+      type: Sequelize.QueryTypes.SELECT
+     }
+    );
+    const resultTotDistSemana = await Sequelize.query(
+      `
+        select count( distinct prov.Distrit) as result from iras as i inner join provicional as prov on i.E_SALUD=prov.COD_EST 
+        where i.ANO=?  and SEMANA=(select max(SEMANA) from iras where ANO=?);
+      `
+      ,
+     {
+      replacements:[maxAno,maxAno],
+      type: Sequelize.QueryTypes.SELECT
+     }
+    )
+    const resultTotEstSemana = await Sequelize.query(
+      `
+        select count( distinct prov.N_EESS) as result from iras as i inner join provicional as prov on i.E_SALUD=prov.COD_EST 
+        where i.ANO=?  and SEMANA=(select max(SEMANA) from iras where ANO=?);
+      `
+      ,
+     {
+      replacements:[maxAno,maxAno],
+      type: Sequelize.QueryTypes.SELECT
+     }
+    )
+    const cantidadSemanas = await Sequelize.query(
+      `
+         select max(SEMANA) as result FROM iras where ANO=?;
+      `
+      ,
+     {
+      replacements:[maxAno],
+      type: Sequelize.QueryTypes.SELECT
+     }
+    )
+    console.log("cantidadSemanas",cantidadSemanas);
+    //consolidado
+    const consolidado={
+      totiras: resultTotIras[0].result,
+      totUltSemana: resultTotUltimaSemana[0].result,
+      totDistUltSem: resultTotDistSemana[0].result,
+      totEstUltSem: resultTotEstSemana[0].result,
+      cantidadSemanas: cantidadSemanas[0].result,
+    }
+    return consolidado;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+
+
+const getCasosDistritUltSemServices = async (annio) => {
+  try {
+    console.log("getCasosDistritUltSemServices", annio);
+
+    // Paso 1: Obtener la semana máxima
+    const maxSemana = await Iras.max("SEMANA", {
+      where: {
+        ANO: annio.annio,
+      },
+    });
+
+    // Paso 2: Consulta principal usando la semana máxima obtenida
+    const result = await Iras.findAll({
+      attributes: [
+        [Sequelize.col("provicional.Dpto"), "Dpto"],
+        [Sequelize.col("provicional.Prov"), "Prov"],
+        [Sequelize.col("provicional.Distrit"), "Distrit"],
+        [Sequelize.fn("SUM", Sequelize.literal("IRA_M2 + IRA_2_11 + IRA_1_4A")), "total_registros"],
+      ],
+      include: [
+        {
+          model: Provicional,
+          as: "provicional",
+          attributes: [],
+        },
+      ],
+      where: {
+        ANO: annio.annio,
+        SEMANA: maxSemana, // Usamos la semana máxima obtenida
+      },
+      group: ["provicional.Dpto", "provicional.Prov", "provicional.Distrit"],
+    });
+
+    console.log("getCasosDistritUltSemServices:", result);
+    return result;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+
 
 module.exports = {
   getIrasSemanasServices,
@@ -352,4 +487,6 @@ module.exports = {
   getTotalEstService,
   getTotSemIrasEstService,
   getDataDistritService,
+  getDatosGeneralesServices,
+  getCasosDistritUltSemServices,
 };

@@ -7,11 +7,19 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 
 // Datos GeoJSON de las provincias en Tacna (ejemplo)
 import datosProvincias from "../data/provinciasTacna.json";
-
 const MapaTacnaConProvincias = () => {
   const [distritos, setDistritos] = useState([]);
   const [sumaTotalCasos, setSumaTotalCasos] = useState(0);
 
+
+  const pobDistrUltimoAnnio = async ()=>{
+    try{
+      const response = await axios.get(`${API_URL}/poblacion/distrit`);
+      //setPobDistritU
+    } catch{
+
+    }
+  }
   useEffect(() => {
     const fetchDistritos = async () => {
       try {

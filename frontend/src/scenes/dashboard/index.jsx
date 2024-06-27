@@ -77,6 +77,19 @@ const Dashboard = () => {
   const [totEst2024, setTotEst2024] = useState();
   const [dataTotEst, setDataTot2024] = useState();
   const [dataCurvEpi, setDataCurvEpi] = useState();
+  const [anniosIras, setAnniosIras] = useState();
+  const [annio, setAnnio] = useState();
+
+
+  const getAnnioIra = async () => {
+    try {
+      const response = await axios(`${API_URL}/otros/annioIras`);
+      console.log(response.data.data);
+      setAnniosIras(response.data.data);
+    } catch (error) {
+      console.error("Error fetching estudiantes data:", error);
+    }
+  }
 
   const getTotEst2024 = async () => {
     try {
@@ -134,7 +147,7 @@ const Dashboard = () => {
   const getTotDistritSemana = async () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totdist`);
-      setTotIrasEstSem(response.data.data);
+      setTotIrasDistSem(response.data.data);
       console.log("getTotDistritSemana:", response.data.data);
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
@@ -143,7 +156,7 @@ const Dashboard = () => {
   const getTotEstSemana = async () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totest`);
-      setTotIrasDistSem(response.data.data);
+      setTotIrasEstSem(response.data.data);
       console.log("getTotEstSemana:", response.data.data);
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
@@ -155,7 +168,7 @@ const Dashboard = () => {
       const response = await axios.get(`${API_URL}/iras/ultimasemana`);
       setDataUltimaSemana(response.data.data);
       console.log("getUltimaSemanaIras", response.data.data);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const curvaEpidemiologica = async () => {
@@ -169,8 +182,46 @@ const Dashboard = () => {
       setDataCurvEpi(datoConvertido);
       // console.log("curvaEpidemiologica", response.data.data);
       //console.log("dataCirvaEpi;", dataCurvEpi)
-    } catch (error) {}
+    } catch (error) { }
   };
+  const actualizarDatosGenerales = async () => {
+    try {
+      console.log("actualizarDatosGenerales", dataTotEst);
+      const response = await axios.get(
+        `${API_URL}/iras/datosgenerales/${annio}`
+      );
+      //const datoConvertido = transformData(response.data.data);
+      console.log("actualizarDatosGenerales", response.data.data);
+      setTotIrasSem(response.data.data.totUltSemana);
+      setTotIrasEstSem(response.data.data.totEstUltSem);
+      setTotIrasDistSem(response.data.data.totDistUltSem);
+      setTotIras(response.data.data.totiras);
+      updateSemanasSelect(response.data.data.cantidadSemanas);
+      //setDataCurvEpi(datoConvertido);
+    } catch (error) {
+
+    }
+  }
+  const [semanas, setSemanas] = useState();
+  const updateSemanasSelect = (ult_sem) => {
+    console.log("ult_sem".ult_sem)
+    const semana = [];
+    for (let i = 1; i <= ult_sem; i++) {
+      semana.push({ semana: i });
+    }
+    setSemanas(semana);
+    console.log("semana: ", semana)
+
+  };
+  const actualizarCasosDistrit = async () => {
+    try {
+      const result = await axios.get(`${API_URL}/iras/casoDistrit/${annio}`);
+      console.log("actualizarCasosDistrit:", result.data.data);
+      setDataUltimaSemana(result.data.data)
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   useEffect(() => {
     getIras();
@@ -180,7 +231,12 @@ const Dashboard = () => {
     getTotIras();
     getTotIrasSemana();
     getTotEst2024();
+    getAnnioIra();
   }, []);
+  useEffect(() => {
+    actualizarDatosGenerales();
+    actualizarCasosDistrit();
+  }, [annio])
   useEffect(() => {
     console.log("dataInsidencias:", dataInsidencias);
   }, [dataInsidencias]);
@@ -213,7 +269,124 @@ const Dashboard = () => {
         gridAutoRows="140px"
         gap="20px"
       >
+        <Box
+          gridColumn="span 12"
+          gridRow="span 2"
+          backgroundColor={colors.primary[400]}
+        >
+          <Box
+            mt="25px"
+            p="0 30px"
+            display="flex "
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Box>
+              <Typography
+                variant="h5"
+                fontWeight="600"
+                color={colors.grey[100]}
+              ></Typography>
+              <Typography
+                variant="h3"
+                fontWeight="bold"
+                color={colors.greenAccent[500]}
+              >
+                Grafico de tendencia en I.R.A.S.
+              </Typography>
+            </Box>
+            <Box>
+              <IconButton></IconButton>
+            </Box>
+          </Box>
+          <Box height="250px" m="-20px 0 0 0">
+            {/* <LineChart isDashboard={true} /> */}
+            <MyGroupedBarChart data={dataInsidencias} />
+            {/*{dataInsidencias && <BarSimpleChart data={dataInsidencias} />} */}
+          </Box>
+        </Box>
+        <Box
+          gridColumn="span 12"
+          gridRow="span 3"
+          backgroundColor={colors.primary[400]}
+
+        >
+          <Box height="250px" mt="-20px"
+            margin={6}>
+            <Grid container>
+              <Grid item xs={3}>
+                <Typography
+                  variant="h3"
+                  fontWeight="bold"
+                  color={colors.greenAccent[500]}
+                >
+                  Reporte anual por semanas en Establecimiento
+                </Typography>
+              </Grid>
+              <Grid item xs={1}></Grid>
+              <Grid item xs={5}>
+                <FormControl fullWidth >
+                  <InputLabel id="nivel1">Establecimiento</InputLabel>
+                  <Select
+                    labelId="seccion"
+                    label="Sección"
+                    value={dataTotEst}
+                    onChange={(e) => setDataTot2024(e.target.value)}
+                  >
+                    <MenuItem value="" disabled></MenuItem>
+                    {Array.isArray(totEst2024) &&
+                      totEst2024.map((item) => (
+                        <MenuItem key={item.COD_EST} value={item.COD_EST}>
+                          {item.N_EESS}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={1}></Grid>
+              <Grid item xs={2}>
+                <Button
+                  onClick={curvaEpidemiologica}
+                  variant="contained"
+                  color="secondary"
+                  style={{ height: "50px" }}
+                >
+                  Seleccionar
+                </Button>
+              </Grid>
+            </Grid>
+            <MyGroupedBarChart data={dataCurvEpi} />
+            {/*{dataCurvEpi && <BarSimpleChart data={dataCurvEpi} />}*/}
+          </Box>
+        </Box>
         {/* ROW 1 */}
+        <Box
+          gridColumn="span 12"
+        >
+          <Grid container item style={{ display: 'flex', justifyContent: 'center' }}>
+            <Grid item xs={3}>
+              <FormControl fullWidth >
+                <InputLabel id="annio">Año a analizar</InputLabel>
+                <Select
+                  labelId="annio"
+                  label="annio"
+                  value={anniosIras}
+                  onChange={(e) => setAnnio(e.target.value)}
+                >
+                  <MenuItem value="" disabled></MenuItem>
+                  {Array.isArray(anniosIras) &&
+                    anniosIras.map((item) => (
+                      <MenuItem key={item.ANO} value={item.ANO}>
+                        {item.ANO}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+
+        </Box>
+
         <Box
           gridColumn="span 3"
           backgroundColor={colors.primary[400]}
@@ -376,42 +549,7 @@ const Dashboard = () => {
         </Box>
 
         {/* ROW 2 */}
-        <Box
-          gridColumn="span 8"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-        >
-          <Box
-            mt="25px"
-            p="0 30px"
-            display="flex "
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Box>
-              <Typography
-                variant="h5"
-                fontWeight="600"
-                color={colors.grey[100]}
-              ></Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                color={colors.greenAccent[500]}
-              >
-                Grafico de tendencia en I.R.A.S.
-              </Typography>
-            </Box>
-            <Box>
-              <IconButton></IconButton>
-            </Box>
-          </Box>
-          <Box height="250px" m="-20px 0 0 0">
-            {/* <LineChart isDashboard={true} /> */}
-            <MyGroupedBarChart data={dataInsidencias} />
-            {/*{dataInsidencias && <BarSimpleChart data={dataInsidencias} />} */}
-          </Box>
-        </Box>
+
         <Box
           gridColumn="span 4"
           gridRow="span 3"
@@ -426,9 +564,37 @@ const Dashboard = () => {
             colors={colors.grey[100]}
             p="15px"
           >
-            <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Casos por distrito en la ultima semana
-            </Typography>
+            <Grid container>
+              <Grid xs={4}>
+                <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
+                  Casos por distrito
+                </Typography>
+              </Grid>
+              <Grid xs={4}>
+                <FormControl fullWidth >
+                  <InputLabel id="semana">Semana a analizar</InputLabel>
+                  <Select
+                    labelId="semana"
+                    label="semana"
+                    value={semanas}
+                  //onChange={(e) => setAnnio(e.target.value)}
+                  >
+                    <MenuItem value="" disabled></MenuItem>
+                    {Array.isArray(semanas) &&
+                      semanas.map((item) => (
+                        <MenuItem key={item.semana} value={item.semana}>
+                          {item.semana}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid xs={4}>
+<Button>boton</Button>
+              </Grid>
+            </Grid>
+
+
           </Box>
           {dataUltimaSemana &&
             dataUltimaSemana.map((transaction, i) => (
