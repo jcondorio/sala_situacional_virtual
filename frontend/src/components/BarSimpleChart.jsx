@@ -16,6 +16,7 @@ const BarSimpleChart = ({ data }) => {
     }
 
     return (
+        <div style={{ height: '280px' }}> 
         <ResponsiveBar
             data={data}
             theme={{
@@ -50,6 +51,7 @@ const BarSimpleChart = ({ data }) => {
             indexBy={(item) => item.SEMANA}
             margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
             padding={0.3}
+
              groupMode="grouped"
             valueScale={{ type: "linear" }}
             indexScale={{ type: "band", round: true }}
@@ -109,6 +111,8 @@ const BarSimpleChart = ({ data }) => {
                 return `${e.id}: ${e.formattedValue} in country: ${e.indexValue}`;
             }}
         />
+        </div> 
+        
     );
 };
 

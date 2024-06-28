@@ -272,6 +272,7 @@ const Dashboard = () => {
   useEffect(() => {
     actualizarDatosGenerales();
     actualizarCasosDistrit();
+    setDatosGraf2("");
   }, [annio]);
   useEffect(() => {
     console.log("dataInsidencias:", dataInsidencias);

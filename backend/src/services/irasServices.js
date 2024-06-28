@@ -572,6 +572,29 @@ const getgrafico2Services = async (data) => {
     throw error;
   }
 };
+const getgrafico3Services = async (data) => {
+  console.log("getTotSemIrasEstService", data);
+  try {
+    const query = `
+      SELECT 
+      SEMANA, 
+      COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS Total_IRA
+      from iras as i inner join provicional as prov on prov.COD_EST=i.E_SALUD
+      where prov.Distrit=? and i.ANO=?
+    `;
+
+    // Ejecutar la consulta
+    studentsWithDetails = await Sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+      replacements: [data.annio, data.estacion],
+    });
+    console.log("superconsulta:", studentsWithDetails);
+    return studentsWithDetails;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
 
 module.exports = {
   getIrasSemanasServices,
