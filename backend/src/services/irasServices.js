@@ -136,6 +136,7 @@ const getTotalCasosIrasUltimaSemana = async () => {
     const result = await Iras.findOne({
       attributes: [
         [
+          
           sequelize.fn(
             "SUM",
             sequelize.literal("IRA_M2 + IRA_2_11 + IRA_1_4A")
@@ -151,6 +152,7 @@ const getTotalCasosIrasUltimaSemana = async () => {
         },
       ],
       where: {
+        ANO:2024,
         SEMANA: {
           [Op.eq]: literal("(SELECT MAX(`SEMANA`) FROM `iras`)"),
         },
@@ -202,11 +204,13 @@ const getTotalDistritosCasosUltimaSemana = async () => {
     throw error;
   }
 };
-
 const getTotalEstrablecimientosCasosUltimaSemana = async () => {
   try {
+    const maxAno = await Iras.max("ANO");
+    console.log("maxAno: ", maxAno);
     const totalRegistros = await Iras.findOne({
       attributes: [
+        [sequelize.literal("MAX(iras.SEMANA)"), "max_semana"],
         [
           sequelize.fn(
             "COUNT",
@@ -226,15 +230,17 @@ const getTotalEstrablecimientosCasosUltimaSemana = async () => {
         },
       ],
       where: {
+        ANO: maxAno,
         SEMANA: {
-          [Op.eq]: sequelize.literal("(SELECT MAX(SEMANA) FROM iras)"),
+          [Op.eq]: sequelize.literal(`(SELECT MAX(SEMANA) FROM iras WHERE ANO=${maxAno})`),
         },
         [Op.and]: sequelize.literal("(IRA_M2 + IRA_2_11 + IRA_1_4A) > 0"),
       },
       raw: true,
     });
 
-    return totalRegistros.total_registros;
+    console.log("totalRegistros::", totalRegistros);
+    return totalRegistros;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
     throw error;
@@ -347,26 +353,7 @@ const getDatosGeneralesServices = async (annio) => {
     const maxAno = annio.annio;
     console.log("maxAno: ", maxAno);
 
-    const resultEstDistrit = await Sequelize.query(
-      `
-      SELECT 
-          prov.Distrit,
-          COALESCE(SUM(i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A), 0) AS casos,
-          ${maxAno} AS maximoAno
-      FROM 
-          provicional AS prov
-      LEFT JOIN 
-          iras AS i ON i.E_SALUD = prov.COD_EST
-                  AND i.ANO = ${maxAno}
-      WHERE 
-          prov.subregion = 23
-      GROUP BY 
-          prov.Distrit
-      ORDER BY 
-          casos DESC;
-    `,
-      { type: sequelize.QueryTypes.SELECT }
-    );
+   
     const resultTotIras = await Sequelize.query(
       `
       Select sum(IRA_M2+IRA_2_11+IRA_1_4A) as result FROM iras where ANO=?
@@ -435,6 +422,58 @@ const getDatosGeneralesServices = async (annio) => {
 };
 
 
+const getcasesemanadistritServices = async (data) => {
+  console.log("getcasesemanadistritServices",data);
+  try {
+    const maxAno = data.annio;
+    console.log("maxAno: ", maxAno);
+
+   
+    const resultTotUltimaSemana = await Sequelize.query(
+      `
+      select sum(IRA_M2+IRA_2_11+IRA_1_4A) as result from iras where ANO=? and SEMANA=?
+     `,
+     {
+      replacements:[maxAno,data.semana],
+      type: Sequelize.QueryTypes.SELECT
+     }
+    );
+    const resultTotDistSemana = await Sequelize.query(
+      `
+        select count( distinct prov.Distrit) as result from iras as i inner join provicional as prov on i.E_SALUD=prov.COD_EST 
+        where i.ANO=?  and SEMANA=?;
+      `
+      ,
+     {
+      replacements:[maxAno,data.semana],
+      type: Sequelize.QueryTypes.SELECT
+     }
+    )
+    const resultTotEstSemana = await Sequelize.query(
+      `
+        select count( distinct prov.N_EESS) as result from iras as i inner join provicional as prov on i.E_SALUD=prov.COD_EST 
+        where i.ANO=?  and SEMANA=?;
+      `
+      ,
+     {
+      replacements:[maxAno,data.semana],
+      type: Sequelize.QueryTypes.SELECT
+     }
+    )
+    //consolidado
+    const consolidado={
+      totUltSemana: resultTotUltimaSemana[0].result,
+      totDistUltSem: resultTotDistSemana[0].result,
+      totEstUltSem: resultTotEstSemana[0].result,
+    }
+    return consolidado;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+
+
 const getCasosDistritUltSemServices = async (annio) => {
   try {
     console.log("getCasosDistritUltSemServices", annio);
@@ -489,4 +528,5 @@ module.exports = {
   getDataDistritService,
   getDatosGeneralesServices,
   getCasosDistritUltSemServices,
+  getcasesemanadistritServices,
 };
