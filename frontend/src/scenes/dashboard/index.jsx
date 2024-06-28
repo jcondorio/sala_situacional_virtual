@@ -79,17 +79,24 @@ const Dashboard = () => {
   const [dataCurvEpi, setDataCurvEpi] = useState();
   const [anniosIras, setAnniosIras] = useState();
   const [annio, setAnnio] = useState();
-
-
+  const [semana,setSemana] =useState();
+  const [semanadistrit,setSemanadistrit] = useState();
   const getAnnioIra = async () => {
     try {
       const response = await axios(`${API_URL}/otros/annioIras`);
       console.log(response.data.data);
-      setAnniosIras(response.data.data);
+      const data = response.data.data;
+      setAnniosIras(data);
+      // Encontrar el año más alto en los datos
+      if (Array.isArray(data) && data.length > 0) {
+        const maxYear = Math.max(...data.map(item => item.ANO));
+        console.log("getAnnioIra",maxYear)
+        setAnnio(maxYear);
+      }
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
     }
-  }
+  };
 
   const getTotEst2024 = async () => {
     try {
@@ -139,7 +146,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totsemana`);
       setTotIrasSem(response.data.data.total_casos);
-      console.log("getTotIrasSemana:", response.data.data.total_casos);
+      console.log("getTotIrasSemana:", response.data.data);
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
     }
@@ -156,8 +163,10 @@ const Dashboard = () => {
   const getTotEstSemana = async () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totest`);
-      setTotIrasEstSem(response.data.data);
-      console.log("getTotEstSemana:", response.data.data);
+      setTotIrasEstSem(response.data.data.total_registros);
+      console.log("getTotEstSemana123:", response.data.data);
+      updateSemanasSelect(response.data.data.max_semana);
+      
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
     }
@@ -168,7 +177,7 @@ const Dashboard = () => {
       const response = await axios.get(`${API_URL}/iras/ultimasemana`);
       setDataUltimaSemana(response.data.data);
       console.log("getUltimaSemanaIras", response.data.data);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const curvaEpidemiologica = async () => {
@@ -182,7 +191,7 @@ const Dashboard = () => {
       setDataCurvEpi(datoConvertido);
       // console.log("curvaEpidemiologica", response.data.data);
       //console.log("dataCirvaEpi;", dataCurvEpi)
-    } catch (error) { }
+    } catch (error) {}
   };
   const actualizarDatosGenerales = async () => {
     try {
@@ -198,30 +207,41 @@ const Dashboard = () => {
       setTotIras(response.data.data.totiras);
       updateSemanasSelect(response.data.data.cantidadSemanas);
       //setDataCurvEpi(datoConvertido);
-    } catch (error) {
-
-    }
-  }
+    } catch (error) {}
+  };
   const [semanas, setSemanas] = useState();
   const updateSemanasSelect = (ult_sem) => {
-    console.log("ult_sem".ult_sem)
+    console.log("ult_sem".ult_sem);
     const semana = [];
     for (let i = 1; i <= ult_sem; i++) {
       semana.push({ semana: i });
     }
     setSemanas(semana);
-    console.log("semana: ", semana)
-
+    setSemana(ult_sem);
+    console.log("semana: ", semana);
   };
   const actualizarCasosDistrit = async () => {
     try {
       const result = await axios.get(`${API_URL}/iras/casoDistrit/${annio}`);
       console.log("actualizarCasosDistrit:", result.data.data);
-      setDataUltimaSemana(result.data.data)
+      setDataUltimaSemana(result.data.data);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
+  const casosDistritoSemana = async () =>{
+    try {
+      const response = await axios.get(`${API_URL}/iras/casesemanadistrit/${annio}/${semanadistrit}`);
+     // const result = await axios.get(`${API_URL}/iras/casedistritsempart/${annio}/${semanadistrit}`);
+      console.log("actualizarCasosDistrit:", response.data.data);
+      setTotIrasSem(response.data.data.totUltSemana);
+      setTotIrasEstSem(response.data.data.totEstUltSem);
+      setTotIrasDistSem(response.data.data.totDistUltSem);
+      setSemana(semanadistrit);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     getIras();
@@ -236,7 +256,7 @@ const Dashboard = () => {
   useEffect(() => {
     actualizarDatosGenerales();
     actualizarCasosDistrit();
-  }, [annio])
+  }, [annio]);
   useEffect(() => {
     console.log("dataInsidencias:", dataInsidencias);
   }, [dataInsidencias]);
@@ -309,10 +329,8 @@ const Dashboard = () => {
           gridColumn="span 12"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
-
         >
-          <Box height="250px" mt="-20px"
-            margin={6}>
+          <Box height="250px" mt="-20px" margin={6}>
             <Grid container>
               <Grid item xs={3}>
                 <Typography
@@ -325,7 +343,7 @@ const Dashboard = () => {
               </Grid>
               <Grid item xs={1}></Grid>
               <Grid item xs={5}>
-                <FormControl fullWidth >
+                <FormControl fullWidth>
                   <InputLabel id="nivel1">Establecimiento</InputLabel>
                   <Select
                     labelId="seccion"
@@ -361,16 +379,23 @@ const Dashboard = () => {
         </Box>
         {/* ROW 1 */}
         <Box
+        paddingTop={5}
           gridColumn="span 12"
+          gridRow="span 1"
+          backgroundColor={colors.primary[300]}
         >
-          <Grid container item style={{ display: 'flex', justifyContent: 'center' }}>
+          <Grid
+            container
+            item
+            style={{ display: "flex", justifyContent: "center" }}
+          >
             <Grid item xs={3}>
-              <FormControl fullWidth >
+              <FormControl fullWidth>
                 <InputLabel id="annio">Año a analizar</InputLabel>
                 <Select
                   labelId="annio"
                   label="annio"
-                  value={anniosIras}
+                  value={annio}
                   onChange={(e) => setAnnio(e.target.value)}
                 >
                   <MenuItem value="" disabled></MenuItem>
@@ -384,7 +409,6 @@ const Dashboard = () => {
               </FormControl>
             </Grid>
           </Grid>
-
         </Box>
 
         <Box
@@ -408,7 +432,7 @@ const Dashboard = () => {
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                casos totales IRAS
+                casos totales I.R.A.S. en el año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -448,7 +472,7 @@ const Dashboard = () => {
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                Casos total semanal IRAS
+                Casos total I.R.A.S. en la semana {semana} del año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -488,7 +512,7 @@ const Dashboard = () => {
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                Casos totales semanales IRAS Distritales
+                Cantidad de Distritos que presentaron I.R.A.S. en la semana {semana} del año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -528,7 +552,7 @@ const Dashboard = () => {
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                Establecimientos con casos de IRAS Semanal
+                Establecimientos con casos de I.R.A.S. en la semana {semana} del año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -564,20 +588,26 @@ const Dashboard = () => {
             colors={colors.grey[100]}
             p="15px"
           >
-            <Grid container>
-              <Grid xs={4}>
-                <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-                  Casos por distrito
+            <Grid container justifyContent="center">
+              <Grid xs={12}>
+                <Typography
+                  color={colors.grey[100]}
+                  variant="h5"
+                  fontWeight="600"
+                  align="center"
+                  padding={2}
+                >
+                  Casos por distrito en la semana {semana} del año {annio}
                 </Typography>
               </Grid>
               <Grid xs={4}>
-                <FormControl fullWidth >
-                  <InputLabel id="semana">Semana a analizar</InputLabel>
+                <FormControl fullWidth>
+                  <InputLabel id="semana">Semana</InputLabel>
                   <Select
                     labelId="semana"
                     label="semana"
                     value={semanas}
-                  //onChange={(e) => setAnnio(e.target.value)}
+                    onChange={(e) => setSemanadistrit(e.target.value)}
                   >
                     <MenuItem value="" disabled></MenuItem>
                     {Array.isArray(semanas) &&
@@ -589,12 +619,19 @@ const Dashboard = () => {
                   </Select>
                 </FormControl>
               </Grid>
+              <Grid xs={1}></Grid>
               <Grid xs={4}>
-<Button>boton</Button>
+                <Button
+                  onClick={casosDistritoSemana}
+                  variant="contained"
+                  color="secondary"
+                  margin={2}
+                  style={{ height: "50px" }}
+                >
+                  Seleccionar
+                </Button>
               </Grid>
             </Grid>
-
-
           </Box>
           {dataUltimaSemana &&
             dataUltimaSemana.map((transaction, i) => (
@@ -642,7 +679,7 @@ const Dashboard = () => {
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           ></Typography>
-          <Box height="250px" mt="-20px">
+          <Box height="250px" mt="-20px" padding={5}>
             <Grid container>
               <Grid item xs={3}>
                 <Typography
@@ -650,7 +687,7 @@ const Dashboard = () => {
                   fontWeight="bold"
                   color={colors.greenAccent[500]}
                 >
-                  Reporte anual por semanas en Establecimiento
+                  Reporte semanal en Establecimiento en el año {annio}
                 </Typography>
               </Grid>
               <Grid item xs={1}></Grid>
@@ -685,8 +722,8 @@ const Dashboard = () => {
                 </Button>
               </Grid>
             </Grid>
-            <MyGroupedBarChart data={dataCurvEpi} />
-            {/*{dataCurvEpi && <BarSimpleChart data={dataCurvEpi} />}*/}
+             {/*<MyGroupedBarChart data={dataCurvEpi} />*/}
+           {dataCurvEpi && <BarSimpleChart data={dataCurvEpi} />}
           </Box>
         </Box>
         <Box

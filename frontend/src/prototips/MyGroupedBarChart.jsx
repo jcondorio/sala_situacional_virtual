@@ -15,73 +15,75 @@ const MyGroupedBarChart = ({ data }) => {
     const weeks = Object.keys(data[0]).filter(key => key !== 'year');
 
     return (
-        <ResponsiveBar
-            data={data}
-            theme={{
-                axis: {
-                    domain: {
-                        line: {
-                            stroke: colors.grey[100],
+        <div style={{ height: '280px' }}>  {/* Ajusta la altura según tus necesidades */}
+            <ResponsiveBar
+                data={data}
+                theme={{
+                    axis: {
+                        domain: {
+                            line: {
+                                stroke: colors.grey[100],
+                            },
+                        },
+                        legend: {
+                            text: {
+                                fill: colors.grey[100],
+                            },
+                        },
+                        ticks: {
+                            line: {
+                                stroke: colors.grey[100],
+                                strokeWidth: 1,
+                            },
+                            text: {
+                                fill: colors.grey[100],
+                            },
                         },
                     },
-                    legend: {
+                    legends: {
                         text: {
                             fill: colors.grey[100],
                         },
                     },
-                    ticks: {
-                        line: {
-                            stroke: colors.grey[100],
-                            strokeWidth: 1,
-                        },
-                        text: {
-                            fill: colors.grey[100],
-                        },
-                    },
-                },
-                legends: {
-                    text: {
-                        fill: colors.grey[100],
-                    },
-                },
-            }}
-            keys={weeks}
-            indexBy="year"
-            margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
-            padding={0.01}
-            groupMode="grouped"
-            colors={['#377eb8']}  // Color azul, puedes cambiarlo por el color que prefieras
-            borderColor={{ from: "color", modifiers: [["darker", "1.6"]] }}
-            axisTop={null}
-            axisRight={null}
-            axisBottom={{
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                legend: 'clasificado por años',
-                legendPosition: "middle",
-                legendOffset: 32,
-            }}
-            axisLeft={{
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                legend: 'Casos',
-                legendPosition: "middle",
-                legendOffset: -40,
-            }}
-            enableLabel={false}
-            labelSkipWidth={12}
-            labelSkipHeight={12}
-            labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-            animate={true}
-            motionStiffness={90}
-            motionDamping={15}
-            role="application"
-            barAriaLabel={(e) => {
-                return `${e.id}: ${e.formattedValue} in country: ${e.indexValue}`;
-            }}
-        />
+                }}
+                keys={weeks}
+                indexBy="year"
+                margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
+                padding={0.01}
+                groupMode="grouped"
+                colors={['#377eb8']}  // Color azul, puedes cambiarlo por el color que prefieras
+                borderColor={{ from: "color", modifiers: [["darker", "1.6"]] }}
+                axisTop={null}
+                axisRight={null}
+                axisBottom={{
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                    legend: 'clasificado por años',
+                    legendPosition: "middle",
+                    legendOffset: 32,
+                }}
+                axisLeft={{
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                    legend: 'Casos',
+                    legendPosition: "middle",
+                    legendOffset: -40,
+                }}
+                enableLabel={false}
+                labelSkipWidth={12}
+                labelSkipHeight={12}
+                labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+                animate={true}
+                motionStiffness={90}
+                motionDamping={15}
+                role="application"
+                barAriaLabel={(e) => {
+                    return `${e.id}: ${e.formattedValue} in country: ${e.indexValue}`;
+                }}
+            />
+        </div>
     );
 };
 
