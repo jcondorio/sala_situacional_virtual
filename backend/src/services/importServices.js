@@ -10,6 +10,7 @@ const Microred = require("../models/microredModel.js");
 const Establecimiento = require("../models/establecimientoModel.js");
 const Provicional = require("../models/provicionalModel.js");
 const Edas = require("../models/edasModel.js");
+const Poblacion = require("../models/poblacionModel.js");
 
 // Función para eliminar los registros por año
 const deleteIrasRecordsByYear = async (year) => {
@@ -694,6 +695,7 @@ const importEstablecimientoServices = async (data, blockSize) => {
     throw error;
   }
 };
+
 const importProvicionalServices = async (data, blockSize) => {
   console.log("importProvicionalServices: ", data);
   blockSize = 10;
@@ -754,6 +756,108 @@ const importProvicionalServices = async (data, blockSize) => {
 };
 
 
+const importDataPoblacionServices = async (data, blockSize) => {
+  console.log("importDataPoblacionServices: ", data);
+  blockSize = 10;
+  try {
+    // Eliminar registros existentes uno por uno
+    await Poblacion.destroy({ where: {} });
+
+    const totalRecords = data.length;
+    let insertedCount = 0;
+
+    while (insertedCount < totalRecords) {
+      const block = data.slice(insertedCount, insertedCount + blockSize);
+      await Promise.all(block.map(async (rowData) => {
+        try {
+          const anoubigeoValue = rowData.anoubigeo === "" ? null : rowData.anoubigeo;
+          const anoValue = rowData.ano === "" ? null : rowData.ano;
+          const ubigeoValue = rowData.ubigeo === "" ? null : rowData.ubigeo;
+          const fronteraValue = rowData.frontera === "" ? null : rowData.frontera;
+          const friajeValue = rowData.friaje === "" ? null : rowData.friaje;
+          const indigenaValue = rowData.indigena === "" ? null : rowData.indigena;
+          const vraemValue = rowData.vraem === "" ? null : rowData.vraem;
+          const ubiprovValue = rowData.ubiprov === "" ? null : rowData.ubiprov;
+          const cod_disaValue = rowData.cod_disa === "" ? null : rowData.cod_disa;
+          const disa15Value = rowData.disa15 === "" ? null : rowData.disa15;
+          const distritoValue = rowData.distrito === "" ? null : rowData.distrito;
+          const provinciaValue = rowData.provincia === "" ? null : rowData.provincia;
+          const departamValue = rowData.departam === "" ? null : rowData.departam;
+          const reg_geograValue = rowData.reg_geogra === "" ? null : rowData.reg_geogra;
+          const reg_natuValue = rowData.reg_natu === "" ? null : rowData.reg_natu;
+          const disaValue = rowData.disa === "" ? null : rowData.disa;
+          const e0Value = rowData.e0 === "" ? null : rowData.e0;
+          const e1_4Value = rowData.e1_4 === "" ? null : rowData.e1_4;
+          const men_5Value = rowData.men_5 === "" ? null : rowData.men_5;
+          const e5_masValue = rowData.e5_mas === "" ? null : rowData.e5_mas;
+          const men_15Value = rowData.men_15 === "" ? null : rowData.men_15;
+          const nacidosValue = rowData.nacidos === "" ? null : rowData.nacidos;
+          const men_29dValue = rowData.men_29d === "" ? null : rowData.men_29d;
+          const gestantesValue = rowData.gestantes === "" ? null : rowData.gestantes;
+          const mefValue = rowData.mef === "" ? null : rowData.mef;
+          const pobtotValue = rowData.pobtot === "" ? null : rowData.pobtot;
+          const ambitoValue = rowData.ambito === "" ? null : rowData.ambito;
+          const qpobrezaValue = rowData.qpobreza === "" ? null : rowData.qpobreza;
+          const condpobrezValue = rowData.condpobrez === "" ? null : rowData.condpobrez;
+          const priorizadoValue = rowData.priorizado === "" ? null : rowData.priorizado;
+          const ninosValue = rowData.ninos === "" ? null : rowData.ninos;
+          const adolescenteValue = rowData.adolescente === "" ? null : rowData.adolescente;
+          const jovenValue = rowData.joven === "" ? null : rowData.joven;
+          const adultoValue = rowData.adulto === "" ? null : rowData.adulto;
+          const adulto_mayorValue = rowData.adulto_mayor === "" ? null : rowData.adulto_mayor;
+
+          await Poblacion.create({
+            anoubigeo: anoubigeoValue,
+            ano: anoValue,
+            ubigeo: ubigeoValue,
+            frontera: fronteraValue,
+            friaje: friajeValue,
+            indigena: indigenaValue,
+            vraem: vraemValue,
+            ubiprov: ubiprovValue,
+            cod_disa: cod_disaValue,
+            disa15: disa15Value,
+            distrito: distritoValue,
+            provincia: provinciaValue,
+            departam: departamValue,
+            reg_geogra: reg_geograValue,
+            reg_natu: reg_natuValue,
+            disa: disaValue,
+            e0: e0Value,
+            e1_4: e1_4Value,
+            men_5: men_5Value,
+            e5_mas: e5_masValue,
+            men_15: men_15Value,
+            nacidos: nacidosValue,
+            men_29d: men_29dValue,
+            gestantes: gestantesValue,
+            mef: mefValue,
+            pobtot: pobtotValue,
+            ambito: ambitoValue,
+            qpobreza: qpobrezaValue,
+            condpobrez: condpobrezValue,
+            priorizado: priorizadoValue,
+            ninos: ninosValue,
+            adolescente: adolescenteValue,
+            joven: jovenValue,
+            adulto: adultoValue,
+            adulto_mayor: adulto_mayorValue,
+          });
+          insertedCount++;
+          console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+        } catch (error) {
+          console.error('Error en la inserción:', error);
+          throw new Error('Error en la inserción de datos.');
+        }
+      }));
+    }
+
+    console.log("Operación de importación de datos completada.");
+  } catch (error) {
+    console.error('Error general:', error);
+    throw error;
+  }
+};
 module.exports = {
   importDataServices,
   importDepartamentoServices,
@@ -766,4 +870,5 @@ module.exports = {
   importEstablecimientoServices,
   importProvicionalServices,
   importDataEdasServices,
+  importDataPoblacionServices,
 }; 
