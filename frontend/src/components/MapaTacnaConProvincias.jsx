@@ -4,22 +4,41 @@ import axios from "axios";
 import { API_URL } from "../auth/contacts";
 import "leaflet/dist/leaflet.css";
 import { Box, Grid, Paper, Typography } from "@mui/material";
+import * as ss from 'simple-statistics';
 
 // Datos GeoJSON de las provincias en Tacna (ejemplo)
 import datosProvincias from "../data/provinciasTacna.json";
-const MapaTacnaConProvincias = () => {
+const MapaTacnaConProvincias = ({ annio, semana }) => {
   const [distritos, setDistritos] = useState([]);
   const [sumaTotalCasos, setSumaTotalCasos] = useState(0);
-
-
-  const pobDistrUltimoAnnio = async ()=>{
-    try{
-      const response = await axios.get(`${API_URL}/poblacion/distrit`);
-      //setPobDistritU
-    } catch{
-
+  const [quartiles, setQuartiles] = useState({ q1: 0, q2: 0, q3: 0 });
+  const [tiaDistrit, setTiaDistrit] = useState();
+  const pobDistritosxAnnioSemana = async ({ annio = '', semana = '' } = {}) => {
+    try {
+      console.log("pobDistritosxAnnioSemana1", annio, "--", semana);
+      const response = await axios.get(`${API_URL}/poblacion/distrit/${annio}/${semana}`);
+      console.log("pobDistritosxAnnioSemana2", response.data.data);
+      if (response.data.data.length > 0) {
+        const tiaValues = response.data.data.map(item => item.tia);
+        const calculatedQuartiles = calculateQuartiles(tiaValues);
+        console.log("pobDistritosxAnnioSemana3", calculatedQuartiles);
+        setQuartiles(calculatedQuartiles);
+      }
+      setTiaDistrit(response.data.data);
+    } catch (error) {
+      console.error("erroraso", error);
     }
-  }
+  };
+  const calculateQuartiles = (data) => {
+    const sortedData = data.slice().sort((a, b) => a - b);
+    return {
+      q1: parseFloat(ss.quantileSorted(sortedData, 0.25).toFixed(2)),
+      q2: parseFloat(ss.quantileSorted(sortedData, 0.5).toFixed(2)),
+      q3: parseFloat(ss.quantileSorted(sortedData, 0.75).toFixed(2)),
+    };
+  };
+
+
   useEffect(() => {
     const fetchDistritos = async () => {
       try {
@@ -40,24 +59,31 @@ const MapaTacnaConProvincias = () => {
 
     fetchDistritos();
   }, []);
-
+  useEffect(() => {
+    if (annio && semana) {
+      pobDistritosxAnnioSemana({ annio, semana });
+    }
+  }, [annio, semana]);
   const getRandomColor = (distritoNombre) => {
-    const distrito = distritos.find(
-      (distrito) => distrito.Distrit === distritoNombre
+    if (!tiaDistrit || !quartiles || !quartiles.q1 || !quartiles.q2 || !quartiles.q3) {
+      console.error("Datos no disponibles para calcular el color");
+      return "#ffffff";
+    }
+
+    const distrito = tiaDistrit.find(
+      (distrito) => distrito.distrito === distritoNombre
     );
 
     if (distrito) {
-      const casos = parseInt(distrito.casos);
-      const maximoAno = distrito.maximoAno;
-      const ratio = (casos / maximoAno) * 1000;
+      const ratio = parseInt(distrito.tia, 10);
 
-      if (ratio >= 252.5 && ratio < 626.4) {
+      if (ratio >= 0 && ratio < quartiles.q1) {
         return "#fce4d5";
-      } else if (ratio >= 626.4 && ratio < 949.4) {
+      } else if (ratio >= quartiles.q1 && ratio < quartiles.q2) {
         return "#f4b180";
-      } else if (ratio >= 949.4 && ratio < 1463.8) {
+      } else if (ratio >= quartiles.q2 && ratio < quartiles.q3) {
         return "#c15c0c";
-      } else if (ratio >= 1463.8 && ratio < 12412.2) {
+      } else if (ratio >= quartiles.q3) {
         return "#853b0c";
       } else {
         return "#ffffff";
@@ -115,8 +141,8 @@ const MapaTacnaConProvincias = () => {
             </GeoJSON>
           ))}
         </MapContainer>
-        <Grid container>
-          <Grid xs={8}></Grid>
+        <Grid container paddingTop={3}>
+          <Grid xs={4}></Grid>
           <Grid xs={4}>
             <Paper
               elevation={3}
@@ -124,7 +150,7 @@ const MapaTacnaConProvincias = () => {
                 position: "relative",
                 bottom: "10px",
                 right: "10px",
-                backgroundColor: "rgba(255, 255, 255, 0.8)", // Fondo semi-transparente
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
                 padding: "5px",
                 border: "1px solid #ccc",
                 borderRadius: "5px",
@@ -138,39 +164,44 @@ const MapaTacnaConProvincias = () => {
                   background: "#fce4d5",
                   padding: "3px",
                   fontSize: "12px",
+                  color:"black",
                 }}
               >
-                252.5 - 626.4
+                0 - {quartiles.q1}
               </Box>
               <Box
                 style={{
                   background: "#f4b180",
                   padding: "3px",
                   fontSize: "12px",
+                  color:"black",
                 }}
               >
-                626.4 - 949.4
+                {quartiles.q1} - {quartiles.q2}
               </Box>
               <Box
                 style={{
                   background: "#c15c0c",
                   padding: "3px",
                   fontSize: "12px",
+                  color:"black",
                 }}
               >
-                949.4 - 1463.8
+                {quartiles.q2} - {quartiles.q3}
               </Box>
               <Box
                 style={{
                   background: "#853b0c",
                   padding: "3px",
                   fontSize: "12px",
+                  color:"black",
                 }}
               >
-                1463.8 - 12412.2
+                {quartiles.q3} - a mas
               </Box>
             </Paper>
           </Grid>
+          <Grid xs={4}></Grid>
         </Grid>
       </Box>
 

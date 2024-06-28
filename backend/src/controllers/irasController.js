@@ -1,4 +1,4 @@
-const { getIrasSemanasServices, getcasesemanadistritServices, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices } = require("../services/irasServices");
+const { getIrasSemanasServices, getcasesemanadistritServices, getgrafico2Services, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices, getCasosDistritSemServices } = require("../services/irasServices");
 const getIrasSemanasController = async (req, res) => {
     console.log("en el controlador::")
     try {
@@ -109,7 +109,7 @@ const getDatosGeneralesController = async (req,res) => {
 const getCasosDistritUltController = async (req,res) => {
     console.log("getDatosGeneralesController",req.params)
     try {
-        const getIras = await getCasosDistritUltSemServices(req.params);
+        const getIras = await getCasosDistritSemServices(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
     } catch (error) {
         console.error('Error importing data:', error);
@@ -118,9 +118,31 @@ const getCasosDistritUltController = async (req,res) => {
 };
 
 const getcasesemanadistritController = async (req,res) => {
-    console.log("getDatosGeneralesController",req.params)
+    console.log("getcasesemanadistritController",req.params)
     try {
         const getIras = await getcasesemanadistritServices(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const getCasosDistritUltSemController = async (req,res) => {
+    console.log("getCasosDistritUltSemServices",req.params)
+    try {
+        const getIras = await getCasosDistritSemServices(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const getgrafico2Controller = async (req,res) => {
+    console.log("getgrafico2Controller",req.params)
+    try {
+        const getIras = await getgrafico2Services(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
     } catch (error) {
         console.error('Error importing data:', error);
@@ -140,4 +162,6 @@ module.exports = {
     getDatosGeneralesController,
     getCasosDistritUltController,
     getcasesemanadistritController,
+    getCasosDistritUltSemController,
+    getgrafico2Controller,
 };
