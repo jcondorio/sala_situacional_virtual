@@ -4,7 +4,7 @@ import axios from "axios";
 import { API_URL } from "../auth/contacts";
 import "leaflet/dist/leaflet.css";
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import * as ss from 'simple-statistics';
+import * as ss from "simple-statistics";
 
 // Datos GeoJSON de las provincias en Tacna (ejemplo)
 import datosProvincias from "../data/provinciasTacna.json";
@@ -13,13 +13,15 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
   const [sumaTotalCasos, setSumaTotalCasos] = useState(0);
   const [quartiles, setQuartiles] = useState({ q1: 0, q2: 0, q3: 0 });
   const [tiaDistrit, setTiaDistrit] = useState();
-  const pobDistritosxAnnioSemana = async ({ annio = '', semana = '' } = {}) => {
+  const pobDistritosxAnnioSemana = async ({ annio = "", semana = "" } = {}) => {
     try {
       console.log("pobDistritosxAnnioSemana1", annio, "--", semana);
-      const response = await axios.get(`${API_URL}/poblacion/distrit/${annio}/${semana}`);
+      const response = await axios.get(
+        `${API_URL}/poblacion/distrit/${annio}/${semana}`
+      );
       console.log("pobDistritosxAnnioSemana2", response.data.data);
       if (response.data.data.length > 0) {
-        const tiaValues = response.data.data.map(item => item.tia);
+        const tiaValues = response.data.data.map((item) => item.tia);
         const calculatedQuartiles = calculateQuartiles(tiaValues);
         console.log("pobDistritosxAnnioSemana3", calculatedQuartiles);
         setQuartiles(calculatedQuartiles);
@@ -37,7 +39,6 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
       q3: parseFloat(ss.quantileSorted(sortedData, 0.75).toFixed(2)),
     };
   };
-
 
   useEffect(() => {
     const fetchDistritos = async () => {
@@ -65,7 +66,13 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
     }
   }, [annio, semana]);
   const getRandomColor = (distritoNombre) => {
-    if (!tiaDistrit || !quartiles || !quartiles.q1 || !quartiles.q2 || !quartiles.q3) {
+    if (
+      !tiaDistrit ||
+      !quartiles ||
+      !quartiles.q1 ||
+      !quartiles.q2 ||
+      !quartiles.q3
+    ) {
       console.error("Datos no disponibles para calcular el color");
       return "#ffffff";
     }
@@ -94,114 +101,127 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
   };
 
   return (
-    <Box
-      height="100vh"
-      alignItems="center"
-      justifyContent="flex-start"
-    >
+    <Box>
       <Box>
-        <MapContainer
-          center={[-17.51465, -70.25362]}
-          zoom={7.5}
-          style={{ height: "350px", width: "500px", background: "none" }}
-          zoomControl={false}
-          dragging={false}
-          scrollWheelZoom={false}
-        >
-          {/* Agregar un TileLayer transparente */}
-          <TileLayer url="" style={{ display: "none" }} />
-          {/* Iterar sobre los datos de las provincias y renderizar cada una */}
-          {datosProvincias.features.map((feature, idx) => (
-            <GeoJSON
-              key={idx}
-              data={feature}
-              style={() => ({
-                fillColor: getRandomColor(feature.properties.nombre),
-                color: "black",
-                weight: 1,
-                fillOpacity: 1,
-              })}
+        <Grid container>
+          <Grid xs={6}>
+            <MapContainer
+              center={[-17.51465, -70.25362]}
+              zoom={7.5}
+              style={{ height: "350px", width: "320px", background: "none" }}
+              zoomControl={false}
+              dragging={false}
+              scrollWheelZoom={false}
             >
-              {/* Popup para mostrar el nombre de la provincia */}
-              <Popup>
-                <div>
-                  <Typography variant="subtitle1">
-                    <strong>Distrito:</strong> {feature.properties.nombre}
-                  </Typography>
-                  {distritos
-                    .filter((d) => d.Provincia === feature.properties.nombre)
-                    .map((distrito, idx) => (
-                      <Typography key={idx} variant="body2">
-                        <strong>Distrito:</strong> {distrito.Distrit} -{" "}
-                        <strong>Casos:</strong> {distrito.casos}
+              {/* Agregar un TileLayer transparente */}
+              <TileLayer url="" style={{ display: "none" }} />
+              {/* Iterar sobre los datos de las provincias y renderizar cada una */}
+              {datosProvincias.features.map((feature, idx) => (
+                <GeoJSON
+                  key={idx}
+                  data={feature}
+                  style={() => ({
+                    fillColor: getRandomColor(feature.properties.nombre),
+                    color: "black",
+                    weight: 1,
+                    fillOpacity: 1,
+                  })}
+                >
+                  {/* Popup para mostrar el nombre de la provincia */}
+                  <Popup>
+                    <div>
+                      <Typography variant="subtitle1">
+                        <strong>Distrito:</strong> {feature.properties.nombre}
                       </Typography>
-                    ))}
-                </div>
-              </Popup>
-            </GeoJSON>
-          ))}
-        </MapContainer>
-        <Grid container paddingTop={3}>
-          <Grid xs={4}></Grid>
-          <Grid xs={4}>
+                      {distritos
+                        .filter(
+                          (d) => d.Provincia === feature.properties.nombre
+                        )
+                        .map((distrito, idx) => (
+                          <Typography key={idx} variant="body2">
+                            <strong>Distrito:</strong> {distrito.Distrit} -{" "}
+                            <strong>Casos:</strong> {distrito.casos}
+                          </Typography>
+                        ))}
+                    </div>
+                  </Popup>
+                </GeoJSON>
+              ))}
+            </MapContainer>
+          </Grid>
+          <Grid xs={1}></Grid>
+          <Grid xs={5}>
             <Paper
               elevation={3}
               style={{
                 position: "relative",
-                bottom: "10px",
-                right: "10px",
+                marginTop: "0%",
                 backgroundColor: "rgba(255, 255, 255, 0.8)",
-                padding: "5px",
+                padding: "3px",
                 border: "1px solid #ccc",
-                borderRadius: "5px",
               }}
             >
               <Typography variant="subtitle2">
-                <strong>Leyenda de Casos por 1000 habitantes</strong>
+                <strong>T.I.A. x 1000 menor a 5 años</strong>
               </Typography>
               <Box
                 style={{
                   background: "#fce4d5",
-                  padding: "3px",
+                  padding: "2px",
                   fontSize: "12px",
-                  color:"black",
+                  color: "black",
                 }}
               >
-                0 - {quartiles.q1}
+                <Grid container>
+                  <Grid xs={6}>muy bajo riesgo</Grid>
+                  <Grid xs={6}>0 - {quartiles.q1}</Grid>
+                </Grid>
               </Box>
               <Box
                 style={{
                   background: "#f4b180",
-                  padding: "3px",
+                  padding: "2px",
                   fontSize: "12px",
-                  color:"black",
+                  color: "black",
                 }}
               >
-                {quartiles.q1} - {quartiles.q2}
+                <Grid container>
+                  <Grid xs={6}>bajo riesgo</Grid>
+                  <Grid xs={6}>
+                    {quartiles.q1} - {quartiles.q2}
+                  </Grid>
+                </Grid>
               </Box>
               <Box
                 style={{
                   background: "#c15c0c",
-                  padding: "3px",
+                  padding: "2px",
                   fontSize: "12px",
-                  color:"black",
+                  color: "black",
                 }}
               >
-                {quartiles.q2} - {quartiles.q3}
+                <Grid container>
+                  <Grid xs={6}>Mediano riesgo</Grid>
+                  <Grid xs={6}>
+                    {quartiles.q2} - {quartiles.q3}
+                  </Grid>
+                </Grid>
               </Box>
               <Box
                 style={{
                   background: "#853b0c",
-                  padding: "3px",
+                  padding: "2px",
                   fontSize: "12px",
-                  color:"black",
+                  color: "black",
                 }}
               >
-                {quartiles.q3} - a mas
+                <Grid container>
+                  <Grid xs={6}>Alto riesgo</Grid>
+                  <Grid xs={6}>{quartiles.q3} - a mas</Grid>
+                </Grid>
               </Box>
             </Paper>
           </Grid>
-          <Grid xs={4}></Grid>
         </Grid>
       </Box>
 
