@@ -136,7 +136,7 @@ const getTotalCasosIrasUltimaSemana = async () => {
     const result = await Iras.findOne({
       attributes: [
         [
-          
+
           sequelize.fn(
             "SUM",
             sequelize.literal("IRA_M2 + IRA_2_11 + IRA_1_4A")
@@ -152,7 +152,7 @@ const getTotalCasosIrasUltimaSemana = async () => {
         },
       ],
       where: {
-        ANO:2024,
+        ANO: 2024,
         SEMANA: {
           [Op.eq]: literal("(SELECT MAX(`SEMANA`) FROM `iras`)"),
         },
@@ -348,12 +348,12 @@ const getDataDistritService = async () => {
   }
 };
 const getDatosGeneralesServices = async (annio) => {
-  console.log("getDatosGeneralesServices",annio);
+  console.log("getDatosGeneralesServices", annio);
   try {
     const maxAno = annio.annio;
     console.log("maxAno: ", maxAno);
 
-   
+
     const resultTotIras = await Sequelize.query(
       `
       Select sum(IRA_M2+IRA_2_11+IRA_1_4A) as result FROM iras where ANO=?
@@ -368,10 +368,10 @@ const getDatosGeneralesServices = async (annio) => {
       `
       select sum(IRA_M2+IRA_2_11+IRA_1_4A) as result from iras where ANO=? and SEMANA=(select max(SEMANA) from iras where ANO=?)
      `,
-     {
-      replacements:[maxAno,maxAno],
-      type: Sequelize.QueryTypes.SELECT
-     }
+      {
+        replacements: [maxAno, maxAno],
+        type: Sequelize.QueryTypes.SELECT
+      }
     );
     const resultTotDistSemana = await Sequelize.query(
       `
@@ -379,10 +379,10 @@ const getDatosGeneralesServices = async (annio) => {
         where i.ANO=?  and SEMANA=(select max(SEMANA) from iras where ANO=?);
       `
       ,
-     {
-      replacements:[maxAno,maxAno],
-      type: Sequelize.QueryTypes.SELECT
-     }
+      {
+        replacements: [maxAno, maxAno],
+        type: Sequelize.QueryTypes.SELECT
+      }
     )
     const resultTotEstSemana = await Sequelize.query(
       `
@@ -390,24 +390,24 @@ const getDatosGeneralesServices = async (annio) => {
         where i.ANO=?  and SEMANA=(select max(SEMANA) from iras where ANO=?);
       `
       ,
-     {
-      replacements:[maxAno,maxAno],
-      type: Sequelize.QueryTypes.SELECT
-     }
+      {
+        replacements: [maxAno, maxAno],
+        type: Sequelize.QueryTypes.SELECT
+      }
     )
     const cantidadSemanas = await Sequelize.query(
       `
          select max(SEMANA) as result FROM iras where ANO=?;
       `
       ,
-     {
-      replacements:[maxAno],
-      type: Sequelize.QueryTypes.SELECT
-     }
+      {
+        replacements: [maxAno],
+        type: Sequelize.QueryTypes.SELECT
+      }
     )
-    console.log("cantidadSemanas",cantidadSemanas);
+    console.log("cantidadSemanas", cantidadSemanas);
     //consolidado
-    const consolidado={
+    const consolidado = {
       totiras: resultTotIras[0].result,
       totUltSemana: resultTotUltimaSemana[0].result,
       totDistUltSem: resultTotDistSemana[0].result,
@@ -423,20 +423,20 @@ const getDatosGeneralesServices = async (annio) => {
 
 
 const getcasesemanadistritServices = async (data) => {
-  console.log("getcasesemanadistritServices",data);
+  console.log("getcasesemanadistritServices", data);
   try {
     const maxAno = data.annio;
     console.log("maxAno: ", maxAno);
 
-   
+
     const resultTotUltimaSemana = await Sequelize.query(
       `
       select sum(IRA_M2+IRA_2_11+IRA_1_4A) as result from iras where ANO=? and SEMANA=?
      `,
-     {
-      replacements:[maxAno,data.semana],
-      type: Sequelize.QueryTypes.SELECT
-     }
+      {
+        replacements: [maxAno, data.semana],
+        type: Sequelize.QueryTypes.SELECT
+      }
     );
     const resultTotDistSemana = await Sequelize.query(
       `
@@ -444,10 +444,10 @@ const getcasesemanadistritServices = async (data) => {
         where i.ANO=?  and SEMANA=?;
       `
       ,
-     {
-      replacements:[maxAno,data.semana],
-      type: Sequelize.QueryTypes.SELECT
-     }
+      {
+        replacements: [maxAno, data.semana],
+        type: Sequelize.QueryTypes.SELECT
+      }
     )
     const resultTotEstSemana = await Sequelize.query(
       `
@@ -455,13 +455,13 @@ const getcasesemanadistritServices = async (data) => {
         where i.ANO=?  and SEMANA=?;
       `
       ,
-     {
-      replacements:[maxAno,data.semana],
-      type: Sequelize.QueryTypes.SELECT
-     }
+      {
+        replacements: [maxAno, data.semana],
+        type: Sequelize.QueryTypes.SELECT
+      }
     )
     //consolidado
-    const consolidado={
+    const consolidado = {
       totUltSemana: resultTotUltimaSemana[0].result,
       totDistUltSem: resultTotDistSemana[0].result,
       totEstUltSem: resultTotEstSemana[0].result,
@@ -515,6 +515,140 @@ const getCasosDistritUltSemServices = async (annio) => {
   }
 };
 
+const getCasosDistritSemServices = async (data) => {
+  try {
+    console.log("getCasosDistritSemServices", data);
+
+
+    // Paso 2: Consulta principal usando la semana máxima obtenida
+    const result = await Iras.findAll({
+      attributes: [
+        [Sequelize.col("provicional.Dpto"), "Dpto"],
+        [Sequelize.col("provicional.Prov"), "Prov"],
+        [Sequelize.col("provicional.Distrit"), "Distrit"],
+        [Sequelize.fn("SUM", Sequelize.literal("IRA_M2 + IRA_2_11 + IRA_1_4A")), "total_registros"],
+      ],
+      include: [
+        {
+          model: Provicional,
+          as: "provicional",
+          attributes: [],
+        },
+      ],
+      where: {
+        ANO: data.annio,
+        SEMANA: data.semana, // Usamos la semana máxima obtenida
+      },
+      group: ["provicional.Dpto", "provicional.Prov", "provicional.Distrit"],
+    });
+
+    console.log("getCasosDistritUltSemServices:", result);
+    return result;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+
+const getgrafico2Services = async (data) => {
+  console.log("getTotSemIrasEstService", data);
+  try {
+    const query = `
+     SELECT weeks.num AS SEMANA, COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS cantidad_registros
+FROM (
+    SELECT 
+        ones.num + tens.num * 10 + hundreds.num * 100 AS num
+    FROM
+        (SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS ones
+        CROSS JOIN
+        (SELECT 0 AS num UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS tens
+        CROSS JOIN
+        (SELECT 0 AS num UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS hundreds
+    WHERE 
+        ones.num + tens.num * 10 + hundreds.num * 100 <= (
+            SELECT MAX(SEMANA) FROM iras where iras.ANO=?
+        )
+) AS weeks
+LEFT JOIN iras ON weeks.num = iras.SEMANA AND iras.E_SALUD =? AND iras.ANO=?
+GROUP BY weeks.num 
+ORDER BY semana;
+    `;
+
+    // Ejecutar la consulta
+    studentsWithDetails = await Sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+      replacements: [data.annio, data.estacion,data.annio],
+    });
+    console.log("superconsulta:", studentsWithDetails);
+    return studentsWithDetails;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+const getgrafico3Services = async (data) => {
+  console.log("getTotSemIrasEstService", data);
+  try {
+    const query = `
+      SELECT 
+      SEMANA, 
+      COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS Total_IRA
+      from iras as i inner join provicional as prov on prov.COD_EST=i.E_SALUD
+      where prov.Distrit=? and i.ANO=?
+    `;
+
+    // Ejecutar la consulta
+    studentsWithDetails = await Sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+      replacements: [data.annio, data.estacion],
+    });
+    console.log("superconsulta:", studentsWithDetails);
+    return studentsWithDetails;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+
+
+const getgrafico4Services = async (data) => {
+  console.log("getTotSemIrasEstService", data);
+  try {
+    const query = `
+      SELECT weeks.num AS SEMANA, COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS cantidad_registros
+      FROM (
+          SELECT 
+              ones.num + tens.num * 10 + hundreds.num * 100 AS num
+          FROM
+              (SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS ones
+              CROSS JOIN
+              (SELECT 0 AS num UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS tens
+              CROSS JOIN
+              (SELECT 0 AS num UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS hundreds
+          WHERE 
+              ones.num + tens.num * 10 + hundreds.num * 100 <= (
+                  SELECT MAX(SEMANA) FROM iras where iras.ANO=?
+              )
+      ) AS weeks
+      LEFT JOIN iras ON weeks.num = iras.SEMANA inner join provicional as prov on prov.COD_EST=iras.E_SALUD
+      where iras.ANO=? and prov.Distrit=?
+      GROUP BY weeks.num 
+      ORDER BY semana;
+    `;
+
+    // Ejecutar la consulta
+    studentsWithDetails = await Sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+      replacements: [data.annio,data.annio, data.distrito],
+    });
+    console.log("superconsulta:", studentsWithDetails);
+    return studentsWithDetails;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+
 
 module.exports = {
   getIrasSemanasServices,
@@ -529,4 +663,7 @@ module.exports = {
   getDatosGeneralesServices,
   getCasosDistritUltSemServices,
   getcasesemanadistritServices,
+  getCasosDistritSemServices,
+  getgrafico2Services,
+  getgrafico4Services,
 };

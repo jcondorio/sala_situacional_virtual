@@ -1,4 +1,4 @@
-const { getIrasSemanasServices, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService } = require("../services/edasServices");
+const { getIrasSemanasServices, getcasesemanadistritServices, getgrafico2Services, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices, getCasosDistritSemServices, getgrafico4Services } = require("../services/edasServices");
 const getIrasSemanasController = async (req, res) => {
     console.log("en el controlador::")
     try {
@@ -93,6 +93,72 @@ const getDataDistritController = async (req,res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
+const getDatosGeneralesController = async (req,res) => {
+    console.log("getDatosGeneralesController",req.params)
+    try {
+        const getIras = await getDatosGeneralesServices(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const getCasosDistritUltController = async (req,res) => {
+    console.log("getDatosGeneralesController",req.params)
+    try {
+        const getIras = await getCasosDistritSemServices(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const getcasesemanadistritController = async (req,res) => {
+    console.log("getcasesemanadistritController",req.params)
+    try {
+        const getIras = await getcasesemanadistritServices(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const getCasosDistritUltSemController = async (req,res) => {
+    console.log("getCasosDistritUltSemServices",req.params)
+    try {
+        const getIras = await getCasosDistritSemServices(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const getgrafico2Controller = async (req,res) => {
+    console.log("getgrafico2Controller",req.params)
+    try {
+        const getIras = await getgrafico2Services(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+const getgrafico4Controller = async (req,res) => {
+    console.log("getgrafico2Controller",req.params)
+    try {
+        const getIras = await getgrafico4Services(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 module.exports = { 
     getIrasSemanasController, 
     getIrasUltimaSemanaDistritController, 
@@ -103,4 +169,10 @@ module.exports = {
     getTotalEstController,
     getTotSemIrasEstController,
     getDataDistritController,
+    getDatosGeneralesController,
+    getCasosDistritUltController,
+    getcasesemanadistritController,
+    getCasosDistritUltSemController,
+    getgrafico2Controller,
+    getgrafico4Controller,
 };

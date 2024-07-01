@@ -21,7 +21,23 @@ const getAnnioIrasServices = async () => {
     throw error; // Puedes relanzar el error para manejarlo en otro lugar si es necesario
   }
 };
+const getAnnioEdasServices = async () => {
+  console.log("importDataServices: ");
+  try {
+   response= await Edas.findAll(
+    {
+        attributes:[[sequelize.fn("DISTINCT", Sequelize.col('ANO')), 'ANO']],
+    }
+   )
+    return response;
+  } catch (error) {
+    // Maneja cualquier error que pueda ocurrir durante la consulta
+    console.error("Error al ejecutar la consulta:", error);
+    throw error; // Puedes relanzar el error para manejarlo en otro lugar si es necesario
+  }
+};
 module.exports = {
     getAnnioIrasServices,
+    getAnnioEdasServices,
   };
   

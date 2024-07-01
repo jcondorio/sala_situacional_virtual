@@ -30,6 +30,7 @@ import { API_URL } from "../../auth/contacts";
 import BarSimpleChart from "../../components/BarSimpleChart";
 import MyResponsiveStream from "../../components/MyResponsiveStream";
 import MyGroupedBarChart from "../../prototips/MyGroupedBarChart";
+import MapaTacnaConProvincias10k from "../../components/MapaTacnaConProvincias10k";
 
 const Dashboard = () => {
   const data123 = [
@@ -79,8 +80,29 @@ const Dashboard = () => {
   const [dataCurvEpi, setDataCurvEpi] = useState();
   const [anniosIras, setAnniosIras] = useState();
   const [annio, setAnnio] = useState();
-  const [semana,setSemana] =useState();
-  const [semanadistrit,setSemanadistrit] = useState();
+  const [semana, setSemana] = useState();
+  const [semanadistrit, setSemanadistrit] = useState();
+  const [estGrafico2, setEstGrafico2] = useState();
+  const [distritGrafico4, setDistritGrafico4] = useState();
+
+  const [datosGraf2, setDatosGraf2] = useState();
+  const [datosGraf4, setDatosGraf4] = useState();
+  const [distritos, setDistritos] = useState();
+
+
+
+
+  const fetchDistritos = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/iras/distrit`);
+      setDistritos(response.data.data);
+      console.log("fetchDistritos:", response.data.data);
+    } catch (error) {
+      console.error("Error fetching estudiantes data:", error);
+    }
+  };
+
+
   const getAnnioIra = async () => {
     try {
       const response = await axios(`${API_URL}/otros/annioIras`);
@@ -90,7 +112,7 @@ const Dashboard = () => {
       // Encontrar el año más alto en los datos
       if (Array.isArray(data) && data.length > 0) {
         const maxYear = Math.max(...data.map(item => item.ANO));
-        console.log("getAnnioIra",maxYear)
+        console.log("getAnnioIra", maxYear)
         setAnnio(maxYear);
       }
     } catch (error) {
@@ -166,7 +188,7 @@ const Dashboard = () => {
       setTotIrasEstSem(response.data.data.total_registros);
       console.log("getTotEstSemana123:", response.data.data);
       updateSemanasSelect(response.data.data.max_semana);
-      
+
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
     }
@@ -177,7 +199,7 @@ const Dashboard = () => {
       const response = await axios.get(`${API_URL}/iras/ultimasemana`);
       setDataUltimaSemana(response.data.data);
       console.log("getUltimaSemanaIras", response.data.data);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const curvaEpidemiologica = async () => {
@@ -191,7 +213,7 @@ const Dashboard = () => {
       setDataCurvEpi(datoConvertido);
       // console.log("curvaEpidemiologica", response.data.data);
       //console.log("dataCirvaEpi;", dataCurvEpi)
-    } catch (error) {}
+    } catch (error) { }
   };
   const actualizarDatosGenerales = async () => {
     try {
@@ -207,7 +229,7 @@ const Dashboard = () => {
       setTotIras(response.data.data.totiras);
       updateSemanasSelect(response.data.data.cantidadSemanas);
       //setDataCurvEpi(datoConvertido);
-    } catch (error) {}
+    } catch (error) { }
   };
   const [semanas, setSemanas] = useState();
   const updateSemanasSelect = (ult_sem) => {
@@ -229,11 +251,13 @@ const Dashboard = () => {
       console.error(error);
     }
   };
-  const casosDistritoSemana = async () =>{
+  const casosDistritoSemana = async () => {
     try {
+      console.log("casosDistritoSemana", annio, "--", semana)
       const response = await axios.get(`${API_URL}/iras/casesemanadistrit/${annio}/${semanadistrit}`);
-     // const result = await axios.get(`${API_URL}/iras/casedistritsempart/${annio}/${semanadistrit}`);
+      const result = await axios.get(`${API_URL}/iras/updatedistritSem/${annio}/${semanadistrit}`);
       console.log("actualizarCasosDistrit:", response.data.data);
+      setDataUltimaSemana(result.data.data);
       setTotIrasSem(response.data.data.totUltSemana);
       setTotIrasEstSem(response.data.data.totEstUltSem);
       setTotIrasDistSem(response.data.data.totDistUltSem);
@@ -243,6 +267,28 @@ const Dashboard = () => {
     }
   };
 
+  const getDataGrafSemana = async () => {
+    try {
+      console.log("getDataGrafSemana",annio,"---",estGrafico2)
+      const response = await axios.get(`${API_URL}/iras/grafico2/${annio}/${estGrafico2}`);
+      console.log(response.data.data);
+      setDatosGraf2(response.data.data);
+    } catch (error) {
+      console.error(error)
+    }
+
+  };
+  const getDataGraf4Semana = async () => {
+    try {
+      console.log("getDataGraf4Semana",annio,"---",distritGrafico4)
+      const response = await axios.get(`${API_URL}/iras/grafico4/${annio}/${distritGrafico4}`);
+      console.log(response.data.data);
+      setDatosGraf4(response.data.data);
+    } catch (error) {
+      console.error(error)
+    }
+
+  };
   useEffect(() => {
     getIras();
     getUltimaSemanaIras();
@@ -252,10 +298,13 @@ const Dashboard = () => {
     getTotIrasSemana();
     getTotEst2024();
     getAnnioIra();
+    fetchDistritos();
   }, []);
   useEffect(() => {
     actualizarDatosGenerales();
     actualizarCasosDistrit();
+    setDatosGraf2("");
+    setDatosGraf4("");
   }, [annio]);
   useEffect(() => {
     console.log("dataInsidencias:", dataInsidencias);
@@ -266,7 +315,7 @@ const Dashboard = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="DASHBOARD" subtitle="IRAS D.E.E.P.I. - TACNA" />
 
-        <Box>
+       {/* <Box>
           <Button
             sx={{
               backgroundColor: colors.blueAccent[700],
@@ -279,7 +328,7 @@ const Dashboard = () => {
             <DownloadOutlinedIcon sx={{ mr: "10px" }} />
             Descargar reporte
           </Button>
-        </Box>
+        </Box>*/}
       </Box>
 
       {/* GRID & CHARTS */}
@@ -379,10 +428,10 @@ const Dashboard = () => {
         </Box>
         {/* ROW 1 */}
         <Box
-        paddingTop={5}
+          paddingTop={5}
           gridColumn="span 12"
           gridRow="span 1"
-          backgroundColor={colors.primary[300]}
+          backgroundColor={colors.primary[400]}
         >
           <Grid
             container
@@ -669,8 +718,51 @@ const Dashboard = () => {
 
         {/* ROW 3 */}
 
+        
         <Box
-          gridColumn="span 8"
+          gridColumn="span 4"
+          gridRow="span 3"
+          backgroundColor={colors.primary[400]}
+          padding="30px"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+        >
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            sx={{ marginBottom: "15px" }}
+          >
+            Mapa geográfico por provincias de Tacna
+          </Typography>
+          <Box
+          >
+            <MapaTacnaConProvincias annio={annio} semana={semana} />
+          </Box>
+        </Box>
+        <Box
+          gridColumn="span 4"
+          gridRow="span 3"
+          backgroundColor={colors.primary[400]}
+          padding="30px"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+        >
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            sx={{ marginBottom: "15px" }}
+          >
+            Mapa geográfico por provincias de Tacna
+          </Typography>
+          <Box
+          >
+            <MapaTacnaConProvincias10k annio={annio} semana={semana} />
+          </Box>
+        </Box>
+        <Box
+          gridColumn="span 6"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
         >
@@ -687,7 +779,7 @@ const Dashboard = () => {
                   fontWeight="bold"
                   color={colors.greenAccent[500]}
                 >
-                  Reporte semanal en Establecimiento en el año {annio}
+                  Reporte semanal por establecimiento en el año {annio}
                 </Typography>
               </Grid>
               <Grid item xs={1}></Grid>
@@ -698,7 +790,7 @@ const Dashboard = () => {
                     labelId="seccion"
                     label="Sección"
                     value={dataTotEst}
-                    onChange={(e) => setDataTot2024(e.target.value)}
+                    onChange={(e) => setEstGrafico2(e.target.value)}
                   >
                     <MenuItem value="" disabled></MenuItem>
                     {Array.isArray(totEst2024) &&
@@ -713,7 +805,7 @@ const Dashboard = () => {
               <Grid item xs={1}></Grid>
               <Grid item xs={2}>
                 <Button
-                  onClick={curvaEpidemiologica}
+                  onClick={getDataGrafSemana}
                   variant="contained"
                   color="secondary"
                   style={{ height: "50px" }}
@@ -722,33 +814,65 @@ const Dashboard = () => {
                 </Button>
               </Grid>
             </Grid>
-             {/*<MyGroupedBarChart data={dataCurvEpi} />*/}
-           {dataCurvEpi && <BarSimpleChart data={dataCurvEpi} />}
+            {/*<MyGroupedBarChart data={dataCurvEpi} />*/}
+            {datosGraf2 && <BarSimpleChart data={datosGraf2} />}
           </Box>
         </Box>
         <Box
-          gridColumn="span 4"
-          gridRow="span 4"
+          gridColumn="span 6"
+          gridRow="span 3"
           backgroundColor={colors.primary[400]}
-          padding="30px"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
         >
           <Typography
             variant="h5"
             fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Mapa geográfico por provincias de Tacna
-          </Typography>
-          <Box
-            height="200px"
-            width="100%"
-            display="flex"
-            justifyContent="center"
-          >
-            <MapaTacnaConProvincias></MapaTacnaConProvincias>
+            sx={{ padding: "30px 30px 0 30px" }}
+          ></Typography>
+          <Box height="250px" mt="-20px" padding={5}>
+            <Grid container>
+              <Grid item xs={3}>
+                <Typography
+                  variant="h3"
+                  fontWeight="bold"
+                  color={colors.greenAccent[500]}
+                >
+                  Reporte semanal por distrito en el año {annio}
+                </Typography>
+              </Grid>
+              <Grid item xs={1}></Grid>
+              <Grid item xs={5}>
+                <FormControl fullWidth>
+                  <InputLabel id="nivel1">Establecimiento</InputLabel>
+                  <Select
+                    labelId="seccion"
+                    label="Sección"
+                    value={dataTotEst}
+                    onChange={(e) => setDistritGrafico4(e.target.value)}
+                  >
+                    <MenuItem value="" disabled></MenuItem>
+                    {Array.isArray(distritos) &&
+                      distritos.map((item) => (
+                        <MenuItem key={item.Distrit} value={item.Distrit}>
+                          {item.Distrit}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={1}></Grid>
+              <Grid item xs={2}>
+                <Button
+                  onClick={getDataGraf4Semana}
+                  variant="contained"
+                  color="secondary"
+                  style={{ height: "50px" }}
+                >
+                  Seleccionar
+                </Button>
+              </Grid>
+            </Grid>
+            {/*<MyGroupedBarChart data={dataCurvEpi} />*/}
+            {datosGraf4 && <BarSimpleChart data={datosGraf4} />}
           </Box>
         </Box>
       </Box>
