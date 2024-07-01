@@ -270,7 +270,7 @@ const Dashboard = () => {
 
   const getDataGrafSemana = async () => {
     try {
-      console.log("getDataGrafSemana",annio,"---",estGrafico2)
+      console.log("getDataGrafSemana", annio, "---", estGrafico2)
       const response = await axios.get(`${API_URL}/edas/grafico2/${annio}/${estGrafico2}`);
       console.log(response.data.data);
       setDatosGraf2(response.data.data);
@@ -281,7 +281,7 @@ const Dashboard = () => {
   };
   const getDataGraf4Semana = async () => {
     try {
-      console.log("getDataGraf4Semana",annio,"---",distritGrafico4)
+      console.log("getDataGraf4Semana", annio, "---", distritGrafico4)
       const response = await axios.get(`${API_URL}/edas/grafico4/${annio}/${distritGrafico4}`);
       console.log(response.data.data);
       setDatosGraf4(response.data.data);
@@ -316,7 +316,7 @@ const Dashboard = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="DASHBOARD" subtitle="EDAS D.E.E.P.I. - TACNA" />
 
-       {/* <Box>
+        {/* <Box>
           <Button
             sx={{
               backgroundColor: colors.blueAccent[700],
@@ -410,6 +410,13 @@ const Dashboard = () => {
                       ))}
                   </Select>
                 </FormControl>
+                <TextField
+                  label="Descripción"
+                  multiline
+                  rows={4}
+                  variant="outlined"
+                  fullWidth
+                />
               </Grid>
               <Grid item xs={1}></Grid>
               <Grid item xs={2}>
@@ -719,7 +726,7 @@ const Dashboard = () => {
 
         {/* ROW 3 */}
 
-        
+
         <Box
           gridColumn="span 4"
           gridRow="span 3"

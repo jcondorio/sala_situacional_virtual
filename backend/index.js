@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000;
 app.use(cors({
     //origin: ["https://diresa-real-1.onrender.com"],
 
-    origin: ["https://diresa-real-1.onrender.com/","http://localhost:3000", "http://localhost:3001", "http://localhost:3002","http://10.128.133.155:3000"],
+    origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002","http://10.128.133.155:3000"],
     credentials: true,
     optionSuccessStatus: 200,
     headers: true, 

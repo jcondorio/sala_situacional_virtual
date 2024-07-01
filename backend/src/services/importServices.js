@@ -28,7 +28,7 @@ const deleteIrasRecordsByYear = async (year) => {
 };
 
 const importDataServices = async (data, blockSize = 10) => {
-  console.log("importDataServices: ");
+  console.log("importDataServices: ",req.body);
   try {
     const year = data[0].ANO; // Se asume que todos los registros tienen el mismo año
     await deleteIrasRecordsByYear(year); // Elimina los registros del año específico
@@ -695,19 +695,16 @@ const importEstablecimientoServices = async (data, blockSize) => {
     throw error;
   }
 };
-
 const importProvicionalServices = async (data, blockSize) => {
   console.log("importProvicionalServices: ", data);
   blockSize = 10;
+
   try {
-    // Eliminar registros existentes uno por uno
-    await Provicional.destroy({ where: {} });
-
     const totalRecords = data.length;
-    let insertedCount = 0;
+    let processedCount = 0;
 
-    while (insertedCount < totalRecords) {
-      const block = data.slice(insertedCount, insertedCount + blockSize);
+    while (processedCount < totalRecords) {
+      const block = data.slice(processedCount, processedCount + blockSize);
       await Promise.all(block.map(async (rowData) => {
         try {
           const subregionValue = rowData.subregion === "" ? null : rowData.subregion;
@@ -724,26 +721,49 @@ const importProvicionalServices = async (data, blockSize) => {
           const UBIGEO_RNValue = rowData.UBIGEO_RN === "" ? null : rowData.UBIGEO_RN;
           const COD_ESTValue = rowData.COD_EST === "" ? null : rowData.COD_EST;
 
-          await Provicional.create({
-            subregion: subregionValue,
-            red: redValue,
-            microred: microredValue,
-            estado: estadoValue,
-            N_RED: N_REDValue,
-            N_Micro_RED: N_Micro_REDValue,
-            N_EESS: N_EESSValue,
-            CATEGORIA: CATEGORIAValue,
-            Dpto: DptoValue,
-            Prov: ProvValue,
-            Distrit: DistritValue,
-            UBIGEO_RN: UBIGEO_RNValue,
-            COD_EST: COD_ESTValue,
-          });
-          insertedCount++;
-          console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+          // Buscar si el registro ya existe
+          const existingRecord = await Provicional.findOne({ where: { COD_EST: COD_ESTValue } });
+
+          if (existingRecord) {
+            // Si existe, actualizar el registro
+            await existingRecord.update({
+              subregion: subregionValue,
+              red: redValue,
+              microred: microredValue,
+              estado: estadoValue,
+              N_RED: N_REDValue,
+              N_Micro_RED: N_Micro_REDValue,
+              N_EESS: N_EESSValue,
+              CATEGORIA: CATEGORIAValue,
+              Dpto: DptoValue,
+              Prov: ProvValue,
+              Distrit: DistritValue,
+              UBIGEO_RN: UBIGEO_RNValue,
+            });
+          } else {
+            // Si no existe, crear un nuevo registro
+            await Provicional.create({
+              subregion: subregionValue,
+              red: redValue,
+              microred: microredValue,
+              estado: estadoValue,
+              N_RED: N_REDValue,
+              N_Micro_RED: N_Micro_REDValue,
+              N_EESS: N_EESSValue,
+              CATEGORIA: CATEGORIAValue,
+              Dpto: DptoValue,
+              Prov: ProvValue,
+              Distrit: DistritValue,
+              UBIGEO_RN: UBIGEO_RNValue,
+              COD_EST: COD_ESTValue,
+            });
+          }
+
+          processedCount++;
+          console.log(`Registros procesados: ${processedCount}/${totalRecords}`);
         } catch (error) {
-          console.error('Error en la inserción:', error);
-          throw new Error('Error en la inserción de datos.');
+          console.error('Error en la inserción/actualización:', error);
+          throw new Error('Error en la inserción/actualización de datos.');
         }
       }));
     }
