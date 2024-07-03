@@ -9,6 +9,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  TextField,
 } from "@mui/material";
 import { tokens } from "../../theme";
 import { mockTransactions } from "../../data/mockData";
@@ -410,13 +411,6 @@ const Dashboard = () => {
                       ))}
                   </Select>
                 </FormControl>
-                <TextField
-                  label="Descripción"
-                  multiline
-                  rows={4}
-                  variant="outlined"
-                  fullWidth
-                />
               </Grid>
               <Grid item xs={1}></Grid>
               <Grid item xs={2}>
