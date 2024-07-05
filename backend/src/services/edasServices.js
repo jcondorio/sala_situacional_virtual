@@ -612,7 +612,7 @@ const getgrafico3Services = async (data) => {
 
 
 const getgrafico4Services = async (data) => {
-  //console.log("getTotSemIrasEstService", data);
+  ////console.log("getTotSemIrasEstService", data);
   try {
     const query = `
       SELECT weeks.num AS SEMANA, COALESCE(sum(COALESCE(edas.DAA_C1, 0) + COALESCE(edas.DAA_C1_4, 0) + COALESCE(edas.DAA_C5, 0) + COALESCE(edas.DAA_C5_11, 0) + COALESCE(edas.DAA_C12_17, 0) + COALESCE(edas.DAA_C18_29, 0) + COALESCE(edas.DAA_C30_59, 0) + COALESCE(edas.DAA_C60, 0)), 0) AS cantidad_registros

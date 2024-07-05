@@ -22,7 +22,7 @@ function App() {
       // Obtener encabezados
       const encabezados = lineas[0].split(',').map(header => header.trim().replace(/\r$/, ''));
 
-      console.log("encabezados: ", encabezados);
+      //console.log("encabezados: ", encabezados);
       const datos = [];
       for (let i = 1; i < lineas.length; i++) {
         const linea = lineas[i].split(',').map(header => header.trim().replace(/\r$/, ''));
@@ -59,9 +59,9 @@ function App() {
         datos.push(registro);
       }
 
-      console.log("Datos en formato JSON:", datos);
+      //console.log("Datos en formato JSON:", datos);
       setDatosCSV(datos); // Asumiendo que setDatosCSV es una función que usas para establecer los datos en algún lugar
-      console.log("final:;", datos);
+      //console.log("final:;", datos);
     };
 
     lector.readAsText(archivoCSV);
@@ -69,14 +69,14 @@ function App() {
 
   const importData = async (data) => {
     try {
-      console.log(data);
-      console.log(csvData);
+      //console.log(data);
+      //console.log(csvData);
       if (csvData) {
         const response = await axios.post(`${API_URL}/import`, csvData);
-        console.log("todo salio bien", response);
+        //console.log("todo salio bien", response);
       }
       else {
-        console.log("datosCSV vacio")
+        //console.log("datosCSV vacio")
       }
     } catch (error) {
 
@@ -108,7 +108,7 @@ function App() {
   
     // Set formatted data to state
     setCsvData(formattedData);
-    console.log(formattedData);
+    //console.log(formattedData);
   }
   
 

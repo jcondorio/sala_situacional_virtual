@@ -20,7 +20,7 @@ const deleteIrasRecordsByYear = async (year) => {
         ANO: year
       }
     });
-    console.log(`Registros del año ${year} eliminados correctamente.`);
+    //console.log(`Registros del año ${year} eliminados correctamente.`);
   } catch (error) {
     console.error('Error eliminando registros:', error);
     throw error;
@@ -28,7 +28,7 @@ const deleteIrasRecordsByYear = async (year) => {
 };
 
 const importDataServices = async (data, blockSize = 10) => {
-  console.log("importDataServices: ",req.body);
+  //console.log("importDataServices: ",req.body);
   try {
     const year = data[0].ANO; // Se asume que todos los registros tienen el mismo año
     await deleteIrasRecordsByYear(year); // Elimina los registros del año específico
@@ -156,10 +156,10 @@ const importDataServices = async (data, blockSize = 10) => {
       }));
 
       insertedCount += block.length;
-      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      ////console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    console.log("Operación de importación de datos completada.");
+    ////console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;
@@ -173,7 +173,7 @@ const deleteEdasRecordsByYear = async (year) => {
         ANO: year
       }
     });
-    console.log(`Registros del año ${year} eliminados correctamente.`);
+    ////console.log(`Registros del año ${year} eliminados correctamente.`);
   } catch (error) {
     console.error('Error eliminando registros:', error);
     throw error;
@@ -181,7 +181,7 @@ const deleteEdasRecordsByYear = async (year) => {
 };
 
 const importDataEdasServices = async (data, blockSize = 10) => {
-  console.log("importDataServices: ");
+  ////console.log("importDataServices: ");
   try {
     const year = data[0].ANO; // Se asume que todos los registros tienen el mismo año
     await deleteEdasRecordsByYear(year); // Elimina los registros del año específico
@@ -325,10 +325,10 @@ const importDataEdasServices = async (data, blockSize = 10) => {
       }));
 
       insertedCount += block.length;
-      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      ////console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    console.log("Operación de importación de datos completada.");
+    ////console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;
@@ -337,7 +337,7 @@ const importDataEdasServices = async (data, blockSize = 10) => {
 
 
 const importDepartamentoServices = async (data, blockSize) => {
-  console.log("importDataServices: ", data);
+  ////console.log("importDataServices: ", data);
   blockSize = 100;
   try {
     const totalRecords = data.length;
@@ -364,10 +364,10 @@ const importDepartamentoServices = async (data, blockSize) => {
       }));
 
       insertedCount += block.length;
-      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      ////console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    console.log("Operación de importación de datos completada.");
+    ////console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;
@@ -376,7 +376,7 @@ const importDepartamentoServices = async (data, blockSize) => {
 
 
 const importDiresaServices = async (data, blockSize) => {
-  console.log("importDiresaServices: ", data);
+  //console.log("importDiresaServices: ", data);
   blockSize = 100;
   try {
     const totalRecords = data.length;
@@ -407,10 +407,10 @@ const importDiresaServices = async (data, blockSize) => {
       }));
 
       insertedCount += block.length;
-      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      //console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    console.log("Operación de importación de datos completada.");
+    //console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;
@@ -418,7 +418,7 @@ const importDiresaServices = async (data, blockSize) => {
 };
 
 const importProvinciaServices = async (data, blockSize) => {
-  console.log("importProvinciaServices: ");
+  //console.log("importProvinciaServices: ");
   blockSize = 100;
   try {
     const totalRecords = data.length;
@@ -444,10 +444,10 @@ const importProvinciaServices = async (data, blockSize) => {
       }));
 
       insertedCount += block.length;
-      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      //console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    console.log("Operación de importación de datos completada.");
+    //console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;
@@ -456,7 +456,7 @@ const importProvinciaServices = async (data, blockSize) => {
 
 
 const importDistritoServices = async (data, blockSize) => {
-  console.log("importDistritoServices: ", data);
+  //console.log("importDistritoServices: ", data);
   blockSize = 100;
   try {
     const totalRecords = data.length;
@@ -466,7 +466,7 @@ const importDistritoServices = async (data, blockSize) => {
       const block = data.slice(insertedCount, insertedCount + blockSize);
       await Promise.all(block.map(async (rowData) => {
         try {
-          console.log("datosDistrito:", rowData)
+          //console.log("datosDistrito:", rowData)
           const ubigeoValue = rowData.ubigeo === "" ? null : rowData.ubigeo;
           const departamentoValue = rowData.departamento === "" ? null : rowData.departamento;
           const provinciaValue = rowData.provinci === "" ? null : rowData.provinci;
@@ -487,10 +487,10 @@ const importDistritoServices = async (data, blockSize) => {
       }));
 
       insertedCount += block.length;
-      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      //console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    console.log("Operación de importación de datos completada.");
+    //console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;
@@ -499,7 +499,7 @@ const importDistritoServices = async (data, blockSize) => {
 
 
 const importRedServices = async (data, blockSize) => {
-  console.log("importRedServices: ");
+  //console.log("importRedServices: ");
   blockSize = 100;
   try {
     const totalRecords = data.length;
@@ -529,17 +529,17 @@ const importRedServices = async (data, blockSize) => {
       }));
 
       insertedCount += block.length;
-      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      //console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    console.log("Operación de importación de datos completada.");
+    //console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;
   }
 };
 const importLocalidadServices = async (data, blockSize) => {
-  console.log("importDistritoServices: ");
+  //console.log("importDistritoServices: ");
   blockSize = 100;
   try {
     const totalRecords = data.length;
@@ -582,10 +582,10 @@ const importLocalidadServices = async (data, blockSize) => {
         console.error('Error en el bloque de inserción:', error);
       }
 
-      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      //console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    console.log("Operación de importación de datos completada.");
+    //console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;
@@ -594,7 +594,7 @@ const importLocalidadServices = async (data, blockSize) => {
 
 
 const importMicroredServices = async (data, blockSize) => {
-  console.log("importMicroredServices: ");
+  //console.log("importMicroredServices: ");
   blockSize = 100;
   try {
     const totalRecords = data.length;
@@ -626,10 +626,10 @@ const importMicroredServices = async (data, blockSize) => {
       }));
 
       insertedCount += block.length;
-      //console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      ////console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    console.log("Operación de importación de datos completada.");
+    //console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;
@@ -637,7 +637,7 @@ const importMicroredServices = async (data, blockSize) => {
 };
 
 const importEstablecimientoServices = async (data, blockSize) => {
-  console.log("importEstablecimientoServices: ");
+  //console.log("importEstablecimientoServices: ");
   blockSize = 100;
   try {
     const totalRecords = data.length;
@@ -686,17 +686,17 @@ const importEstablecimientoServices = async (data, blockSize) => {
         }
       }));
 
-      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      //console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    console.log("Operación de importación de datos completada.");
+    //console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;
   }
 };
 const importProvicionalServices = async (data, blockSize) => {
-  console.log("importProvicionalServices: ", data);
+  //console.log("importProvicionalServices: ", data);
   blockSize = 10;
 
   try {
@@ -760,7 +760,7 @@ const importProvicionalServices = async (data, blockSize) => {
           }
 
           processedCount++;
-          console.log(`Registros procesados: ${processedCount}/${totalRecords}`);
+          //console.log(`Registros procesados: ${processedCount}/${totalRecords}`);
         } catch (error) {
           console.error('Error en la inserción/actualización:', error);
           throw new Error('Error en la inserción/actualización de datos.');
@@ -768,7 +768,7 @@ const importProvicionalServices = async (data, blockSize) => {
       }));
     }
 
-    console.log("Operación de importación de datos completada.");
+    //console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;
@@ -777,7 +777,7 @@ const importProvicionalServices = async (data, blockSize) => {
 
 
 const importDataPoblacionServices = async (data, blockSize) => {
-  console.log("importDataPoblacionServices: ", data);
+  //console.log("importDataPoblacionServices: ", data);
   blockSize = 10;
   try {
     // Eliminar registros existentes uno por uno
@@ -864,7 +864,7 @@ const importDataPoblacionServices = async (data, blockSize) => {
             adulto_mayor: adulto_mayorValue,
           });
           insertedCount++;
-          console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+          //console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
         } catch (error) {
           console.error('Error en la inserción:', error);
           throw new Error('Error en la inserción de datos.');
@@ -872,7 +872,7 @@ const importDataPoblacionServices = async (data, blockSize) => {
       }));
     }
 
-    console.log("Operación de importación de datos completada.");
+    //console.log("Operación de importación de datos completada.");
   } catch (error) {
     console.error('Error general:', error);
     throw error;

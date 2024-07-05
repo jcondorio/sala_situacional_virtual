@@ -1,9 +1,9 @@
 
 const { importDataEdasServices,importDiresaServices, importDataPoblacionServices, importProvinciaServices, importDistritoServices, importLocalidadServices, importDepartamentoServices, importRedServices, importMicroredServices, importEstablecimientoServices, importDataServices, importProvicionalServices } = require("../services/importServices");
 const importController = async (req, res) => {
-    console.log("en el controlador::")
+    //console.log("en el controlador::")
     try {
-        console.log(req.body)
+        //console.log(req.body)
         //const getNivel = await importDepartamentoServices(req.body);
         //const getNivel = await importDiresaServices(req.body);
         //const getNivel = await importProvinciaServices(req.body);

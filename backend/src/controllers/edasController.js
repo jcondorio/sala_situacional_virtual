@@ -1,6 +1,6 @@
 const { getIrasSemanasServices, getcasesemanadistritServices, getgrafico2Services, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices, getCasosDistritSemServices, getgrafico4Services } = require("../services/edasServices");
 const getIrasSemanasController = async (req, res) => {
-    console.log("en el controlador::")
+    //console.log("en el controlador::")
     try {
         const getIras = await getIrasSemanasServices();
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -11,7 +11,7 @@ const getIrasSemanasController = async (req, res) => {
 };
 
 const getIrasUltimaSemanaDistritController = async (req, res) => {
-    console.log("getIrasUltimaSemanaDistritController")
+    //console.log("getIrasUltimaSemanaDistritController")
     try {
         const getIras = await getIrasUltimaSemanaDistrit();
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -21,7 +21,7 @@ const getIrasUltimaSemanaDistritController = async (req, res) => {
     }
 };
 const getTotIrasController = async (req,res) => {
-    console.log("getTotIrasController")
+    //console.log("getTotIrasController")
     try {
         const getIras = await getTotalCasosIrasAnualService();
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -32,7 +32,7 @@ const getTotIrasController = async (req,res) => {
 };
 
 const getTotIrasSemanaController = async (req,res) => {
-    console.log("getTotIrasSemanaController")
+    //console.log("getTotIrasSemanaController")
     try {
         const getIras = await getTotalCasosIrasUltimaSemana();
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -43,7 +43,7 @@ const getTotIrasSemanaController = async (req,res) => {
 };
 
 const getTotDistritosCasosController = async (req,res) => {
-    console.log("getTotDistritosCasosController")
+    //console.log("getTotDistritosCasosController")
     try {
         const getIras = await getTotalDistritosCasosUltimaSemana();
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -54,7 +54,7 @@ const getTotDistritosCasosController = async (req,res) => {
 };
 
 const getTotEstCasosController = async (req,res) => {
-    console.log("getTotEstCasosController")
+    //console.log("getTotEstCasosController")
     try {
         const getIras = await getTotalEstrablecimientosCasosUltimaSemana();
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -64,7 +64,7 @@ const getTotEstCasosController = async (req,res) => {
     }
 };
 const getTotalEstController = async (req,res) => {
-    console.log("getTotEstCasosController")
+    //console.log("getTotEstCasosController")
     try {
         const getIras = await getTotalEstService();
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -74,7 +74,7 @@ const getTotalEstController = async (req,res) => {
     }
 };
 const getTotSemIrasEstController = async (req,res) => {
-    console.log("getTotSemIrasEstController",req.params)
+    //console.log("getTotSemIrasEstController",req.params)
     try {
         const getIras = await getTotSemIrasEstService(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -84,7 +84,7 @@ const getTotSemIrasEstController = async (req,res) => {
     }
 };
 const getDataDistritController = async (req,res) => {
-    console.log("getTotSemIrasEstController")
+    //console.log("getTotSemIrasEstController")
     try {
         const getIras = await getDataDistritService();
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -96,7 +96,7 @@ const getDataDistritController = async (req,res) => {
 
 
 const getDatosGeneralesController = async (req,res) => {
-    console.log("getDatosGeneralesController",req.params)
+    //console.log("getDatosGeneralesController",req.params)
     try {
         const getIras = await getDatosGeneralesServices(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -107,7 +107,7 @@ const getDatosGeneralesController = async (req,res) => {
 };
 
 const getCasosDistritUltController = async (req,res) => {
-    console.log("getDatosGeneralesController",req.params)
+    //console.log("getDatosGeneralesController",req.params)
     try {
         const getIras = await getCasosDistritSemServices(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -118,7 +118,7 @@ const getCasosDistritUltController = async (req,res) => {
 };
 
 const getcasesemanadistritController = async (req,res) => {
-    console.log("getcasesemanadistritController",req.params)
+    //console.log("getcasesemanadistritController",req.params)
     try {
         const getIras = await getcasesemanadistritServices(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -129,7 +129,7 @@ const getcasesemanadistritController = async (req,res) => {
 };
 
 const getCasosDistritUltSemController = async (req,res) => {
-    console.log("getCasosDistritUltSemServices",req.params)
+    //console.log("getCasosDistritUltSemServices",req.params)
     try {
         const getIras = await getCasosDistritSemServices(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -140,7 +140,7 @@ const getCasosDistritUltSemController = async (req,res) => {
 };
 
 const getgrafico2Controller = async (req,res) => {
-    console.log("getgrafico2Controller",req.params)
+    //console.log("getgrafico2Controller",req.params)
     try {
         const getIras = await getgrafico2Services(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -150,7 +150,7 @@ const getgrafico2Controller = async (req,res) => {
     }
 };
 const getgrafico4Controller = async (req,res) => {
-    console.log("getgrafico2Controller",req.params)
+    //console.log("getgrafico2Controller",req.params)
     try {
         const getIras = await getgrafico4Services(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });

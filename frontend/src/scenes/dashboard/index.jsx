@@ -96,7 +96,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras/distrit`);
       setDistritos(response.data.data);
-      console.log("fetchDistritos:", response.data.data);
+      //console.log("fetchDistritos:", response.data.data);
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
     }
@@ -106,13 +106,13 @@ const Dashboard = () => {
   const getAnnioIra = async () => {
     try {
       const response = await axios(`${API_URL}/otros/annioIras`);
-      console.log(response.data.data);
+      //console.log(response.data.data);
       const data = response.data.data;
       setAnniosIras(data);
       // Encontrar el año más alto en los datos
       if (Array.isArray(data) && data.length > 0) {
         const maxYear = Math.max(...data.map(item => item.ANO));
-        console.log("getAnnioIra", maxYear)
+        //console.log("getAnnioIra", maxYear)
         setAnnio(maxYear);
       }
     } catch (error) {
@@ -124,7 +124,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totest2024`);
       setTotEst2024(response.data.data);
-      console.log("getTotEst2024:", response.data.data);
+      //console.log("getTotEst2024:", response.data.data);
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
     }
@@ -147,10 +147,10 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras`);
       const datoConvertido = transformData(response.data.data);
-      console.log("responseirasno:", response.data.data);
+      //console.log("responseirasno:", response.data.data);
 
       setDataInsidencias(datoConvertido);
-      console.log("responseiras:", datoConvertido);
+      //console.log("responseiras:", datoConvertido);
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
     }
@@ -159,7 +159,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totiras`);
       setTotIras(response.data.data.total_registros);
-      console.log("getTotIras:", response.data.data.total_registros);
+      //console.log("getTotIras:", response.data.data.total_registros);
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
     }
@@ -168,7 +168,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totsemana`);
       setTotIrasSem(response.data.data.total_casos);
-      console.log("getTotIrasSemana:", response.data.data);
+      //console.log("getTotIrasSemana:", response.data.data);
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
     }
@@ -177,7 +177,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totdist`);
       setTotIrasDistSem(response.data.data);
-      console.log("getTotDistritSemana:", response.data.data);
+      //console.log("getTotDistritSemana:", response.data.data);
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
     }
@@ -186,7 +186,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totest`);
       setTotIrasEstSem(response.data.data.total_registros);
-      console.log("getTotEstSemana123:", response.data.data);
+      //console.log("getTotEstSemana123:", response.data.data);
       updateSemanasSelect(response.data.data.max_semana);
 
     } catch (error) {
@@ -198,18 +198,18 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras/ultimasemana`);
       setDataUltimaSemana(response.data.data);
-      console.log("getUltimaSemanaIras", response.data.data);
+      //console.log("getUltimaSemanaIras", response.data.data);
     } catch (error) { }
   };
 
   const curvaEpidemiologica = async () => {
     try {
-      console.log("dataTotEst", dataTotEst);
+      //console.log("dataTotEst", dataTotEst);
       const response = await axios.get(
         `${API_URL}/iras/establecimientos2024/${dataTotEst}`
       );
       const datoConvertido = transformData(response.data.data);
-      console.log("curva", datoConvertido);
+      //console.log("curva", datoConvertido);
       setDataCurvEpi(datoConvertido);
       // console.log("curvaEpidemiologica", response.data.data);
       //console.log("dataCirvaEpi;", dataCurvEpi)
@@ -217,12 +217,12 @@ const Dashboard = () => {
   };
   const actualizarDatosGenerales = async () => {
     try {
-      console.log("actualizarDatosGenerales", dataTotEst);
+      //console.log("actualizarDatosGenerales", dataTotEst);
       const response = await axios.get(
         `${API_URL}/iras/datosgenerales/${annio}`
       );
       //const datoConvertido = transformData(response.data.data);
-      console.log("actualizarDatosGenerales", response.data.data);
+      //console.log("actualizarDatosGenerales", response.data.data);
       setTotIrasSem(response.data.data.totUltSemana);
       setTotIrasEstSem(response.data.data.totEstUltSem);
       setTotIrasDistSem(response.data.data.totDistUltSem);
@@ -233,19 +233,19 @@ const Dashboard = () => {
   };
   const [semanas, setSemanas] = useState();
   const updateSemanasSelect = (ult_sem) => {
-    console.log("ult_sem".ult_sem);
+    //console.log("ult_sem".ult_sem);
     const semana = [];
     for (let i = 1; i <= ult_sem; i++) {
       semana.push({ semana: i });
     }
     setSemanas(semana);
     setSemana(ult_sem);
-    console.log("semana: ", semana);
+    //console.log("semana: ", semana);
   };
   const actualizarCasosDistrit = async () => {
     try {
       const result = await axios.get(`${API_URL}/iras/casoDistrit/${annio}`);
-      console.log("actualizarCasosDistrit:", result.data.data);
+      //console.log("actualizarCasosDistrit:", result.data.data);
       setDataUltimaSemana(result.data.data);
     } catch (error) {
       console.error(error);
@@ -253,10 +253,10 @@ const Dashboard = () => {
   };
   const casosDistritoSemana = async () => {
     try {
-      console.log("casosDistritoSemana", annio, "--", semana)
+      //console.log("casosDistritoSemana", annio, "--", semana)
       const response = await axios.get(`${API_URL}/iras/casesemanadistrit/${annio}/${semanadistrit}`);
       const result = await axios.get(`${API_URL}/iras/updatedistritSem/${annio}/${semanadistrit}`);
-      console.log("actualizarCasosDistrit:", response.data.data);
+      //console.log("actualizarCasosDistrit:", response.data.data);
       setDataUltimaSemana(result.data.data);
       setTotIrasSem(response.data.data.totUltSemana);
       setTotIrasEstSem(response.data.data.totEstUltSem);
@@ -269,9 +269,9 @@ const Dashboard = () => {
 
   const getDataGrafSemana = async () => {
     try {
-      console.log("getDataGrafSemana",annio,"---",estGrafico2)
+      //console.log("getDataGrafSemana",annio,"---",estGrafico2)
       const response = await axios.get(`${API_URL}/iras/grafico2/${annio}/${estGrafico2}`);
-      console.log(response.data.data);
+      //console.log(response.data.data);
       setDatosGraf2(response.data.data);
     } catch (error) {
       console.error(error)
@@ -280,9 +280,9 @@ const Dashboard = () => {
   };
   const getDataGraf4Semana = async () => {
     try {
-      console.log("getDataGraf4Semana",annio,"---",distritGrafico4)
+      //console.log("getDataGraf4Semana",annio,"---",distritGrafico4)
       const response = await axios.get(`${API_URL}/iras/grafico4/${annio}/${distritGrafico4}`);
-      console.log(response.data.data);
+      //console.log(response.data.data);
       setDatosGraf4(response.data.data);
     } catch (error) {
       console.error(error)
@@ -307,7 +307,7 @@ const Dashboard = () => {
     setDatosGraf4("");
   }, [annio]);
   useEffect(() => {
-    console.log("dataInsidencias:", dataInsidencias);
+    //console.log("dataInsidencias:", dataInsidencias);
   }, [dataInsidencias]);
   return (
     <Box m="20px">

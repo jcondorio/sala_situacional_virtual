@@ -2,7 +2,7 @@ const { getAnnioIrasServices, getAnnioEdasServices } = require("../services/otro
 
 
 const getAnnioIrasController = async (req, res) => {
-    console.log("en el controlador::")
+    ////console.log("en el controlador::")
     try {
         const responseController = await getAnnioIrasServices();
         res.status(200).json({ message: 'respuesta del año', data: responseController });
@@ -12,7 +12,7 @@ const getAnnioIrasController = async (req, res) => {
     }
 };
 const getAnnioEdasController = async (req, res) => {
-    console.log("en el controlador::")
+    //console.log("en el controlador::")
     try {
         const responseController = await getAnnioEdasServices();
         res.status(200).json({ message: 'respuesta del año', data: responseController });

@@ -33,5 +33,5 @@ app.use("/api/otros",require("./src/routes/otrosRoutes"));
 app.use("/api/poblacion",require("./src/routes/poblacionRoutes"));
 
 app.listen(port, () => {
-    console.log(`Server is running on port: ${port}`);
+    //console.log(`Server is running on port: ${port}`);
 });
