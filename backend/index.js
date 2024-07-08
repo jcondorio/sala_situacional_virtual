@@ -31,6 +31,8 @@ app.use("/api/iras",require("./src/routes/irasRoutes"));
 app.use("/api/edas",require("./src/routes/edasRoutes"));
 app.use("/api/otros",require("./src/routes/otrosRoutes"));
 app.use("/api/poblacion",require("./src/routes/poblacionRoutes"));
+app.use("/api/login",require("./src/routes/userRoutes"));
+
 
 app.listen(port, () => {
     //console.log(`Server is running on port: ${port}`);
