@@ -81,6 +81,9 @@ function App() {
 
     }
   };
+
+
+  
   const [csvData, setCsvData] = useState(null);
 
   function handleFile(data) {
