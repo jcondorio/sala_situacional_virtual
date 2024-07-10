@@ -11,6 +11,7 @@ const Establecimiento = require("../models/establecimientoModel.js");
 const Provicional = require("../models/provicionalModel.js");
 const Edas = require("../models/edasModel.js");
 const Poblacion = require("../models/poblacionModel.js");
+const moment = require('moment');
 
 // Función para eliminar los registros por año
 const deleteIrasRecordsByYear = async (year) => {
@@ -26,10 +27,31 @@ const deleteIrasRecordsByYear = async (year) => {
     throw error;
   }
 };
+const formatDate = (fecha) => {
+  if (fecha === "" || fecha === null) {
+    return null;
+  }
+  const parts = fecha.split('/');
+  if (parts.length === 3) {
+    // Formato DD/MM/YYYY
+    const [day, month, year] = parts;
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+  const isoParts = fecha.split('-');
+  if (isoParts.length === 3) {
+    // Formato YYYY-MM-DD
+    return fecha;
+  }
+  return null; // Manejar fechas inválidas si es necesario
+};
+const validateE_SALUD = async (e_saludValue) => {
+  const record = await Provicional.findOne({ where: { COD_EST: e_saludValue } });
+  return record !== null;
+};
 
-const importDataServices = async (data, blockSize = 10) => {
-  //console.log("importDataServices: ",req.body);
+const importDataServices = async (data, blockSize = 5) => {
   try {
+    console.log("importDataServices",data)
     const year = data[0].ANO; // Se asume que todos los registros tienen el mismo año
     await deleteIrasRecordsByYear(year); // Elimina los registros del año específico
 
@@ -47,6 +69,10 @@ const importDataServices = async (data, blockSize = 10) => {
           const redValue = rowData.RED === "" ? null : rowData.RED;
           const microredValue = rowData.MICRORED === "" ? null : rowData.MICRORED;
           const esaludValue = rowData.E_SALUD === "" ? null : rowData.E_SALUD;
+          // Validar E_SALUD
+          if (esaludValue !== null && !(await validateE_SALUD(esaludValue))) {
+            throw new Error(`E_SALUD value ${esaludValue} does not exist in provicional table.`);
+          }
           const ubigeoValue = rowData.UBIGEO === "" ? null : rowData.UBIGEO;
           const iram2Value = rowData.IRA_M2 === "" ? null : rowData.IRA_M2;
           const ira211mValue = rowData.IRA_2_11 === "" ? null : rowData.IRA_2_11;
@@ -88,7 +114,7 @@ const importDataServices = async (data, blockSize = 10) => {
           const sob59Value = rowData.SOB_5_9A === "" ? null : rowData.SOB_5_9A;
           const sob1019aValue = rowData.SOB_10_19A === "" ? null : rowData.SOB_10_19A;
           const sob2059aValue = rowData.SOB_20_59A === "" ? null : rowData.SOB_20_59A;
-          const fechaingValue = rowData.FECHA_ING === "" ? null : rowData.FECHA_ING;
+          const fechaingValue = rowData.FECHA_ING === "" ? null : formatDate(rowData.FECHA_ING); // Formatear la fecha aquí
           const etniaprocValue = rowData.ETNIAPROC === "" ? null : rowData.ETNIAPROC;
           const etniasValue = rowData.ETNIAS === "" ? null : rowData.ETNIAS;
           const procedeValue = rowData.PROCEDE === "" ? null : rowData.PROCEDE;
@@ -249,7 +275,7 @@ const importDataEdasServices = async (data, blockSize = 10) => {
           const DIS_H18_29Value = rowData.DIS_H18_29 === "" ? null : rowData.DIS_H18_29;
           const DIS_H30_59Value = rowData.DIS_H30_59 === "" ? null : rowData.DIS_H30_59;
           const DIS_H60Value = rowData.DIS_H60 === "" ? null : rowData.DIS_H60;
-          const FECHA_INGValue = rowData.FECHA_ING === "" ? null : rowData.FECHA_ING;
+          const FECHA_INGValue = rowData.FECHA_ING === "" ? null : formatDate(rowData.FECHA_ING); // Formatear la fecha aquí
           const ETNIAPROCValue = rowData.ETNIAPROC === "" ? null : rowData.ETNIAPROC;
           const ETNIASValue = rowData.ETNIAS === "" ? null : rowData.ETNIAS;
           const PROCEDEValue = rowData.PROCEDE === "" ? null : rowData.PROCEDE;

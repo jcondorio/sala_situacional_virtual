@@ -147,7 +147,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras`);
       const datoConvertido = transformData(response.data.data);
-      //console.log("responseirasno:", response.data.data);
+      console.log("getIras:", response.data.data);
 
       setDataInsidencias(datoConvertido);
       //console.log("responseiras:", datoConvertido);
@@ -167,6 +167,7 @@ const Dashboard = () => {
   const getTotIrasSemana = async () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totsemana`);
+      console.log("getTotIrasSemana:", response.data.data);
       setTotIrasSem(response.data.data.total_casos);
       //console.log("getTotIrasSemana:", response.data.data);
     } catch (error) {
@@ -176,6 +177,7 @@ const Dashboard = () => {
   const getTotDistritSemana = async () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totdist`);
+      console.log("getTotDistritSemana:", response.data.data);
       setTotIrasDistSem(response.data.data);
       //console.log("getTotDistritSemana:", response.data.data);
     } catch (error) {
