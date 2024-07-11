@@ -49,14 +49,17 @@ const validateE_SALUD = async (e_saludValue) => {
   return record !== null;
 };
 
+
 const importDataServices = async (data, blockSize = 5) => {
   try {
-    console.log("importDataServices",data)
+    console.log("importDataServices", data);
     const year = data[0].ANO; // Se asume que todos los registros tienen el mismo año
     await deleteIrasRecordsByYear(year); // Elimina los registros del año específico
 
     const totalRecords = data.length;
     let insertedCount = 0;
+
+    const failedRecords = []; // Array para almacenar los registros que fallaron
 
     while (insertedCount < totalRecords) {
       const block = data.slice(insertedCount, insertedCount + blockSize);
@@ -177,20 +180,26 @@ const importDataServices = async (data, blockSize = 5) => {
           });
         } catch (error) {
           console.error('Error en la inserción:', error);
-          throw error;
+          failedRecords.push(rowData); // Agregar el registro que falló al array
+          // No lanzar el error para permitir que el bucle continúe
         }
       }));
 
       insertedCount += block.length;
-      ////console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    ////console.log("Operación de importación de datos completada.");
+    console.log("Operación de importación de datos completada.");
+    if (failedRecords.length > 0) {
+      console.log("Registros que fallaron:", failedRecords);
+      // Puedes manejar los registros fallidos aquí según sea necesario
+    }
   } catch (error) {
     console.error('Error general:', error);
     throw error;
   }
 };
+
 
 const deleteEdasRecordsByYear = async (year) => {
   try {
