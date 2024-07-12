@@ -8,7 +8,7 @@ const Poblacion = require("../models/poblacionModel");
 // Importa Provicional si es necesario
 
 const getPobDistritServices = async (data) => {
-    console.log("getPobDistritServices: ", data);
+    //console.log("getPobDistritServices: ", data);
     try {
       // Obtener la población de los distritos
       const resultPobl = await Poblacion.findAll({
@@ -53,7 +53,7 @@ const getPobDistritServices = async (data) => {
         });
       });
   
-      console.log("completeData", completeData);
+      //console.log("completeData", completeData);
       return completeData;
     } catch (error) {
       console.error("Error al ejecutar la consulta:", error);

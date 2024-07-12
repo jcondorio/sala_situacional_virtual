@@ -7,7 +7,7 @@ const Edas = require("../models/edasModel");
 // Importa Provicional si es necesario
 
 const getAnnioIrasServices = async () => {
-  console.log("importDataServices: ");
+  ////console.log("importDataServices: ");
   try {
    response= await Iras.findAll(
     {
@@ -22,7 +22,7 @@ const getAnnioIrasServices = async () => {
   }
 };
 const getAnnioEdasServices = async () => {
-  console.log("importDataServices: ");
+  ////console.log("importDataServices: ");
   try {
    response= await Edas.findAll(
     {

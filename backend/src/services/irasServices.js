@@ -6,7 +6,7 @@ const { Op, fn, col, literal } = require("sequelize");
 // Importa Provicional si es necesario
 
 const getIrasSemanasServices = async () => {
-  console.log("importDataServices: ");
+  //console.log("importDataServices: ");
   try {
     // Paso 1: Obtener años únicos de la tabla `iras`
     const anosResult = await Iras.findAll({
@@ -54,7 +54,7 @@ const getIrasSemanasServices = async () => {
     completeData.sort((a, b) => a.ANO - b.ANO || a.SEMANA - b.SEMANA);
 
     // Maneja el resultado de la consulta aquí
-    console.log(completeData);
+    //console.log(completeData);
     return completeData;
   } catch (error) {
     // Maneja cualquier error que pueda ocurrir durante la consulta
@@ -64,7 +64,7 @@ const getIrasSemanasServices = async () => {
 };
 
 const getIrasUltimaSemanaDistrit = async () => {
-  console.log("importDataServices: ");
+  //console.log("importDataServices: ");
   try {
     const result = await Iras.findAll({
       attributes: [
@@ -88,7 +88,7 @@ const getIrasUltimaSemanaDistrit = async () => {
       group: ["provicional.Dpto", "provicional.Prov", "provicional.Distrit"],
     });
 
-    console.log(result);
+    //console.log(result);
     return result;
   } catch (error) {
     // Maneja cualquier error que pueda ocurrir durante la consulta
@@ -97,7 +97,7 @@ const getIrasUltimaSemanaDistrit = async () => {
   }
 };
 const getTotalCasosIrasAnualService = async () => {
-  console.log("getTotalCasosIrasAnualService");
+  //console.log("getTotalCasosIrasAnualService");
   try {
     const result = await Iras.findOne({
       attributes: [
@@ -130,7 +130,7 @@ const getTotalCasosIrasAnualService = async () => {
 };
 
 const getTotalCasosIrasUltimaSemana = async () => {
-  console.log("getTotalCasosIrasUltimaSemana");
+  //console.log("getTotalCasosIrasUltimaSemana");
 
   try {
     const result = await Iras.findOne({
@@ -207,7 +207,7 @@ const getTotalDistritosCasosUltimaSemana = async () => {
 const getTotalEstrablecimientosCasosUltimaSemana = async () => {
   try {
     const maxAno = await Iras.max("ANO");
-    console.log("maxAno: ", maxAno);
+    //console.log("maxAno: ", maxAno);
     const totalRegistros = await Iras.findOne({
       attributes: [
         [sequelize.literal("MAX(iras.SEMANA)"), "max_semana"],
@@ -239,7 +239,7 @@ const getTotalEstrablecimientosCasosUltimaSemana = async () => {
       raw: true,
     });
 
-    console.log("totalRegistros::", totalRegistros);
+    //console.log("totalRegistros::", totalRegistros);
     return totalRegistros;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
@@ -255,7 +255,7 @@ const getTotalEstService = async () => {
         Dpto: "TACNA",
       },
     });
-    console.log("getTotalEstService", result);
+    //console.log("getTotalEstService", result);
 
     return result;
   } catch (error) {
@@ -265,7 +265,7 @@ const getTotalEstService = async () => {
 };
 
 const getTotSemIrasEstService = async (data) => {
-  console.log("getTotSemIrasEstService", data);
+  //console.log("getTotSemIrasEstService", data);
   try {
     const query = `
       SELECT 
@@ -305,7 +305,7 @@ ORDER BY
       type: sequelize.QueryTypes.SELECT,
       replacements: [data.id],
     });
-    console.log("superconsulta:", studentsWithDetails);
+    //console.log("superconsulta:", studentsWithDetails);
     return studentsWithDetails;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
@@ -314,10 +314,10 @@ ORDER BY
 };
 
 const getDataDistritService = async () => {
-  console.log("getDataDistritService");
+  //console.log("getDataDistritService");
   try {
     const maxAno = await Iras.max("ANO");
-    console.log("maxAno: ", maxAno);
+    //console.log("maxAno: ", maxAno);
 
     const results = await Sequelize.query(
       `
@@ -340,7 +340,7 @@ const getDataDistritService = async () => {
       { type: sequelize.QueryTypes.SELECT }
     );
 
-    console.log(results);
+    //console.log(results);
     return results;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
@@ -348,10 +348,10 @@ const getDataDistritService = async () => {
   }
 };
 const getDatosGeneralesServices = async (annio) => {
-  console.log("getDatosGeneralesServices", annio);
+  //console.log("getDatosGeneralesServices", annio);
   try {
     const maxAno = annio.annio;
-    console.log("maxAno: ", maxAno);
+    //console.log("maxAno: ", maxAno);
 
 
     const resultTotIras = await Sequelize.query(
@@ -405,7 +405,7 @@ const getDatosGeneralesServices = async (annio) => {
         type: Sequelize.QueryTypes.SELECT
       }
     )
-    console.log("cantidadSemanas", cantidadSemanas);
+    //console.log("cantidadSemanas", cantidadSemanas);
     //consolidado
     const consolidado = {
       totiras: resultTotIras[0].result,
@@ -423,10 +423,10 @@ const getDatosGeneralesServices = async (annio) => {
 
 
 const getcasesemanadistritServices = async (data) => {
-  console.log("getcasesemanadistritServices", data);
+  //console.log("getcasesemanadistritServices", data);
   try {
     const maxAno = data.annio;
-    console.log("maxAno: ", maxAno);
+    //console.log("maxAno: ", maxAno);
 
 
     const resultTotUltimaSemana = await Sequelize.query(
@@ -476,7 +476,7 @@ const getcasesemanadistritServices = async (data) => {
 
 const getCasosDistritUltSemServices = async (annio) => {
   try {
-    console.log("getCasosDistritUltSemServices", annio);
+    //console.log("getCasosDistritUltSemServices", annio);
 
     // Paso 1: Obtener la semana máxima
     const maxSemana = await Iras.max("SEMANA", {
@@ -507,7 +507,7 @@ const getCasosDistritUltSemServices = async (annio) => {
       group: ["provicional.Dpto", "provicional.Prov", "provicional.Distrit"],
     });
 
-    console.log("getCasosDistritUltSemServices:", result);
+    //console.log("getCasosDistritUltSemServices:", result);
     return result;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
@@ -517,7 +517,7 @@ const getCasosDistritUltSemServices = async (annio) => {
 
 const getCasosDistritSemServices = async (data) => {
   try {
-    console.log("getCasosDistritSemServices", data);
+    //console.log("getCasosDistritSemServices", data);
 
 
     // Paso 2: Consulta principal usando la semana máxima obtenida
@@ -542,7 +542,7 @@ const getCasosDistritSemServices = async (data) => {
       group: ["provicional.Dpto", "provicional.Prov", "provicional.Distrit"],
     });
 
-    console.log("getCasosDistritUltSemServices:", result);
+    //console.log("getCasosDistritUltSemServices:", result);
     return result;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
@@ -551,7 +551,7 @@ const getCasosDistritSemServices = async (data) => {
 };
 
 const getgrafico2Services = async (data) => {
-  console.log("getTotSemIrasEstService", data);
+  //console.log("getTotSemIrasEstService", data);
   try {
     const query = `
      SELECT weeks.num AS SEMANA, COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS cantidad_registros
@@ -579,7 +579,7 @@ ORDER BY semana;
       type: sequelize.QueryTypes.SELECT,
       replacements: [data.annio, data.estacion,data.annio],
     });
-    console.log("superconsulta:", studentsWithDetails);
+    //console.log("superconsulta:", studentsWithDetails);
     return studentsWithDetails;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
@@ -587,7 +587,7 @@ ORDER BY semana;
   }
 };
 const getgrafico3Services = async (data) => {
-  console.log("getTotSemIrasEstService", data);
+  //console.log("getTotSemIrasEstService", data);
   try {
     const query = `
       SELECT 
@@ -602,7 +602,7 @@ const getgrafico3Services = async (data) => {
       type: sequelize.QueryTypes.SELECT,
       replacements: [data.annio, data.estacion],
     });
-    console.log("superconsulta:", studentsWithDetails);
+    //console.log("superconsulta:", studentsWithDetails);
     return studentsWithDetails;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
@@ -612,7 +612,7 @@ const getgrafico3Services = async (data) => {
 
 
 const getgrafico4Services = async (data) => {
-  console.log("getTotSemIrasEstService", data);
+  //console.log("getTotSemIrasEstService", data);
   try {
     const query = `
       SELECT weeks.num AS SEMANA, COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS cantidad_registros
@@ -641,7 +641,7 @@ const getgrafico4Services = async (data) => {
       type: sequelize.QueryTypes.SELECT,
       replacements: [data.annio,data.annio, data.distrito],
     });
-    console.log("superconsulta:", studentsWithDetails);
+    //console.log("superconsulta:", studentsWithDetails);
     return studentsWithDetails;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
