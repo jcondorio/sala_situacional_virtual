@@ -1,15 +1,21 @@
+// middlewares/auth.js
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../config');
 
-function verifyToken(req, res, next) {
-    const header = req.header("Authorization") || "";
-    const token = header.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ message: "Token not provied" });
-    }
-    try {
-      const payload = jwt.verify(token, secretKey);
-      req.username = payload.username;
-      next();
-    } catch (error) {
-      return res.status(403).json({ message: "Token not valid" });
-    }
+const verifyToken = (req, res, next) => {
+  const token = req.headers['authorization'];
+
+  if (!token) {
+    return res.status(403).send({ message: 'No token provided.' });
   }
+
+  jwt.verify(token.split(' ')[1], JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({ message: 'Unauthorized!' });
+    }
+    req.userId = decoded.id;
+    next();
+  });
+};
+
+module.exports = verifyToken;
