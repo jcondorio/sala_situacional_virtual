@@ -223,6 +223,7 @@ const importDataEdasServices = async (data, blockSize = 10) => {
 
     const totalRecords = data.length;
     let insertedCount = 0;
+    const failedRecords=[];
 
     while (insertedCount < totalRecords) {
       const block = data.slice(insertedCount, insertedCount + blockSize);
@@ -355,13 +356,18 @@ const importDataEdasServices = async (data, blockSize = 10) => {
           });
         } catch (error) {
           console.error('Error en la inserción:', error);
-          throw error;
+          failedRecords.push(rowData); // Agregar el registro que falló al array
         }
       }));
 
       insertedCount += block.length;
+      
       ////console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
+    if(failedRecords.length>0){
+      console.log("registros que fallaros: ",failedRecords);
+    }
+    
 
     ////console.log("Operación de importación de datos completada.");
   } catch (error) {
