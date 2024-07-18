@@ -34,6 +34,6 @@ app.use("/api/poblacion",require("./src/routes/poblacionRoutes"));
 app.use("/api/login",require("./src/routes/userRoutes"));
 
 
-app.listen(port, () => {
+app.listen(port,"0.0.0.0", () => {
     //console.log(`Server is running on port: ${port}`);
 });
