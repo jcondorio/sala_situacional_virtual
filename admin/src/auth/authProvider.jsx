@@ -12,15 +12,15 @@ const AuthContext = createContext({
 
 function parseJwt (token){
     try{
-      console.log("token : ",token);
+      //console.log("token : ",token);
       const base64Url = token.split(".")[1];
-      console.log("base64uril: ",base64Url);
+      //console.log("base64uril: ",base64Url);
       const base64 = base64Url.replace(/-/g,"+").replace(/_/g,"/");
-      console.log("base64: ",base64);
+      //console.log("base64: ",base64);
       const jsonPayload = decodeURIComponent(window.atob(base64).split("").map(function(c){
           return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(""));
-      console.log("patload: ",jsonPayload);
+      //console.log("patload: ",jsonPayload);
       return JSON.parse(jsonPayload);
     } catch (error){
       localStorage.removeItem("token");
@@ -34,7 +34,7 @@ function parseJwt (token){
   
   if (token) {
     tokenEsistAndStillValid = (parseJwt(token).exp * 1000 > Date.now());
-    console.log("tokenvalid: ",tokenEsistAndStillValid)
+    //console.log("tokenvalid: ",tokenEsistAndStillValid)
   }else{
     tokenEsistAndStillValid = false;
     localStorage.removeItem("token");
@@ -52,13 +52,13 @@ const AuthProvider = ({ children }) => {
         if (token) {
             let tokenEsistAndStillValid = false;
             tokenEsistAndStillValid = parseJwt(token).exp * 1000 > Date.now();
-            console.log("tokenvalid: ", tokenEsistAndStillValid)
+            //console.log("tokenvalid: ", tokenEsistAndStillValid)
 
             if (tokenEsistAndStillValid) {
-                console.log("entrando:")
+                //console.log("entrando:")
                 const parsedToken = parseJwt(token);
-                console.log("parsedToken",parsedToken);
-                console.log("parsedToken",parsedToken)
+                //console.log("parsedToken",parsedToken);
+                //console.log("parsedToken",parsedToken)
                 if (parsedToken) {
                     setName(parsedToken.name);
                     setId(parsedToken.id);
@@ -108,13 +108,13 @@ const AuthProvider = ({ children }) => {
             if (token) {
                 let tokenEsistAndStillValid = false;
                 tokenEsistAndStillValid = parseJwt(token).exp * 1000 > Date.now();
-                console.log("tokenvalid: ", tokenEsistAndStillValid)
+                //console.log("tokenvalid: ", tokenEsistAndStillValid)
     
                 if (tokenEsistAndStillValid) {
-                    console.log("entrando:")
+                    //console.log("entrando:")
                     const parsedToken = parseJwt(token);
-                    console.log("parsedToken",parsedToken);
-                    console.log("parsedToken",parsedToken)
+                    //console.log("parsedToken",parsedToken);
+                    //console.log("parsedToken",parsedToken)
                     if (parsedToken) {
                         setName(parsedToken.userName);
                         setId(parsedToken.id);
