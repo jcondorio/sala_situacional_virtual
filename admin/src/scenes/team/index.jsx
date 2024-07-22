@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Container, Paper, Typography, CheckboxItem } from "@mui/material";
+import { Box, Container, Paper, Typography, CheckboxItem, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Header from "../global/Header";
 import CsvReader from "../../Hooks/CsvReader";
@@ -28,16 +28,36 @@ const Team = () => {
       [event.target.name]: event.target.checked,
     });
   };
+  //
+
+  const [datachecked, setDataChecked] = useState([]);
 
   const getAnniosIra = async () => {
     try {
-      const data = getAnniosIras();
-      setChecked(data);
+      const data = await getAnniosIras();
       console.log("getAnnioIra", data);
+      setChecked(data);
+
+      const dataTrue = data.filter(item => item.estado === 1);
+      console.log("dataTrue", dataTrue.map(item => String(item.ano)));
+
+      setDataChecked(dataTrue.map(item => String(item.ano)));
     } catch (error) {
-      console.error("Error al traer los datos");
+      console.error("Error al traer los datos", error);
     }
   };
+  const handleCheckedIras = (event) => {
+    const { value, checked } = event.target;
+    console.log(value, checked)
+    if (checked) {
+      setDataChecked([...datachecked, value]); 
+    }
+    else {
+      setDataChecked(datachecked.filter(item => item !== value));
+    }
+    console.log(datachecked);
+  };
+
   useEffect(() => {
     getAnniosIra();
   }, []);
@@ -69,26 +89,11 @@ const Team = () => {
         elevation={3}
         sx={{ padding: theme.spacing(4), marginTop: theme.spacing(4) }}
       >
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Selecciona opciones</FormLabel>
-          <FormGroup>
-            {checked.length === 0 ? (
-              <Typography>No hay opciones disponibles.</Typography>
-            ) : (
-              checked.map((item) => (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={item.ANO}
-                     // onChange={() => onChange(item)}
-                    />
-                  }
-                  label={item.label}
-                />
-              ))
-            )}
-          </FormGroup>
-        </FormControl>
+
+        {Array.isArray(checked) &&
+          checked.map((item) => (
+            <FormControlLabel key={item.ano} control={<Checkbox defaultChecked={item.estado} value={item.ano} onChange={handleCheckedIras} />} label={item.ano} />
+          ))}
       </Paper>
     </Container>
   );

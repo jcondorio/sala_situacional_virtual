@@ -33,40 +33,6 @@ import MyGroupedBarChart from "../../prototips/MyGroupedBarChart";
 import MapaTacnaConProvincias10k from "../../components/MapaTacnaConProvincias10k";
 
 const Dashboard = () => {
-  const data123 = [
-    {
-      year: "2023",
-      W01: 150,
-      W02: 200,
-      W03: 180,
-      W04: 0,
-      W05: 150,
-      W06: 200,
-      W07: 180,
-      W08: 0,
-      W09: 150,
-      W10: 200,
-      W11: 180,
-      W12: 11,
-    },
-    {
-      year: "2024",
-      W01: 220,
-      W02: 250,
-      W03: 230,
-      W04: 230,
-      W05: 150,
-      W06: 200,
-      W07: 180,
-      W08: 0,
-      W09: 0,
-      W10: 0,
-      W11: 0,
-      W12: 0,
-    },
-    // más datos...
-  ];
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [dataInsidencias, setDataInsidencias] = useState();
@@ -106,7 +72,7 @@ const Dashboard = () => {
   const getAnnioIra = async () => {
     try {
       const response = await axios(`${API_URL}/otros/annioIras`);
-      //console.log(response.data.data);
+      console.log("getAnnioIra: ",response.data.data);
       const data = response.data.data;
       setAnniosIras(data);
       // Encontrar el año más alto en los datos
