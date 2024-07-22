@@ -1,5 +1,6 @@
 
 const { importDataEdasServices,importDiresaServices, importDataPoblacionServices, importProvinciaServices, importDistritoServices, importLocalidadServices, importDepartamentoServices, importRedServices, importMicroredServices, importEstablecimientoServices, importDataServices, importProvicionalServices } = require("../services/importServices");
+
 const importController = async (req, res) => {
     //console.log("en el controlador::")
     try {
@@ -23,4 +24,41 @@ const importController = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
-module.exports = { importController };
+
+const importControlleredas = async (req, res) => {
+    try {
+        const getNivel = await importDataEdasServices(req.body);
+        //const getNivel = await importDataPoblacionServices(req.body);
+
+        res.status(200).json({ message: 'User created successfully', student: getNivel });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const importControllerPoblacion = async (req, res) => {
+    try {
+        const getNivel = await importDataPoblacionServices(req.body);
+        //const getNivel = await importDataPoblacionServices(req.body);
+
+        res.status(200).json({ message: 'User created successfully', student: getNivel });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const importControllerProvicional = async (req, res) => {
+    try {
+        const getNivel = await importProvicionalServices(req.body);
+        //const getNivel = await importDataPoblacionServices(req.body);
+
+        res.status(200).json({ message: 'User created successfully', student: getNivel });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+module.exports = { importController,importControlleredas,importControllerPoblacion, importControllerProvicional };

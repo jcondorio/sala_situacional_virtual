@@ -315,22 +315,7 @@ const Dashboard = () => {
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="IRAS D.E.E.P.I. - TACNA" />
-
-       {/* <Box>
-          <Button
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-            }}
-          >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Descargar reporte
-          </Button>
-        </Box>*/}
+        <Header title="DASHBOARD" subtitle="IRAS menores a 5 años D.E.E.P.I. - TACNA" />
       </Box>
 
       {/* GRID & CHARTS */}
@@ -463,7 +448,7 @@ const Dashboard = () => {
         </Box>
 
         <Box
-          gridColumn="span 3"
+          gridColumn="span 2"
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
@@ -503,7 +488,7 @@ const Dashboard = () => {
           </Grid>
         </Box>
         <Box
-          gridColumn="span 3"
+          gridColumn="span 2"
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
@@ -543,47 +528,30 @@ const Dashboard = () => {
           </Grid>
         </Box>
         <Box
-          gridColumn="span 3"
+          gridColumn="span 4"
+          gridRow="span 4"
           backgroundColor={colors.primary[400]}
+          padding="30px"
           display="flex"
+          flexDirection="column"
           alignItems="center"
-          justifyContent="center"
         >
-          <Grid
-            container
-            spacing={2}
-            alignItems="center"
-            justifyContent="center"
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            sx={{ marginBottom: "15px" }}
           >
-            <Grid item xs={12}>
-              <Typography
-                color={colors.greenAccent[500]}
-                variant="h5"
-                fontWeight="600"
-                textAlign="center"
-                sx={{ animation: "fadeIn 1s" }}
-              >
-                Cantidad de Distritos que presentaron I.R.A.S. en la semana {semana} del año {annio}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography
-                variant="h6"
-                color="textPrimary"
-                textAlign="center"
-                sx={{
-                  animation: "fadeIn 2s",
-                  fontSize: "2rem",
-                  fontWeight: "bold",
-                }}
-              >
-                {totIrasDistSem !== null ? totIrasDistSem : "Cargando..."}
-              </Typography>
-            </Grid>
-          </Grid>
+            T.I.A. de I.R.A.S. menores a 5 años x 1000 semana {semana} y año {annio}
+          </Typography>
+          <Box
+          >
+            <MapaTacnaConProvincias annio={annio} semana={semana} />
+          </Box>
         </Box>
         <Box
-          gridColumn="span 3"
+          gridColumn="span 4"
+          gridRow="span 4"
+
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
@@ -617,15 +585,15 @@ const Dashboard = () => {
                   fontWeight: "bold",
                 }}
               >
-                {totIrasEstSem !== null ? totIrasEstSem : "Cargando..."}
+                aqui iran todos los establecimientos con casos del distrito que se selecciono en el mapa como lo recomendo fredy
               </Typography>
             </Grid>
           </Grid>
         </Box>
 
         {/* ROW 2 */}
-
         <Box
+          padding={3}
           gridColumn="span 4"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
@@ -716,53 +684,16 @@ const Dashboard = () => {
                 </Box>
               </Box>
             ))}
+          <Typography>
+            *Los distritos que no aparezcan es porque no tienen casos en la semana seleccionada
+          </Typography>
         </Box>
+
 
         {/* ROW 3 */}
 
-        
-        <Box
-          gridColumn="span 4"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Mapa geográfico por provincias de Tacna
-          </Typography>
-          <Box
-          >
-            <MapaTacnaConProvincias annio={annio} semana={semana} />
-          </Box>
-        </Box>
-        <Box
-          gridColumn="span 4"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Mapa geográfico por provincias de Tacna
-          </Typography>
-          <Box
-          >
-            <MapaTacnaConProvincias10k annio={annio} semana={semana} />
-          </Box>
-        </Box>
+
+
         <Box
           gridColumn="span 6"
           gridRow="span 3"
@@ -876,6 +807,18 @@ const Dashboard = () => {
             {/*<MyGroupedBarChart data={dataCurvEpi} />*/}
             {datosGraf4 && <BarSimpleChart data={datosGraf4} />}
           </Box>
+        </Box>
+        <Box
+          gridColumn="span 12"
+          gridRow="span 3"
+          backgroundColor={colors.primary[400]}
+          padding="30px"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+        >
+          canal endemico para el lunes
+          <MyResponsiveStream></MyResponsiveStream>
         </Box>
       </Box>
     </Box>

@@ -46,6 +46,25 @@ const BarSimpleChart = ({ data }) => {
                         fill: colors.grey[100],
                     },
                 },
+                tooltip: {
+                    container: {
+                        background: '#333',
+                        color: '#ddd',
+                        fontSize: '13px',
+                        borderRadius: '2px',
+                        boxShadow: '0 3px 9px rgba(0, 0, 0, 0.5)',
+                        padding: '5px 9px',
+                    },
+                    basic: {
+                        whiteSpace: 'pre',
+                        display: 'flex',
+                        alignItems: 'center',
+                    },
+                    table: {},
+                    tableCell: {
+                        padding: '3px 5px',
+                    },
+                },
             }}
             keys={Object.keys(data[0]).filter((key) => key !== "SEMANA")}
             indexBy={(item) => item.SEMANA}
@@ -63,7 +82,7 @@ const BarSimpleChart = ({ data }) => {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: 'clasificado por años',
+                legend: 'Semanas epidemiologicas',
                 legendPosition: "middle",
                 legendOffset: 32,
             }}

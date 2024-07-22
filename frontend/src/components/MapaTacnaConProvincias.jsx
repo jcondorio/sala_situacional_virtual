@@ -8,17 +8,21 @@ import * as ss from "simple-statistics";
 
 // Datos GeoJSON de las provincias en Tacna (ejemplo)
 import datosProvincias from "../data/provinciasTacna.json";
+
 const MapaTacnaConProvincias = ({ annio, semana }) => {
   const [distritos, setDistritos] = useState([]);
   const [sumaTotalCasos, setSumaTotalCasos] = useState(0);
   const [quartiles, setQuartiles] = useState({ q1: 0, q2: 0, q3: 0 });
   const [tiaDistrit, setTiaDistrit] = useState();
+  const [datadistrit, setDataDistrit] = useState();
+
   const pobDistritosxAnnioSemana = async ({ annio = "", semana = "" } = {}) => {
     try {
       console.log("pobDistritosxAnnioSemana1", annio, "--", semana);
       const response = await axios.get(
         `${API_URL}/poblacion/distrit/${annio}/${semana}`
       );
+      setDataDistrit(response.data.data);
       console.log("pobDistritosxAnnioSemana2", response.data.data);
       if (response.data.data.length > 0) {
         const tiaValues = response.data.data.map((item) => item.tia);
@@ -31,6 +35,7 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
       console.error("erroraso", error);
     }
   };
+
   const calculateQuartiles = (data) => {
     const sortedData = data.slice().sort((a, b) => a - b);
     return {
@@ -60,11 +65,13 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
 
     fetchDistritos();
   }, []);
+
   useEffect(() => {
     if (annio && semana) {
       pobDistritosxAnnioSemana({ annio, semana });
     }
   }, [annio, semana]);
+
   const getRandomColor = (distritoNombre) => {
     if (
       !tiaDistrit ||
@@ -103,8 +110,13 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
   return (
     <Box>
       <Box>
-        <Grid container>
-          <Grid xs={6}>
+        <Box container sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          p: 1,
+          m: 1,
+          borderRadius: 1,
+        }}>
             <MapContainer
               center={[-17.51465, -70.25362]}
               zoom={7.5}
@@ -132,11 +144,21 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
                     <div>
                       <Typography variant="subtitle1">
                         <strong>Distrito:</strong> {feature.properties.nombre}
+                        {datadistrit && datadistrit.length > 0 && (
+                          <>
+                            {datadistrit
+                              .filter(item => item.distrito === feature.properties.nombre)
+                              .map((item, idx) => (
+                                <React.Fragment key={idx}>
+                                  <br />
+                                  <strong>Tasa:</strong> {item.tia}
+                                </React.Fragment>
+                              ))}
+                          </>
+                        )}
                       </Typography>
                       {distritos
-                        .filter(
-                          (d) => d.Provincia === feature.properties.nombre
-                        )
+                        .filter(d => d.Provincia === feature.properties.nombre)
                         .map((distrito, idx) => (
                           <Typography key={idx} variant="body2">
                             <strong>Distrito:</strong> {distrito.Distrit} -{" "}
@@ -148,9 +170,7 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
                 </GeoJSON>
               ))}
             </MapContainer>
-          </Grid>
-          <Grid xs={1}></Grid>
-          <Grid xs={5}>
+            </Box>
             <Paper
               elevation={3}
               style={{
@@ -173,8 +193,8 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
                 }}
               >
                 <Grid container>
-                  <Grid xs={6}>muy bajo riesgo</Grid>
-                  <Grid xs={6}>0 - {quartiles.q1}</Grid>
+                  <Grid item xs={6}>muy bajo riesgo</Grid>
+                  <Grid item xs={6}>0 - {quartiles.q1}</Grid>
                 </Grid>
               </Box>
               <Box
@@ -186,8 +206,8 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
                 }}
               >
                 <Grid container>
-                  <Grid xs={6}>bajo riesgo</Grid>
-                  <Grid xs={6}>
+                  <Grid item xs={6}>bajo riesgo</Grid>
+                  <Grid item xs={6}>
                     {quartiles.q1} - {quartiles.q2}
                   </Grid>
                 </Grid>
@@ -201,8 +221,8 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
                 }}
               >
                 <Grid container>
-                  <Grid xs={6}>Mediano riesgo</Grid>
-                  <Grid xs={6}>
+                  <Grid item xs={6}>Mediano riesgo</Grid>
+                  <Grid item xs={6}>
                     {quartiles.q2} - {quartiles.q3}
                   </Grid>
                 </Grid>
@@ -216,13 +236,11 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
                 }}
               >
                 <Grid container>
-                  <Grid xs={6}>Alto riesgo</Grid>
-                  <Grid xs={6}>{quartiles.q3} - a mas</Grid>
+                  <Grid item xs={6}>Alto riesgo</Grid>
+                  <Grid item xs={6}>{quartiles.q3} - a mas</Grid>
                 </Grid>
               </Box>
             </Paper>
-          </Grid>
-        </Grid>
       </Box>
 
       {/* Agregar la leyenda al mapa */}

@@ -108,12 +108,14 @@ const MyResponsiveStream = () => (
             legendOffset: -40,
             truncateTickAt: 0
         }}
+        
         enableGridX={true}
         enableGridY={false}
         offsetType="silhouette"
         colors={{ scheme: 'nivo' }}
         fillOpacity={0.85}
         borderColor={{ theme: 'background' }}
+        
         defs={[
             {
                 id: 'dots',

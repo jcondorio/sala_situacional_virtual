@@ -45,6 +45,25 @@ const MyGroupedBarChart = ({ data }) => {
                             fill: colors.grey[100],
                         },
                     },
+                    tooltip: {
+                        container: {
+                            background: '#333',
+                            color: '#ddd',
+                            fontSize: '13px',
+                            borderRadius: '2px',
+                            boxShadow: '0 3px 9px rgba(0, 0, 0, 0.5)',
+                            padding: '5px 9px',
+                        },
+                        basic: {
+                            whiteSpace: 'pre',
+                            display: 'flex',
+                            alignItems: 'center',
+                        },
+                        table: {},
+                        tableCell: {
+                            padding: '3px 5px',
+                        },
+                    },
                 }}
                 keys={weeks}
                 indexBy="year"
@@ -52,14 +71,14 @@ const MyGroupedBarChart = ({ data }) => {
                 padding={0.01}
                 groupMode="grouped"
                 colors={['#377eb8']}  // Color azul, puedes cambiarlo por el color que prefieras
-                borderColor={{ from: "color", modifiers: [["darker", "1.6"]] }}
+                //borderColor={{ from: "color", modifiers: [["darker", "1.6"]] }}
                 axisTop={null}
                 axisRight={null}
                 axisBottom={{
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: 'clasificado por años',
+                    legend: 'Semanas epidemiologicas - años',
                     legendPosition: "middle",
                     legendOffset: 32,
                 }}
@@ -74,7 +93,7 @@ const MyGroupedBarChart = ({ data }) => {
                 enableLabel={false}
                 labelSkipWidth={12}
                 labelSkipHeight={12}
-                labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+                //labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
                 animate={true}
                 motionStiffness={90}
                 motionDamping={15}

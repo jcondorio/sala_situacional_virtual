@@ -1,92 +1,94 @@
 import React, { useState } from "react";
-import { Box, Button, Typography, useTheme, Container, Paper, Grid } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { Box, Container, Paper, Typography, CheckboxItem } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import Header from "../global/Header";
+import CsvReader from "../../Hooks/CsvReader";
+import CsvDataList from "../../Hooks/CsvDataList";
+import ImportButton from "../../components/common/ImportButton";
 import { tokens } from "../../theme";
-import Header from "../../components/Header";
-import axios from "axios";
-import { API_URL } from "../../auth/constants";
-import CSVReader from 'react-csv-reader';
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import { getAnniosIras } from "../../services/irasService";
+import { useEffect } from "react";
 
 const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [datosCSV, setDatosCSV] = useState([]);
   const [csvData, setCsvData] = useState(null);
+  const token = localStorage.getItem("token");
 
-  const handleFile = (data) => {
-    const headers = data[0];
-    const rows = data.slice(1);
-    const formattedData = rows.reduce((acc, row) => {
-      if (row.length === headers.length) {
-        const obj = {};
-        headers.forEach((header, index) => {
-          obj[header] = row[index];
-        });
-        acc.push(obj);
-      } else {
-        console.warn(`Ignoring row: ${row} - mismatch with headers`);
-      }
-      return acc;
-    }, []);
-    setCsvData(formattedData);
+  const [checked, setChecked] = useState({});
+
+  const handleChange = (event) => {
+    setChecked({
+      ...checked,
+      [event.target.name]: event.target.checked,
+    });
   };
 
-  const importData = async () => {
+  const getAnniosIra = async () => {
     try {
-      if (csvData) {
-        const response = await axios.post(`${API_URL}/import`, csvData);
-        console.log("Data imported successfully:", response.data);
-      } else {
-        console.log("csvData is empty");
-      }
+      const data = getAnniosIras();
+      setChecked(data);
+      console.log("getAnnioIra", data);
     } catch (error) {
-      console.error("Error importing data:", error);
+      console.error("Error al traer los datos");
     }
   };
+  useEffect(() => {
+    getAnniosIra();
+  }, []);
 
   return (
     <Container maxWidth="md">
-      <Paper elevation={3} sx={{ padding: theme.spacing(4), marginTop: theme.spacing(4) }}>
-        <Header title="Importar Datos del Equipo" subtitle="Sube un archivo CSV para importar los datos del equipo" />
-        
+      <Paper
+        elevation={3}
+        sx={{ padding: theme.spacing(4), marginTop: theme.spacing(4) }}
+      >
+        <Header
+          title="Importar Datos de I.R.A.S."
+          subtitle="Sube un archivo CSV para importar los datos del equipo"
+        />
+
         <Box sx={{ marginTop: theme.spacing(4) }}>
-          <CSVReader
-            onFileLoaded={handleFile}
-            inputId="csv-input"
-            inputStyle={{ display: 'none' }}
-            inputProps={{ accept: ".csv" }}
-          />
-          <label htmlFor="csv-input">
-            <Button
-              variant="contained"
-              component="span"
-              sx={{ backgroundColor: colors.primary[600], color: colors.grey[100] }}
-            >
-              Subir Archivo CSV
-            </Button>
-          </label>
-        </Box>
-        
-        <Box sx={{ marginTop: theme.spacing(4) }}>
-          <Typography variant="h6">Datos del archivo CSV:</Typography>
-          <Paper sx={{ maxHeight: 400, overflow: 'auto', padding: theme.spacing(2) }}>
-            <ul>
-              {csvData && csvData.map((fila, indiceFila) => (
-                <li key={indiceFila}>{JSON.stringify(fila)}</li>
-              ))}
-            </ul>
-          </Paper>
+          <CsvReader setCsvData={setCsvData} colors={colors} />
         </Box>
 
         <Box sx={{ marginTop: theme.spacing(4) }}>
-          <Button
-            variant="contained"
-            onClick={importData}
-            sx={{ backgroundColor: colors.primary[600], color: colors.grey[100] }}
-          >
-            Importar Datos
-          </Button>
+          <CsvDataList csvData={csvData} theme={theme} />
         </Box>
+
+        <Box sx={{ marginTop: theme.spacing(4) }}>
+          <ImportButton csvData={csvData} colors={colors} token={token} />
+        </Box>
+      </Paper>
+      <Paper
+        elevation={3}
+        sx={{ padding: theme.spacing(4), marginTop: theme.spacing(4) }}
+      >
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Selecciona opciones</FormLabel>
+          <FormGroup>
+            {checked.length === 0 ? (
+              <Typography>No hay opciones disponibles.</Typography>
+            ) : (
+              checked.map((item) => (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={item.ANO}
+                     // onChange={() => onChange(item)}
+                    />
+                  }
+                  label={item.label}
+                />
+              ))
+            )}
+          </FormGroup>
+        </FormControl>
       </Paper>
     </Container>
   );
