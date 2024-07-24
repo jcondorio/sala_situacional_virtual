@@ -3,6 +3,7 @@ const sequelize = require("sequelize"); // Asegúrate de importar Sequelize
 const Sequelize = require("../config/db");
 const Provicional = require("../models/provicionalModel");
 const { Op, fn, col, literal } = require("sequelize");
+const jstat = require('jstat');
 // Importa Provicional si es necesario
 
 const getIrasSemanasServices = async () => {
@@ -300,12 +301,10 @@ ORDER BY
     all_years.ANO, weeks.num;
 `;
 
-    // Ejecutar la consulta
     studentsWithDetails = await Sequelize.query(query, {
       type: sequelize.QueryTypes.SELECT,
       replacements: [data.id],
     });
-    //console.log("superconsulta:", studentsWithDetails);
     return studentsWithDetails;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
@@ -314,10 +313,8 @@ ORDER BY
 };
 
 const getDataDistritService = async () => {
-  //console.log("getDataDistritService");
   try {
     const maxAno = await Iras.max("ANO");
-    //console.log("maxAno: ", maxAno);
 
     const results = await Sequelize.query(
       `
@@ -649,7 +646,65 @@ const getgrafico4Services = async (data) => {
   }
 };
 
+const endemicoIrasServices = async (data) => {
+  //console.log("getTotSemIrasEstService", data);
+  try {
+    const query = `
+      select avg(de_ic.logn) as promedio,STDDEV_POP(de_ic.logn) as ln_de, 
+      STDDEV_POP(de_ic.logn)*SQRT(count(de_ic.SEMANA)) as ic_inf,STDDEV_POP(de_ic.logn)*SQRT(count(de_ic.SEMANA)) as ic_sup, count(de_ic.SEMANA) as contara ,
+      (select sum(pobl.men_5) as poblacion from poblacion as pobl inner join annios_endemicos_iras as iend on iend.nom_annio_endemico=pobl.ano
+      where pobl.disa="TACNA" and 
+      pobl.ano = (select max(nom_annio_endemico) from annios_endemicos_iras) group by pobl.ano order by pobl.ano) as max_poblacion
+      from (
+      select
+      i.ANO, i.SEMANA, sum(i.IRA_M2+i.IRA_2_11+i.IRA_1_4A) as casos, pobl.poblacion, ((sum(i.IRA_M2+i.IRA_2_11+i.IRA_1_4A)/pobl.poblacion*100000)+1) tasa_i,
+      ln(((sum(i.IRA_M2+i.IRA_2_11+i.IRA_1_4A)/pobl.poblacion*100000)+1)) logn
+      from iras as i 
+      inner join annios_endemicos_iras iend on i.ANO=iend.nom_annio_endemico
+      inner join (select pobl.ano,sum(pobl.men_5) poblacion from poblacion as pobl 
+      where pobl.disa="TACNA" group by pobl.ano order by pobl.ano) as pobl on pobl.ano=iend.nom_annio_endemico
+      where i.SEMANA<=52
+      group by i.ANO,i.SEMANA 
+      order by i.ANO, i.SEMANA
+      ) as de_ic group by de_ic.SEMANA;
 
+    `;
+    studentsWithDetails = await Sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    console.log("endemicoIrasServices: ",studentsWithDetails);
+    const cal_student=studentsWithDetails.map(item =>({
+      ...item,
+      ic_inf: item.promedio - (jstat.studentt.inv(0.05, item.contara) * item.ic_inf),
+      ic_sup: item.promedio + (jstat.studentt.inv(0.05, item.contara) * item.ic_sup)
+    }))
+    console.log("cal_student",cal_student)
+    let bloque_5=[
+    ];
+    cal_student.forEach(item => {
+      bloque_5.push({
+        ic_inf_tasa: (Math.exp(item.ic_inf)-1),
+        media_tasa: (Math.exp(item.promedio)-1),
+        ic_sup_tasa:(Math.exp(item.ic_sup)-1),
+        ic_inf_casos:((Math.exp(item.ic_inf)-1)*item.max_poblacion/100000),
+        media_casos: ((Math.exp(item.promedio)-1)*item.max_poblacion/100000),
+        ic_sup_casos:((Math.exp(item.ic_sup)-1)*item.max_poblacion/100000)
+      })
+    });
+    let  bloque_6=[];
+    bloque_5.forEach(item => {
+      bloque_6.push({
+        ic_inf: item.ic_inf_casos,
+        media_ic_inf: (item.ic_inf_casos-item.media_casos),
+        media_ic_sup:(item.ic_sup_casos-item.media_casos)
+      })
+    });
+    return bloque_6;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
 module.exports = {
   getIrasSemanasServices,
   getIrasUltimaSemanaDistrit,
@@ -666,4 +721,5 @@ module.exports = {
   getCasosDistritSemServices,
   getgrafico2Services,
   getgrafico4Services,
+  endemicoIrasServices,
 };

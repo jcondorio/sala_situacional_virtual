@@ -218,8 +218,8 @@ const deleteEdasRecordsByYear = async (year) => {
 const importDataEdasServices = async (data, blockSize = 10) => {
   ////console.log("importDataServices: ");
   try {
-    const year = data[0].ANO; // Se asume que todos los registros tienen el mismo año
-    await deleteEdasRecordsByYear(year); // Elimina los registros del año específico
+    const year = data[0].ANO; 
+    await deleteEdasRecordsByYear(year); 
 
     const totalRecords = data.length;
     let insertedCount = 0;

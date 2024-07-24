@@ -33,7 +33,9 @@ const getAnnioEdasServices = async () => {
   } catch (error) {
     console.error("Error al ejecutar la consulta:", error);
   }
-};const getCheckedIrasServices = async () => {
+};
+
+const getCheckedIrasServices = async () => {
   try {
     // Iniciar una transacción en Sequelize
     const results = await Sequelize.transaction(async (t) => {
@@ -67,8 +69,42 @@ const getAnnioEdasServices = async () => {
     throw error;
   }
 };
+
+const postDateEndemicoService = async (datos) => {
+  try {
+    console.log("postDateEndemicoService: ", datos);
+
+    await Sequelize.transaction(async (transaction) => {
+      await Sequelize.query(`
+        TRUNCATE TABLE annios_endemicos_iras;
+      `, { transaction });
+
+      const totalRecords = datos.length;
+      const blockSize = 100;
+      let insertedCount = 0;
+
+      while (insertedCount < totalRecords) {
+        const block = datos.slice(insertedCount, insertedCount + blockSize);
+        const values = block.map((rowData) => `('${rowData}')`).join(',');
+
+        await Sequelize.query(`
+          INSERT INTO annios_endemicos_iras(nom_annio_endemico)
+          VALUES ${values};
+        `, { transaction });
+
+        insertedCount += block.length;
+      }
+    });
+
+    return { success: true, message: 'Datos insertados correctamente.' };
+  } catch (error) {
+    console.error("Error al insertar los datos:", error);
+    throw error;
+  }
+};
 module.exports = {
   getAnnioIrasServices,
   getAnnioEdasServices,
   getCheckedIrasServices,
+  postDateEndemicoService,
 };

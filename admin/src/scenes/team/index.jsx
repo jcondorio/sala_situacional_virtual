@@ -8,10 +8,7 @@ import ImportButton from "../../components/common/ImportButton";
 import { tokens } from "../../theme";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import { getAnniosIras } from "../../services/irasService";
+import { getAnniosIras, postDateService } from "../../services/irasService";
 import { useEffect } from "react";
 
 const Team = () => {
@@ -50,14 +47,22 @@ const Team = () => {
     const { value, checked } = event.target;
     console.log(value, checked)
     if (checked) {
-      setDataChecked([...datachecked, value]); 
+      setDataChecked([...datachecked, value]);
     }
     else {
       setDataChecked(datachecked.filter(item => item !== value));
     }
     console.log(datachecked);
   };
-
+  const postDateCanalEndemico = async () => {
+    try {
+      console.log("datachecked: ", datachecked);
+      const response = await postDateService(datachecked);
+      setDataChecked(response);
+    } catch (error) {
+      console.error("error: ", error)
+    }
+  };
   useEffect(() => {
     getAnniosIra();
   }, []);
@@ -89,11 +94,27 @@ const Team = () => {
         elevation={3}
         sx={{ padding: theme.spacing(4), marginTop: theme.spacing(4) }}
       >
+        <Header
+          title="Años a considerar para el canal endemico en I.R.A.S y Neumonias"
+          subtitle="Seleccione los años que se consideraran"
+        />
 
-        {Array.isArray(checked) &&
-          checked.map((item) => (
-            <FormControlLabel key={item.ano} control={<Checkbox defaultChecked={item.estado} value={item.ano} onChange={handleCheckedIras} />} label={item.ano} />
-          ))}
+        <Box>
+          {Array.isArray(checked) &&
+            checked.map((item) => (
+              <FormControlLabel key={item.ano} control={<Checkbox defaultChecked={item.estado} value={item.ano} onChange={handleCheckedIras} />} label={item.ano} />
+            ))}
+        </Box>
+        <Box>
+          <Button 
+          variant="contained"
+          sx={{ backgroundColor: colors.primary[600], color: colors.grey[100] }}
+          onClick={postDateCanalEndemico}>
+            Enviar
+          </Button>
+        </Box>
+
+
       </Paper>
     </Container>
   );
