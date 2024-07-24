@@ -11,5 +11,14 @@ const getAnniosIras = async()=>{
         throw error;
     }
 };
-
-export { getAnniosIras };
+const postDateService = async (data) =>{
+    try{
+        const response = await axios.post(`${API_URL}/otros/postDate`,data);
+        return response.data;
+    }catch(error){
+        console.error('Error fetching users', error);
+        throw error;
+    }
+    
+  }
+export { getAnniosIras , postDateService };
