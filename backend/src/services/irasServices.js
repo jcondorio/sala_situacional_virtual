@@ -3,7 +3,9 @@ const sequelize = require("sequelize"); // Asegúrate de importar Sequelize
 const Sequelize = require("../config/db");
 const Provicional = require("../models/provicionalModel");
 const { Op, fn, col, literal } = require("sequelize");
-const jstat = require('jstat');
+const jStat = require('jstat');
+const math = require('mathjs');
+
 // Importa Provicional si es necesario
 
 const getIrasSemanasServices = async () => {
@@ -574,7 +576,7 @@ ORDER BY semana;
     // Ejecutar la consulta
     studentsWithDetails = await Sequelize.query(query, {
       type: sequelize.QueryTypes.SELECT,
-      replacements: [data.annio, data.estacion,data.annio],
+      replacements: [data.annio, data.estacion, data.annio],
     });
     //console.log("superconsulta:", studentsWithDetails);
     return studentsWithDetails;
@@ -636,7 +638,7 @@ const getgrafico4Services = async (data) => {
     // Ejecutar la consulta
     studentsWithDetails = await Sequelize.query(query, {
       type: sequelize.QueryTypes.SELECT,
-      replacements: [data.annio,data.annio, data.distrito],
+      replacements: [data.annio, data.annio, data.distrito],
     });
     //console.log("superconsulta:", studentsWithDetails);
     return studentsWithDetails;
@@ -651,7 +653,7 @@ const endemicoIrasServices = async (data) => {
   try {
     const query = `
       select avg(de_ic.logn) as promedio,STDDEV_POP(de_ic.logn) as ln_de, 
-      STDDEV_POP(de_ic.logn)*SQRT(count(de_ic.SEMANA)) as ic_inf,STDDEV_POP(de_ic.logn)*SQRT(count(de_ic.SEMANA)) as ic_sup, count(de_ic.SEMANA) as contara ,
+      SQRT(count(de_ic.SEMANA)) as ic_inf,SQRT(count(de_ic.SEMANA)) as ic_sup, count(de_ic.SEMANA) as contara ,
       (select sum(pobl.men_5) as poblacion from poblacion as pobl inner join annios_endemicos_iras as iend on iend.nom_annio_endemico=pobl.ano
       where pobl.disa="TACNA" and 
       pobl.ano = (select max(nom_annio_endemico) from annios_endemicos_iras) group by pobl.ano order by pobl.ano) as max_poblacion
@@ -672,39 +674,89 @@ const endemicoIrasServices = async (data) => {
     studentsWithDetails = await Sequelize.query(query, {
       type: sequelize.QueryTypes.SELECT,
     });
-    console.log("endemicoIrasServices: ",studentsWithDetails);
-    const cal_student=studentsWithDetails.map(item =>({
+    console.log("endemicoIrasServices: ", studentsWithDetails);
+    const cal_student = studentsWithDetails.map(item => ({
       ...item,
-      ic_inf: item.promedio - (jstat.studentt.inv(0.05, item.contara) * item.ic_inf),
-      ic_sup: item.promedio + (jstat.studentt.inv(0.05, item.contara) * item.ic_sup)
+      ic_inf: item.promedio - (jStat.studentt.inv(0.975, item.contara) * item.ln_de / item.ic_inf),
+      ic_sup: item.promedio + (jStat.studentt.inv(0.975, item.contara) * item.ln_de / item.ic_sup)
     }))
-    console.log("cal_student",cal_student)
-    let bloque_5=[
+    console.log("cal_student", cal_student)
+    let bloque_5 = [
     ];
     cal_student.forEach(item => {
       bloque_5.push({
-        ic_inf_tasa: (Math.exp(item.ic_inf)-1),
-        media_tasa: (Math.exp(item.promedio)-1),
-        ic_sup_tasa:(Math.exp(item.ic_sup)-1),
-        ic_inf_casos:((Math.exp(item.ic_inf)-1)*item.max_poblacion/100000),
-        media_casos: ((Math.exp(item.promedio)-1)*item.max_poblacion/100000),
-        ic_sup_casos:((Math.exp(item.ic_sup)-1)*item.max_poblacion/100000)
+        ic_inf_tasa: (Math.exp(item.ic_inf) - 1),
+        media_tasa: (Math.exp(item.promedio) - 1),
+        ic_sup_tasa: (Math.exp(item.ic_sup) - 1),
+        ic_inf_casos: ((Math.exp(item.ic_inf) - 1) * item.max_poblacion / 100000),
+        media_casos: ((Math.exp(item.promedio) - 1) * item.max_poblacion / 100000),
+        ic_sup_casos: ((Math.exp(item.ic_sup) - 1) * item.max_poblacion / 100000)
       })
     });
-    let  bloque_6=[];
+    let bloque_6 = [];
     bloque_5.forEach(item => {
       bloque_6.push({
-        ic_inf: item.ic_inf_casos,
-        media_ic_inf: (item.ic_inf_casos-item.media_casos),
-        media_ic_sup:(item.ic_sup_casos-item.media_casos)
-      })
+        ic_inf: parseFloat(item.ic_inf_casos.toFixed(2)),
+        media_ic_inf: parseFloat((item.media_casos - item.ic_inf_casos).toFixed(2)),
+        media_ic_sup: parseFloat((item.ic_sup_casos - item.media_casos).toFixed(2))
+      });
     });
+    
+    if (bloque_6.length > 0) {
+      bloque_6.unshift({
+        ic_inf: bloque_6[0].ic_inf,
+        media_ic_inf: bloque_6[0].media_ic_inf,
+        media_ic_sup: bloque_6[0].media_ic_sup
+      });
+    } else {
+      console.error("Error: bloque_6 está vacío, no se puede agregar el elemento inicial.");
+    }
+    
     return bloque_6;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
     throw error;
   }
 };
+
+const getAnnioIrasService = async (annio) =>{
+  try{
+    console.log("getAnnioIrasService123",annio.annio)
+    const query = `
+      WITH weeks AS (
+            SELECT num AS SEMANA
+            FROM (
+                SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+                UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+                UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+                UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+                UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+                UNION SELECT 51 UNION SELECT 52
+            ) AS all_weeks
+        )
+        SELECT 
+            weeks.SEMANA,
+            COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS casos
+        FROM weeks
+        LEFT JOIN iras 
+            ON weeks.SEMANA = iras.SEMANA 
+            AND iras.ANO = ?
+        GROUP BY weeks.SEMANA
+        ORDER BY weeks.SEMANA;
+
+  `;
+  studentsWithDetails = await Sequelize.query(query, {
+    type: sequelize.QueryTypes.SELECT,
+    replacements:[annio.annio]
+  });
+
+  return studentsWithDetails;
+  }catch(error){
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   getIrasSemanasServices,
   getIrasUltimaSemanaDistrit,
@@ -722,4 +774,5 @@ module.exports = {
   getgrafico2Services,
   getgrafico4Services,
   endemicoIrasServices,
+  getAnnioIrasService,
 };

@@ -31,6 +31,8 @@ import BarSimpleChart from "../../components/BarSimpleChart";
 import MyResponsiveStream from "../../components/MyResponsiveStream";
 import MyGroupedBarChart from "../../prototips/MyGroupedBarChart";
 import MapaTacnaConProvincias10k from "../../components/MapaTacnaConProvincias10k";
+import CombinedChart from "../../components/CombinedChart ";
+import { endemicoIrasService, semanasIrasService } from "../../services/irasServices";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -54,7 +56,8 @@ const Dashboard = () => {
   const [datosGraf2, setDatosGraf2] = useState();
   const [datosGraf4, setDatosGraf4] = useState();
   const [distritos, setDistritos] = useState();
-
+  const [dataEndemicoIras, setDataEndemicoIras] = useState();
+  const [dataSemanas, setDataSemanas] = useState();
 
 
 
@@ -68,11 +71,30 @@ const Dashboard = () => {
     }
   };
 
+  const endemicoIras = async () => {
+    try {
+      const response = await endemicoIrasService();
+      setDataEndemicoIras(response);
+      console.log("endemicoIras:", response)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const anniosemanaIras = async () => {
+    try {
+      const response = await semanasIrasService();
+      setDataSemanas(response);
+      console.log("anniosemanaIras:", response)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   const getAnnioIra = async () => {
     try {
       const response = await axios(`${API_URL}/otros/annioIras`);
-      console.log("getAnnioIra: ",response.data.data);
+      console.log("getAnnioIra: ", response.data.data);
       const data = response.data.data;
       setAnniosIras(data);
       // Encontrar el año más alto en los datos
@@ -267,6 +289,8 @@ const Dashboard = () => {
     getTotEst2024();
     getAnnioIra();
     fetchDistritos();
+    endemicoIras();
+    anniosemanaIras();
   }, []);
   useEffect(() => {
     actualizarDatosGenerales();
@@ -775,16 +799,43 @@ const Dashboard = () => {
           </Box>
         </Box>
         <Box
-          gridColumn="span 12"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
+            gridColumn="span 12"
+            gridRow="span 3"
+            backgroundColor={colors.primary[400]}
+            padding="30px"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            position="relative"
+            style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
         >
-          canal endemico para el lunes
-          <MyResponsiveStream></MyResponsiveStream>
+            Canal endemico I.R.A.S menores a 5 años
+            <Box
+                position="relative"
+                height="100%"
+                width="100%"
+            >
+                <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    zIndex={1} // Asegúrate de que esté detrás
+                >
+                    {dataEndemicoIras && <MyResponsiveStream datosEnd={dataEndemicoIras} />}
+                </Box>
+                <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    zIndex={2} // Asegúrate de que esté encima
+                >
+                    {dataSemanas && <BarSimpleChart data={dataSemanas} />}
+                </Box>
+            </Box>
         </Box>
       </Box>
     </Box>
