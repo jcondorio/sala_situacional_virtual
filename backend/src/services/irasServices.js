@@ -648,11 +648,11 @@ const getgrafico4Services = async (data) => {
   }
 };
 
-const endemicoIrasServices = async (data) => {
-  //console.log("getTotSemIrasEstService", data);
+const endemicoIrasServices = async (annio) => {
+  console.log("endemicoIrasServices", annio);
   try {
     const query = `
-      select avg(de_ic.logn) as promedio,STDDEV_POP(de_ic.logn) as ln_de, 
+            select avg(de_ic.logn) as promedio,STDDEV_POP(de_ic.logn) as ln_de, 
       SQRT(count(de_ic.SEMANA)) as ic_inf,SQRT(count(de_ic.SEMANA)) as ic_sup, count(de_ic.SEMANA) as contara ,
       (select sum(pobl.men_5) as poblacion from poblacion as pobl inner join annios_endemicos_iras as iend on iend.nom_annio_endemico=pobl.ano
       where pobl.disa="TACNA" and 
@@ -665,14 +665,15 @@ const endemicoIrasServices = async (data) => {
       inner join annios_endemicos_iras iend on i.ANO=iend.nom_annio_endemico
       inner join (select pobl.ano,sum(pobl.men_5) poblacion from poblacion as pobl 
       where pobl.disa="TACNA" group by pobl.ano order by pobl.ano) as pobl on pobl.ano=iend.nom_annio_endemico
-      where i.SEMANA<=52
+      where i.SEMANA<=52 and iend.nom_annio_endemico<2017
       group by i.ANO,i.SEMANA 
       order by i.ANO, i.SEMANA
       ) as de_ic group by de_ic.SEMANA;
 
     `;
-    studentsWithDetails = await Sequelize.query(query, {
+    const studentsWithDetails = await Sequelize.query(query, {
       type: sequelize.QueryTypes.SELECT,
+      replacements:[annio.annio],
     });
     console.log("endemicoIrasServices: ", studentsWithDetails);
     const cal_student = studentsWithDetails.map(item => ({

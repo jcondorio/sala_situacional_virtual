@@ -18,6 +18,6 @@ router.get("/casesemanadistrit/:annio/:semana",getcasesemanadistritController);
 router.get("/updatedistritSem/:annio/:semana",getCasosDistritUltSemController);
 router.get("/grafico2/:annio/:estacion",getgrafico2Controller);
 router.get("/grafico4/:annio/:distrito",getgrafico4Controller);
-router.get("/endemico",endemicoIrasController);
+router.get("/endemico/:annio",endemicoIrasController);
 router.get("/semannioiras/:annio",getAnnioIrasController);
 module.exports = router;

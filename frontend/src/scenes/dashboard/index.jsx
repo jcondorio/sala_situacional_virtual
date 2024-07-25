@@ -71,18 +71,20 @@ const Dashboard = () => {
     }
   };
 
-  const endemicoIras = async () => {
+  const endemicoIras = async (ano) => {
     try {
-      const response = await endemicoIrasService();
+      console.log("ano1",ano)
+      const response = await endemicoIrasService(ano);
       setDataEndemicoIras(response);
       console.log("endemicoIras:", response)
     } catch (error) {
       console.error(error);
     }
   }
-  const anniosemanaIras = async () => {
+  const anniosemanaIras = async (ano) => {
     try {
-      const response = await semanasIrasService();
+      console.log("ano2",ano)
+      const response = await semanasIrasService(ano);
       setDataSemanas(response);
       console.log("anniosemanaIras:", response)
     } catch (error) {
@@ -289,14 +291,15 @@ const Dashboard = () => {
     getTotEst2024();
     getAnnioIra();
     fetchDistritos();
-    endemicoIras();
-    anniosemanaIras();
+ 
   }, []);
   useEffect(() => {
     actualizarDatosGenerales();
     actualizarCasosDistrit();
     setDatosGraf2("");
     setDatosGraf4("");
+    endemicoIras(annio);
+    anniosemanaIras(annio);
   }, [annio]);
   useEffect(() => {
     //console.log("dataInsidencias:", dataInsidencias);

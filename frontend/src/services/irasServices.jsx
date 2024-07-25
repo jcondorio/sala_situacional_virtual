@@ -2,10 +2,12 @@ import { API_URL } from "../auth/contacts";
 import axios from "axios";
 
 // Servicio para obtener datos endémicos de IRAS
-export const endemicoIrasService = async () => {
+export const endemicoIrasService = async (ano) => {
     try {
         console.log("Intentando obtener datos endémicos de IRAS");
-        const response = await axios(`${API_URL}/iras/endemico`);
+        const response = await axios(`${API_URL}/iras/endemico/${ano}`);
+        console.log("asdasd",response.data.data);
+
         return response.data.data;
     } catch (error) {
         console.error("Error al obtener datos endémicos de IRAS:", error);
@@ -14,9 +16,9 @@ export const endemicoIrasService = async () => {
 };
 
 // Servicio para obtener semanas de IRAS
-export const semanasIrasService = async () => {
+export const semanasIrasService = async (ano) => {
     try {
-        const response = await axios(`${API_URL}/iras/semannioiras/2024`);
+        const response = await axios(`${API_URL}/iras/semannioiras/${ano}`);
         console.log("aver::",response.data.data)
         return response.data.data;
     } catch (error) {

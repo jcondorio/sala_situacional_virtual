@@ -160,7 +160,7 @@ const getgrafico4Controller = async (req,res) => {
     }
 };
 const endemicoIrasController = async (req,res) => {
-    ////console.log("getgrafico2Controller",req.params)
+    console.log("endemicoIrasController",req.params)
     try {
         const getIras = await endemicoIrasServices(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
