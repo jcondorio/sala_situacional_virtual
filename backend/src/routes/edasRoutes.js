@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
-const { getIrasSemanasController, getIrasUltimaSemanaDistritController, getgrafico2Controller, getcasesemanadistritController, getTotIrasController, getTotIrasSemanaController, getTotDistritosCasosController, getTotEstCasosController, getTotalEstController, getTotSemIrasEstController, getDataDistritController, getDatosGeneralesController, getCasosDistritUltController, getCasosDistritUltSemController, getgrafico4Controller } = require("../controllers/edasController");
-const { getCasosDistritUltSemServices } = require("../services/irasServices");
+const { getIrasSemanasController, getIrasUltimaSemanaDistritController, getgrafico2Controller, getcasesemanadistritController, getTotIrasController, getTotIrasSemanaController, getTotDistritosCasosController, getTotEstCasosController, getTotalEstController, getTotSemIrasEstController, getDataDistritController, getDatosGeneralesController, getCasosDistritUltController, getCasosDistritUltSemController, getgrafico4Controller, endemicoIrasController, getAnnioIrasController, distritoonemapController } = require("../controllers/edasController");
+
 
 router.get("/", getIrasSemanasController);
 router.get("/ultimasemana", getIrasUltimaSemanaDistritController);
@@ -18,4 +18,7 @@ router.get("/casesemanadistrit/:annio/:semana",getcasesemanadistritController);
 router.get("/updatedistritSem/:annio/:semana",getCasosDistritUltSemController);
 router.get("/grafico2/:annio/:estacion",getgrafico2Controller);
 router.get("/grafico4/:annio/:distrito",getgrafico4Controller);
+router.get("/endemico/:annio",endemicoIrasController);
+router.get("/semannioiras/:annio",getAnnioIrasController);
+router.get("/distritoonemap",distritoonemapController);
 module.exports = router;

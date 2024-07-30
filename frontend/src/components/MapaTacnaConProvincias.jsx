@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, GeoJSON, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, GeoJSON, Popup, Tooltip,TileLayer } from "react-leaflet";
 import axios from "axios";
 import { API_URL } from "../auth/contacts";
 import "leaflet/dist/leaflet.css";
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import * as ss from "simple-statistics";
 
 // Datos GeoJSON de las provincias en Tacna (ejemplo)
 import datosProvincias from "../data/provinciasTacna.json";
 
-const MapaTacnaConProvincias = ({ annio, semana }) => {
+const MapaTacnaConProvincias = ({ annio, semana, distritoOne1 }) => {
   const [distritos, setDistritos] = useState([]);
   const [sumaTotalCasos, setSumaTotalCasos] = useState(0);
   const [quartiles, setQuartiles] = useState({ q1: 0, q2: 0, q3: 0 });
@@ -106,141 +106,182 @@ const MapaTacnaConProvincias = ({ annio, semana }) => {
 
     return "#ffffff";
   };
+  const probando = () => {
+    console.log("rarara");
+  };
 
   return (
     <Box>
       <Box>
-        <Box container sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          p: 1,
-          m: 1,
-          borderRadius: 1,
-        }}>
-            <MapContainer
-              center={[-17.51465, -70.25362]}
-              zoom={7.5}
-              style={{ height: "350px", width: "320px", background: "none" }}
-              zoomControl={false}
-              dragging={false}
-              scrollWheelZoom={false}
-            >
-              {/* Agregar un TileLayer transparente */}
-              <TileLayer url="" style={{ display: "none" }} />
-              {/* Iterar sobre los datos de las provincias y renderizar cada una */}
-              {datosProvincias.features.map((feature, idx) => (
-                <GeoJSON
-                  key={idx}
-                  data={feature}
-                  style={() => ({
-                    fillColor: getRandomColor(feature.properties.nombre),
-                    color: "black",
-                    weight: 1,
-                    fillOpacity: 1,
-                  })}
+        <Box
+          container
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            p: 1,
+            m: 1,
+            borderRadius: 1,
+          }}
+        >
+          <MapContainer
+            center={[-17.51465, -70.25362]}
+            zoom={7.5}
+            style={{ height: "350px", width: "320px", background: "none" }}
+            zoomControl={false}
+            dragging={false}
+            scrollWheelZoom={false}
+          >
+            {/* Agregar un TileLayer transparente */}
+            <TileLayer url="" style={{ display: "none" }} />
+            {/* Iterar sobre los datos de las provincias y renderizar cada una */}
+            {datosProvincias.features.map((feature, idx) => (
+              <GeoJSON
+                key={idx}
+                data={feature}
+                style={() => ({
+                  fillColor: getRandomColor(feature.properties.nombre),
+                  color: "black",
+                  weight: 1,
+                  fillOpacity: 1,
+                })}
+                eventHandlers={{
+                  click: (e) => {
+                    distritoOne1(feature.properties.nombre);
+                    // Asegurarse de que no haya estilos de borde adicionales
+                    e.target.setStyle({
+                    });
+                  },
+                  mouseout: (e) => {
+                    // Restaurar el estilo cuando el ratón sale de la capa
+                    e.target.setStyle({
+                      weight: 1, // Restaurar el borde si es necesario
+                      color: "black",
+                      fillOpacity: 1,
+                    });
+                  },
+                }}
+              >
+                {/* Popup para mostrar el nombre de la provincia */}
+                <Tooltip
+                  direction="top"
+                  opacity={0.9} // Ajusta la opacidad del Tooltip
+                  permanent={false} // No mantener el Tooltip visible de forma permanente
                 >
-                  {/* Popup para mostrar el nombre de la provincia */}
-                  <Popup>
-                    <div>
-                      <Typography variant="subtitle1">
-                        <strong>Distrito:</strong> {feature.properties.nombre}
-                        {datadistrit && datadistrit.length > 0 && (
-                          <>
-                            {datadistrit
-                              .filter(item => item.distrito === feature.properties.nombre)
-                              .map((item, idx) => (
-                                <React.Fragment key={idx}>
-                                  <br />
-                                  <strong>Tasa:</strong> {item.tia}
-                                </React.Fragment>
-                              ))}
-                          </>
-                        )}
-                      </Typography>
-                      {distritos
-                        .filter(d => d.Provincia === feature.properties.nombre)
-                        .map((distrito, idx) => (
-                          <Typography key={idx} variant="body2">
-                            <strong>Distrito:</strong> {distrito.Distrit} -{" "}
-                            <strong>Casos:</strong> {distrito.casos}
-                          </Typography>
-                        ))}
-                    </div>
-                  </Popup>
-                </GeoJSON>
-              ))}
-            </MapContainer>
-            </Box>
-            <Paper
-              elevation={3}
-              style={{
-                position: "relative",
-                marginTop: "0%",
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                padding: "3px",
-                border: "1px solid #ccc",
-              }}
-            >
-              <Typography variant="subtitle2">
-                <strong>T.I.A. x 1000 menor a 5 años</strong>
-              </Typography>
-              <Box
-                style={{
-                  background: "#fce4d5",
-                  padding: "2px",
-                  fontSize: "12px",
-                  color: "black",
-                }}
-              >
-                <Grid container>
-                  <Grid item xs={6}>muy bajo riesgo</Grid>
-                  <Grid item xs={6}>0 - {quartiles.q1}</Grid>
-                </Grid>
-              </Box>
-              <Box
-                style={{
-                  background: "#f4b180",
-                  padding: "2px",
-                  fontSize: "12px",
-                  color: "black",
-                }}
-              >
-                <Grid container>
-                  <Grid item xs={6}>bajo riesgo</Grid>
-                  <Grid item xs={6}>
-                    {quartiles.q1} - {quartiles.q2}
-                  </Grid>
-                </Grid>
-              </Box>
-              <Box
-                style={{
-                  background: "#c15c0c",
-                  padding: "2px",
-                  fontSize: "12px",
-                  color: "black",
-                }}
-              >
-                <Grid container>
-                  <Grid item xs={6}>Mediano riesgo</Grid>
-                  <Grid item xs={6}>
-                    {quartiles.q2} - {quartiles.q3}
-                  </Grid>
-                </Grid>
-              </Box>
-              <Box
-                style={{
-                  background: "#853b0c",
-                  padding: "2px",
-                  fontSize: "12px",
-                  color: "black",
-                }}
-              >
-                <Grid container>
-                  <Grid item xs={6}>Alto riesgo</Grid>
-                  <Grid item xs={6}>{quartiles.q3} - a mas</Grid>
-                </Grid>
-              </Box>
-            </Paper>
+                  <div>
+                    <Typography variant="subtitle1">
+                      <strong>Distrito:</strong> {feature.properties.nombre}
+                      {datadistrit && datadistrit.length > 0 && (
+                        <>
+                          {datadistrit
+                            .filter(
+                              (item) =>
+                                item.distrito === feature.properties.nombre
+                            )
+                            .map((item, idx) => (
+                              <React.Fragment key={idx}>
+                                <br />
+                                <strong>Tasa:</strong> {item.tia}
+                              </React.Fragment>
+                            ))}
+                        </>
+                      )}
+                    </Typography>
+                    {distritos
+                      .filter((d) => d.Provincia === feature.properties.nombre)
+                      .map((distrito, idx) => (
+                        <Typography key={idx} variant="body2">
+                          <strong>Distrito:</strong> {distrito.Distrit} -{" "}
+                          <strong>Casos:</strong> {distrito.casos}
+                        </Typography>
+                      ))}
+                  </div>
+                </Tooltip>
+              </GeoJSON>
+            ))}
+          </MapContainer>
+        </Box>
+        <Paper
+          elevation={3}
+          style={{
+            position: "relative",
+            marginTop: "0%",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            padding: "3px",
+            border: "1px solid #ccc",
+          }}
+        >
+          <Typography variant="subtitle2">
+            <strong>T.I.A. x 1000 menor a 5 años</strong>
+          </Typography>
+          <Box
+            style={{
+              background: "#fce4d5",
+              padding: "2px",
+              fontSize: "12px",
+              color: "black",
+            }}
+          >
+            <Grid container>
+              <Grid item xs={6}>
+                muy bajo riesgo
+              </Grid>
+              <Grid item xs={6}>
+                0 - {quartiles.q1}
+              </Grid>
+            </Grid>
+          </Box>
+          <Box
+            style={{
+              background: "#f4b180",
+              padding: "2px",
+              fontSize: "12px",
+              color: "black",
+            }}
+          >
+            <Grid container>
+              <Grid item xs={6}>
+                bajo riesgo
+              </Grid>
+              <Grid item xs={6}>
+                {quartiles.q1} - {quartiles.q2}
+              </Grid>
+            </Grid>
+          </Box>
+          <Box
+            style={{
+              background: "#c15c0c",
+              padding: "2px",
+              fontSize: "12px",
+              color: "black",
+            }}
+          >
+            <Grid container>
+              <Grid item xs={6}>
+                Mediano riesgo
+              </Grid>
+              <Grid item xs={6}>
+                {quartiles.q2} - {quartiles.q3}
+              </Grid>
+            </Grid>
+          </Box>
+          <Box
+            style={{
+              background: "#853b0c",
+              padding: "2px",
+              fontSize: "12px",
+              color: "black",
+            }}
+          >
+            <Grid container>
+              <Grid item xs={6}>
+                Alto riesgo
+              </Grid>
+              <Grid item xs={6}>
+                {quartiles.q3} - a mas
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
       </Box>
 
       {/* Agregar la leyenda al mapa */}

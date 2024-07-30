@@ -9,7 +9,6 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  TextField,
 } from "@mui/material";
 import { tokens } from "../../theme";
 import { mockTransactions } from "../../data/mockData";
@@ -32,42 +31,11 @@ import BarSimpleChart from "../../components/BarSimpleChart";
 import MyResponsiveStream from "../../components/MyResponsiveStream";
 import MyGroupedBarChart from "../../prototips/MyGroupedBarChart";
 import MapaTacnaConProvincias10k from "../../components/MapaTacnaConProvincias10k";
+import CombinedChart from "../../components/CombinedChart ";
+import { distritoOneService, endemicoIrasService, semanasIrasService } from "../../services/edasServices";
+import MapaTacnaConProvinciasEdas from "../../components/MapaTacnaConProvinciasEdas";
 
 const Dashboard = () => {
-  const data123 = [
-    {
-      year: "2023",
-      W01: 150,
-      W02: 200,
-      W03: 180,
-      W04: 0,
-      W05: 150,
-      W06: 200,
-      W07: 180,
-      W08: 0,
-      W09: 150,
-      W10: 200,
-      W11: 180,
-      W12: 11,
-    },
-    {
-      year: "2024",
-      W01: 220,
-      W02: 250,
-      W03: 230,
-      W04: 230,
-      W05: 150,
-      W06: 200,
-      W07: 180,
-      W08: 0,
-      W09: 0,
-      W10: 0,
-      W11: 0,
-      W12: 0,
-    },
-    // más datos...
-  ];
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [dataInsidencias, setDataInsidencias] = useState();
@@ -89,25 +57,57 @@ const Dashboard = () => {
   const [datosGraf2, setDatosGraf2] = useState();
   const [datosGraf4, setDatosGraf4] = useState();
   const [distritos, setDistritos] = useState();
+  const [dataEndemicoIras, setDataEndemicoIras] = useState();
+  const [dataSemanas, setDataSemanas] = useState();
+  const [dataEESS,setDataEESS] = useState();
 
-
-
-
+const activarSetDistritoOne = async(distrito) =>{
+  console.log("distritoOne",distrito,semana,annio);
+  const data={
+    distrito:distrito,
+    semana:semana,
+    annio:annio
+  }
+  const response = await distritoOneService(data);
+  console.log("activarSetDistritoOne",response);
+  setDataEESS(response);
+};
   const fetchDistritos = async () => {
     try {
       const response = await axios.get(`${API_URL}/edas/distrit`);
       setDistritos(response.data.data);
-      //("fetchDistritos:", response.data.data);
+      //console.log("fetchDistritos:", response.data.data);
     } catch (error) {
-      //console.error("Error fetching estudiantes data:", error);
+      console.error("Error fetching estudiantes data:", error);
     }
   };
+
+  const endemicoIras = async (ano) => {
+    try {
+      console.log("ano1",ano)
+      const response = await endemicoIrasService(ano);
+      setDataEndemicoIras(response);
+      console.log("endemicoIras:", response)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const anniosemanaIras = async (ano) => {
+    try {
+      console.log("ano2",ano)
+      const response = await semanasIrasService(ano);
+      setDataSemanas(response);
+      console.log("anniosemanaIras:", response)
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
 
   const getAnnioIra = async () => {
     try {
-      const response = await axios(`${API_URL}/otros/annioEdas`);
-      //console.log(response.data.data);
+      const response = await axios(`${API_URL}/otros/annioIras`);
+      console.log("getAnnioIra: ", response.data.data);
       const data = response.data.data;
       setAnniosIras(data);
       // Encontrar el año más alto en los datos
@@ -148,7 +148,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/edas`);
       const datoConvertido = transformData(response.data.data);
-      //console.log("responseirasno:", response.data.data);
+      console.log("getIras:", response.data.data);
 
       setDataInsidencias(datoConvertido);
       //console.log("responseiras:", datoConvertido);
@@ -168,6 +168,7 @@ const Dashboard = () => {
   const getTotIrasSemana = async () => {
     try {
       const response = await axios.get(`${API_URL}/edas/totsemana`);
+      console.log("getTotIrasSemana:", response.data.data);
       setTotIrasSem(response.data.data.total_casos);
       //console.log("getTotIrasSemana:", response.data.data);
     } catch (error) {
@@ -177,6 +178,7 @@ const Dashboard = () => {
   const getTotDistritSemana = async () => {
     try {
       const response = await axios.get(`${API_URL}/edas/totdist`);
+      console.log("getTotDistritSemana:", response.data.data);
       setTotIrasDistSem(response.data.data);
       //console.log("getTotDistritSemana:", response.data.data);
     } catch (error) {
@@ -212,8 +214,8 @@ const Dashboard = () => {
       const datoConvertido = transformData(response.data.data);
       //console.log("curva", datoConvertido);
       setDataCurvEpi(datoConvertido);
-      // //console.log("curvaEpidemiologica", response.data.data);
-      ////console.log("dataCirvaEpi;", dataCurvEpi)
+      // console.log("curvaEpidemiologica", response.data.data);
+      //console.log("dataCirvaEpi;", dataCurvEpi)
     } catch (error) { }
   };
   const actualizarDatosGenerales = async () => {
@@ -258,7 +260,6 @@ const Dashboard = () => {
       const response = await axios.get(`${API_URL}/edas/casesemanadistrit/${annio}/${semanadistrit}`);
       const result = await axios.get(`${API_URL}/edas/updatedistritSem/${annio}/${semanadistrit}`);
       //console.log("actualizarCasosDistrit:", response.data.data);
-      //console.log("actualizarCasosDistrit2:", result.data.data);
       setDataUltimaSemana(result.data.data);
       setTotIrasSem(response.data.data.totUltSemana);
       setTotIrasEstSem(response.data.data.totEstUltSem);
@@ -271,7 +272,7 @@ const Dashboard = () => {
 
   const getDataGrafSemana = async () => {
     try {
-      //console.log("getDataGrafSemana", annio, "---", estGrafico2)
+      //console.log("getDataGrafSemana",annio,"---",estGrafico2)
       const response = await axios.get(`${API_URL}/edas/grafico2/${annio}/${estGrafico2}`);
       //console.log(response.data.data);
       setDatosGraf2(response.data.data);
@@ -282,7 +283,7 @@ const Dashboard = () => {
   };
   const getDataGraf4Semana = async () => {
     try {
-      //console.log("getDataGraf4Semana", annio, "---", distritGrafico4)
+      //console.log("getDataGraf4Semana",annio,"---",distritGrafico4)
       const response = await axios.get(`${API_URL}/edas/grafico4/${annio}/${distritGrafico4}`);
       //console.log(response.data.data);
       setDatosGraf4(response.data.data);
@@ -301,12 +302,15 @@ const Dashboard = () => {
     getTotEst2024();
     getAnnioIra();
     fetchDistritos();
+ 
   }, []);
   useEffect(() => {
     actualizarDatosGenerales();
     actualizarCasosDistrit();
     setDatosGraf2("");
     setDatosGraf4("");
+    endemicoIras(annio);
+    anniosemanaIras(annio);
   }, [annio]);
   useEffect(() => {
     //console.log("dataInsidencias:", dataInsidencias);
@@ -315,22 +319,7 @@ const Dashboard = () => {
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="EDAS D.E.E.P.I. - TACNA" />
-
-        {/* <Box>
-          <Button
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-            }}
-          >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Descargar reporte
-          </Button>
-        </Box>*/}
+        <Header title="DASHBOARD" subtitle="I.R.A.S. con personas menores a 5 años años D.E.E.P.I. - TACNA" />
       </Box>
 
       {/* GRID & CHARTS */}
@@ -363,7 +352,7 @@ const Dashboard = () => {
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                Grafico de tendencia en E.D.A.S.
+                Grafico de tendencia en I.R.A.S con personas menores a 5 años.
               </Typography>
             </Box>
             <Box>
@@ -461,9 +450,55 @@ const Dashboard = () => {
             </Grid>
           </Grid>
         </Box>
-
         <Box
-          gridColumn="span 3"
+            gridColumn="span 12"
+            gridRow="span 3"
+            backgroundColor={colors.primary[400]}
+            padding="30px"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            position="relative"
+            style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
+        >
+            <Typography
+                color={colors.greenAccent[500]}
+                variant="h5"
+                fontWeight="600"
+                textAlign="center"
+                sx={{ animation: "fadeIn 1s" }}
+              >
+                Canal Endémico de I.R.A.S. con personas menores a 5 años, en el año {annio}
+              </Typography>
+            <Box
+                position="relative"
+                height="100%"
+                width="100%"
+            >
+                <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    zIndex={1} // Asegúrate de que esté detrás
+                >
+                    {dataEndemicoIras && <MyResponsiveStream datosEnd={dataEndemicoIras} />}
+                </Box>
+                <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    zIndex={2} // Asegúrate de que esté encima
+                >
+                    {dataSemanas && <BarSimpleChart data={dataSemanas} />}
+                </Box>
+            </Box>
+        </Box>
+        <Box
+          gridColumn="span 2"
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
@@ -483,7 +518,7 @@ const Dashboard = () => {
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                casos totales E.D.A.S. en el año {annio}
+                casos totales I.R.A.S. en el año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -503,7 +538,7 @@ const Dashboard = () => {
           </Grid>
         </Box>
         <Box
-          gridColumn="span 3"
+          gridColumn="span 2"
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
@@ -523,7 +558,7 @@ const Dashboard = () => {
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                Casos total E.D.A.S. en la semana {semana} del año {annio}
+                Casos total I.R.A.S. en la semana {semana} del año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -543,89 +578,92 @@ const Dashboard = () => {
           </Grid>
         </Box>
         <Box
-          gridColumn="span 3"
+          gridColumn="span 4"
+          gridRow="span 4"
           backgroundColor={colors.primary[400]}
+          padding="30px"
           display="flex"
+          flexDirection="column"
           alignItems="center"
-          justifyContent="center"
         >
-          <Grid
-            container
-            spacing={2}
-            alignItems="center"
-            justifyContent="center"
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            sx={{ marginBottom: "15px" }}
           >
-            <Grid item xs={12}>
-              <Typography
-                color={colors.greenAccent[500]}
-                variant="h5"
-                fontWeight="600"
-                textAlign="center"
-                sx={{ animation: "fadeIn 1s" }}
-              >
-                Cantidad de Distritos que presentaron E.D.A.S. en la semana {semana} del año {annio}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography
-                variant="h6"
-                color="textPrimary"
-                textAlign="center"
-                sx={{
-                  animation: "fadeIn 2s",
-                  fontSize: "2rem",
-                  fontWeight: "bold",
-                }}
-              >
-                {totIrasDistSem !== null ? totIrasDistSem : "Cargando..."}
-              </Typography>
-            </Grid>
-          </Grid>
+            T.I.A. de I.R.A.S. menores a 5 años x 1000 semana {semana} y año {annio}
+          </Typography>
+          <Box
+          >
+            <MapaTacnaConProvinciasEdas annio={annio} semana={semana} distritoOne1={activarSetDistritoOne} />
+          </Box>
         </Box>
         <Box
-          gridColumn="span 3"
+          padding={3}
+          gridColumn="span 4"
+          gridRow="span 4"
           backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
+          overflow="auto"
         >
-          <Grid
-            container
-            spacing={2}
+          <Box
+            display="flex"
+            justifyContent="space-between"
             alignItems="center"
-            justifyContent="center"
+            borderBottom={`4px solid ${colors.primary[500]}`}
+            colors={colors.grey[100]}
+            p="15px"
           >
-            <Grid item xs={12}>
-              <Typography
-                color={colors.greenAccent[500]}
-                variant="h5"
-                fontWeight="600"
-                textAlign="center"
-                sx={{ animation: "fadeIn 1s" }}
-              >
-                Establecimientos con casos de E.D.A.S. en la semana {semana} del año {annio}
-              </Typography>
+            <Grid container justifyContent="center">
+              <Grid xs={12}>
+                <Typography
+                  color={colors.grey[100]}
+                  variant="h5"
+                  fontWeight="600"
+                  align="center"
+                  padding={2}
+                >
+                  Establecimientos con casos segun al distrito seleccionado en el mapa en la semana {semana} del año {annio}
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Typography
-                variant="h6"
-                color="textPrimary"
-                textAlign="center"
-                sx={{
-                  animation: "fadeIn 2s",
-                  fontSize: "2rem",
-                  fontWeight: "bold",
-                }}
+          </Box>
+          {dataEESS &&
+            dataEESS.map((transaction, i) => (
+              <Box
+                key={`${transaction.N_EESS}-${i}`}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                borderBottom={`4px solid ${colors.primary[500]}`}
+                p="15px"
               >
-                {totIrasEstSem !== null ? totIrasEstSem : "Cargando..."}
-              </Typography>
-            </Grid>
-          </Grid>
+                <Box>
+                  <Typography
+                    color={colors.greenAccent[500]}
+                    variant="h5"
+                    fontWeight="600"
+                  >
+                    {transaction.Dpto}
+                  </Typography>
+                  <Typography color={colors.grey[100]}>
+                    {transaction.Prov}
+                  </Typography>
+                </Box>
+                <Box color={colors.grey[100]}>{transaction.N_EESS}</Box>
+                <Box
+                  backgroundColor={colors.greenAccent[500]}
+                  p="5px 10px"
+                  borderRadius="4px"
+                >
+                  {transaction.casos}
+                </Box>
+              </Box>
+            ))}
         </Box>
 
         {/* ROW 2 */}
-
         <Box
+          padding={3}
           gridColumn="span 4"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
@@ -716,53 +754,16 @@ const Dashboard = () => {
                 </Box>
               </Box>
             ))}
+          <Typography>
+            *Los distritos que no aparezcan es porque no tienen casos en la semana seleccionada
+          </Typography>
         </Box>
+
 
         {/* ROW 3 */}
 
 
-        <Box
-          gridColumn="span 4"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Mapa geográfico por provincias de Tacna
-          </Typography>
-          <Box
-          >
-            <MapaTacnaConProvincias annio={annio} semana={semana} />
-          </Box>
-        </Box>
-        <Box
-          gridColumn="span 4"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Mapa geográfico por provincias de Tacna
-          </Typography>
-          <Box
-          >
-            <MapaTacnaConProvincias10k annio={annio} semana={semana} />
-          </Box>
-        </Box>
+
         <Box
           gridColumn="span 6"
           gridRow="span 3"
@@ -877,6 +878,7 @@ const Dashboard = () => {
             {datosGraf4 && <BarSimpleChart data={datosGraf4} />}
           </Box>
         </Box>
+        
       </Box>
     </Box>
   );

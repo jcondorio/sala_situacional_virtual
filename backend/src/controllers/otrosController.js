@@ -1,4 +1,4 @@
-const { getAnnioIrasServices, getAnnioEdasServices, getCheckedIrasServices, postDateEndemicoService } = require("../services/otrosServices");
+const { getAnnioIrasServices, getAnnioEdasServices, getCheckedIrasServices, postDateEndemicoService, getCheckedEdasService, postDateEndemicoEdasService } = require("../services/otrosServices");
 
 
 const getAnnioIrasController = async (req, res) => {
@@ -45,9 +45,33 @@ const postDateEndemicoController = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+const getCheckedEdasController = async (req, res) => {
+    //console.log("en el controlador::")
+    try {
+        const responseController = await getCheckedEdasService();
+        res.status(200).json({ message: 'respuesta del año', data: responseController });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const postDateEndemicoEdasController = async (req, res) => {
+    //console.log("en el controlador::")
+    try {
+        const responseController = await postDateEndemicoEdasService(req.body);
+        res.status(200).json({ message: 'respuesta del año', data: responseController });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 module.exports = { 
     getAnnioIrasController, 
     getAnnioEdasController,
     getCheckedIrasController,
     postDateEndemicoController,
+    getCheckedEdasController,
+    postDateEndemicoEdasController,
 };

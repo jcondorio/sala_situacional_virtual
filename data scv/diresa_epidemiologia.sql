@@ -16,6 +16,54 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `annios_endemicos_iras`
+--
+
+DROP TABLE IF EXISTS `annios_endemicos_iras`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `annios_endemicos_iras` (
+  `id_annio_endemico` int NOT NULL AUTO_INCREMENT,
+  `nom_annio_endemico` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id_annio_endemico`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `annios_endemicos_iras`
+--
+
+LOCK TABLES `annios_endemicos_iras` WRITE;
+/*!40000 ALTER TABLE `annios_endemicos_iras` DISABLE KEYS */;
+INSERT INTO `annios_endemicos_iras` VALUES (1,'2023'),(3,'2011'),(4,'2010'),(6,'2012'),(7,'2013'),(8,'2014'),(9,'2015'),(10,'2016'),(11,'2017'),(12,'2018'),(13,'2019');
+/*!40000 ALTER TABLE `annios_endemicos_iras` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `annios_estaticos`
+--
+
+DROP TABLE IF EXISTS `annios_estaticos`;
+/*!50001 DROP VIEW IF EXISTS `annios_estaticos`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `annios_estaticos` AS SELECT 
+ 1 AS `ANO`*/;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary view structure for view `anos_estaticos`
+--
+
+DROP TABLE IF EXISTS `anos_estaticos`;
+/*!50001 DROP VIEW IF EXISTS `anos_estaticos`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `anos_estaticos` AS SELECT 
+ 1 AS `ANO`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `edas`
 --
 
@@ -342,6 +390,42 @@ LOCK TABLES `usuario` WRITE;
 INSERT INTO `usuario` VALUES (1,'johan','8WKOJw7dJvgabgpM2UduhqQV8HAMCISRa11uEO4kdGinNYiwGFsHAAZdk/28BF225nNqlgWeBARwoI7tarFIjImCY/Fd6+it8NPWEK7VVJE'),(2,'soporte','$2a$12$ga18ecvqDNbC//5zVezSJun3td4UCLblJ1oAZ15JBfjZQx30uI26G');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Final view structure for view `annios_estaticos`
+--
+
+/*!50001 DROP VIEW IF EXISTS `annios_estaticos`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `annios_estaticos` AS select distinct `iras`.`ANO` AS `ANO` from `iras` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `anos_estaticos`
+--
+
+/*!50001 DROP VIEW IF EXISTS `anos_estaticos`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `anos_estaticos` AS select distinct `iras`.`ANO` AS `ANO` from `iras` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -352,4 +436,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-07-18 11:50:44
+-- Dump completed on 2024-07-25 14:19:16
