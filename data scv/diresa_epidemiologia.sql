@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- Host: localhost    Database: diresa_epidemiologia
 -- ------------------------------------------------------
--- Server version	8.0.36
+-- Server version	8.1.0
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,6 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `annios_endemicos_edas`
+--
+
+DROP TABLE IF EXISTS `annios_endemicos_edas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `annios_endemicos_edas` (
+  `id_annio_endemico` int NOT NULL AUTO_INCREMENT,
+  `nom_annio_endemico` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id_annio_endemico`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `annios_endemicos_edas`
+--
+
+LOCK TABLES `annios_endemicos_edas` WRITE;
+/*!40000 ALTER TABLE `annios_endemicos_edas` DISABLE KEYS */;
+INSERT INTO `annios_endemicos_edas` VALUES (1,'2023'),(2,'2019'),(3,'2018'),(4,'2017'),(5,'2013'),(6,'2012'),(7,'2011'),(8,'2016'),(9,'2010'),(10,'2024'),(11,'2014'),(12,'2015');
+/*!40000 ALTER TABLE `annios_endemicos_edas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `annios_endemicos_iras`
 --
 
@@ -26,7 +50,7 @@ CREATE TABLE `annios_endemicos_iras` (
   `id_annio_endemico` int NOT NULL AUTO_INCREMENT,
   `nom_annio_endemico` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_annio_endemico`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -35,7 +59,7 @@ CREATE TABLE `annios_endemicos_iras` (
 
 LOCK TABLES `annios_endemicos_iras` WRITE;
 /*!40000 ALTER TABLE `annios_endemicos_iras` DISABLE KEYS */;
-INSERT INTO `annios_endemicos_iras` VALUES (1,'2023'),(3,'2011'),(4,'2010'),(6,'2012'),(7,'2013'),(8,'2014'),(9,'2015'),(10,'2016'),(11,'2017'),(12,'2018'),(13,'2019');
+INSERT INTO `annios_endemicos_iras` VALUES (1,'2023'),(2,'2010'),(3,'2013'),(4,'2014'),(5,'2015'),(6,'2016'),(7,'2017'),(8,'2018'),(9,'2019');
 /*!40000 ALTER TABLE `annios_endemicos_iras` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -436,4 +460,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-07-25 14:19:16
+-- Dump completed on 2024-07-30  5:23:32
