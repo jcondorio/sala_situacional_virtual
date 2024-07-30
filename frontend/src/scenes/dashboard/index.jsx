@@ -32,7 +32,7 @@ import MyResponsiveStream from "../../components/MyResponsiveStream";
 import MyGroupedBarChart from "../../prototips/MyGroupedBarChart";
 import MapaTacnaConProvincias10k from "../../components/MapaTacnaConProvincias10k";
 import CombinedChart from "../../components/CombinedChart ";
-import { endemicoIrasService, semanasIrasService } from "../../services/irasServices";
+import { distritoOneService, endemicoIrasService, semanasIrasService } from "../../services/irasServices";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -58,9 +58,19 @@ const Dashboard = () => {
   const [distritos, setDistritos] = useState();
   const [dataEndemicoIras, setDataEndemicoIras] = useState();
   const [dataSemanas, setDataSemanas] = useState();
+  const [dataEESS,setDataEESS] = useState();
 
-
-
+const activarSetDistritoOne = async(distrito) =>{
+  console.log("distritoOne",distrito,semana,annio);
+  const data={
+    distrito:distrito,
+    semana:semana,
+    annio:annio
+  }
+  const response = await distritoOneService(data);
+  console.log("activarSetDistritoOne",response);
+  setDataEESS(response);
+};
   const fetchDistritos = async () => {
     try {
       const response = await axios.get(`${API_URL}/iras/distrit`);
@@ -190,7 +200,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras/ultimasemana`);
       setDataUltimaSemana(response.data.data);
-      //console.log("getUltimaSemanaIras", response.data.data);
+      console.log("getUltimaSemanaIras", response.data.data);
     } catch (error) { }
   };
 
@@ -308,7 +318,7 @@ const Dashboard = () => {
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="IRAS menores a 5 años D.E.E.P.I. - TACNA" />
+        <Header title="DASHBOARD" subtitle="I.R.A.S. con personas menores a 5 años años D.E.E.P.I. - TACNA" />
       </Box>
 
       {/* GRID & CHARTS */}
@@ -341,7 +351,7 @@ const Dashboard = () => {
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                Grafico de tendencia en I.R.A.S.
+                Grafico de tendencia en I.R.A.S con personas menores a 5 años.
               </Typography>
             </Box>
             <Box>
@@ -439,7 +449,53 @@ const Dashboard = () => {
             </Grid>
           </Grid>
         </Box>
-
+        <Box
+            gridColumn="span 12"
+            gridRow="span 3"
+            backgroundColor={colors.primary[400]}
+            padding="30px"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            position="relative"
+            style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
+        >
+            <Typography
+                color={colors.greenAccent[500]}
+                variant="h5"
+                fontWeight="600"
+                textAlign="center"
+                sx={{ animation: "fadeIn 1s" }}
+              >
+                Canal Endémico de I.R.A.S. con personas menores a 5 años, en el año {annio}
+              </Typography>
+            <Box
+                position="relative"
+                height="100%"
+                width="100%"
+            >
+                <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    zIndex={1} // Asegúrate de que esté detrás
+                >
+                    {dataEndemicoIras && <MyResponsiveStream datosEnd={dataEndemicoIras} />}
+                </Box>
+                <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    zIndex={2} // Asegúrate de que esté encima
+                >
+                    {dataSemanas && <BarSimpleChart data={dataSemanas} />}
+                </Box>
+            </Box>
+        </Box>
         <Box
           gridColumn="span 2"
           backgroundColor={colors.primary[400]}
@@ -538,50 +594,70 @@ const Dashboard = () => {
           </Typography>
           <Box
           >
-            <MapaTacnaConProvincias annio={annio} semana={semana} />
+            <MapaTacnaConProvincias annio={annio} semana={semana} distritoOne1={activarSetDistritoOne} />
           </Box>
         </Box>
         <Box
+          padding={3}
           gridColumn="span 4"
           gridRow="span 4"
-
           backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
+          overflow="auto"
         >
-          <Grid
-            container
-            spacing={2}
+          <Box
+            display="flex"
+            justifyContent="space-between"
             alignItems="center"
-            justifyContent="center"
+            borderBottom={`4px solid ${colors.primary[500]}`}
+            colors={colors.grey[100]}
+            p="15px"
           >
-            <Grid item xs={12}>
-              <Typography
-                color={colors.greenAccent[500]}
-                variant="h5"
-                fontWeight="600"
-                textAlign="center"
-                sx={{ animation: "fadeIn 1s" }}
-              >
-                Establecimientos con casos de I.R.A.S. en la semana {semana} del año {annio}
-              </Typography>
+            <Grid container justifyContent="center">
+              <Grid xs={12}>
+                <Typography
+                  color={colors.grey[100]}
+                  variant="h5"
+                  fontWeight="600"
+                  align="center"
+                  padding={2}
+                >
+                  Establecimientos con casos segun al distrito seleccionado en el mapa en la semana {semana} del año {annio}
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Typography
-                variant="h6"
-                color="textPrimary"
-                textAlign="center"
-                sx={{
-                  animation: "fadeIn 2s",
-                  fontSize: "2rem",
-                  fontWeight: "bold",
-                }}
+          </Box>
+          {dataEESS &&
+            dataEESS.map((transaction, i) => (
+              <Box
+                key={`${transaction.N_EESS}-${i}`}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                borderBottom={`4px solid ${colors.primary[500]}`}
+                p="15px"
               >
-                aqui iran todos los establecimientos con casos del distrito que se selecciono en el mapa como lo recomendo fredy
-              </Typography>
-            </Grid>
-          </Grid>
+                <Box>
+                  <Typography
+                    color={colors.greenAccent[500]}
+                    variant="h5"
+                    fontWeight="600"
+                  >
+                    {transaction.Dpto}
+                  </Typography>
+                  <Typography color={colors.grey[100]}>
+                    {transaction.Prov}
+                  </Typography>
+                </Box>
+                <Box color={colors.grey[100]}>{transaction.N_EESS}</Box>
+                <Box
+                  backgroundColor={colors.greenAccent[500]}
+                  p="5px 10px"
+                  borderRadius="4px"
+                >
+                  {transaction.casos}
+                </Box>
+              </Box>
+            ))}
         </Box>
 
         {/* ROW 2 */}
@@ -801,45 +877,7 @@ const Dashboard = () => {
             {datosGraf4 && <BarSimpleChart data={datosGraf4} />}
           </Box>
         </Box>
-        <Box
-            gridColumn="span 12"
-            gridRow="span 3"
-            backgroundColor={colors.primary[400]}
-            padding="30px"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            position="relative"
-            style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
-        >
-            Canal endemico I.R.A.S menores a 5 años
-            <Box
-                position="relative"
-                height="100%"
-                width="100%"
-            >
-                <Box
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    bottom={0}
-                    zIndex={1} // Asegúrate de que esté detrás
-                >
-                    {dataEndemicoIras && <MyResponsiveStream datosEnd={dataEndemicoIras} />}
-                </Box>
-                <Box
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    bottom={0}
-                    zIndex={2} // Asegúrate de que esté encima
-                >
-                    {dataSemanas && <BarSimpleChart data={dataSemanas} />}
-                </Box>
-            </Box>
-        </Box>
+        
       </Box>
     </Box>
   );

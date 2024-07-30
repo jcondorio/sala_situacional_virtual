@@ -386,7 +386,7 @@
         {
             "type": "Feature",
             "properties": {
-                "nombre": "ESTIQUE-PAMPA"
+                "nombre": "ESTIQUE PAMPA"
             },
             "geometry": {
                 "type": "Polygon",
@@ -1416,7 +1416,7 @@
         {
             "type": "Feature",
             "properties": {
-                "nombre": "CORONEL GREGORIO ALBARRACIN LANCHIPA"
+                "nombre": "CORONEL GREGORIO ALBARRACIN L."
             },
             "geometry": {
                 "type": "Polygon",

@@ -11,7 +11,7 @@ export const endemicoIrasService = async (ano) => {
         return response.data.data;
     } catch (error) {
         console.error("Error al obtener datos endémicos de IRAS:", error);
-        throw error; // Lanzar el error para que pueda ser manejado en el lugar donde se llama esta función
+        throw error;
     }
 };
 
@@ -23,6 +23,19 @@ export const semanasIrasService = async (ano) => {
         return response.data.data;
     } catch (error) {
         console.error("Error al obtener semanas de IRAS:", error);
-        throw error; // Lanzar el error para que pueda ser manejado en el lugar donde se llama esta función
+        throw error;
+    }
+};
+export const distritoOneService = async (data) => {
+    try {
+        // Suponiendo que `data` es un objeto que contiene las propiedades que necesitas enviar como parámetros
+        const response = await axios.get(`${API_URL}/iras/distritoonemap`, {
+            params: data // Aquí es donde se envían los parámetros de consulta
+        });
+        console.log("distritoOneService", response.data.data);
+        return response.data.data;
+    } catch (error) {
+        console.error("Error presentado:", error);
+        throw error;
     }
 };

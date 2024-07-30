@@ -58,7 +58,7 @@ const Team = () => {
     try {
       console.log("datachecked: ", datachecked);
       const response = await postDateService(datachecked);
-      setDataChecked(response);
+      //setDataChecked(response);
     } catch (error) {
       console.error("error: ", error)
     }

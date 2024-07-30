@@ -4,6 +4,8 @@ const Sequelize = require("../config/db");
 const Provicional = require("../models/provicionalModel");
 const { Op, fn, col, literal } = require("sequelize");
 const Edas = require("../models/edasModel");
+const jStat = require("jstat");
+const math = require("mathjs");
 // Importa Provicional si es necesario
 
 const getIrasSemanasServices = async () => {
@@ -66,7 +68,7 @@ const getIrasSemanasServices = async () => {
 };
 
 const getIrasUltimaSemanaDistrit = async () => {
-  ////console.log("importDataServices: ");
+  
   try {
     const result = await Edas.findAll({
       attributes: [
@@ -91,6 +93,7 @@ const getIrasUltimaSemanaDistrit = async () => {
     });
 
     ////console.log(result);
+    console.log("asd123: ");
     return result;
   } catch (error) {
     // Maneja cualquier error que pueda ocurrir durante la consulta
@@ -154,10 +157,14 @@ const getTotalCasosIrasUltimaSemana = async () => {
         },
       ],
       where: {
-        ANO: 2024,
+
         SEMANA: {
-          [Op.eq]: literal("(SELECT MAX(`SEMANA`) FROM `edas`)"),
+          [Op.eq]: literal("(SELECT MAX(SEMANA) FROM edas where ANO= (SELECT MAX(ANO) FROM edas))"),
         },
+        ANO:{
+          [Op.eq]: literal("(SELECT MAX(ANO) FROM edas)"),
+
+        }
       },
       group: ["provicional.Dpto"],
     });
@@ -317,7 +324,7 @@ ORDER BY
 };
 
 const getDataDistritService = async () => {
-  //console.log("getDataDistritService");
+ 
   try {
     const maxAno = await Edas.max("ANO");
     //console.log("maxAno: ", maxAno);
@@ -342,7 +349,7 @@ const getDataDistritService = async () => {
     `,
       { type: sequelize.QueryTypes.SELECT }
     );
-
+    console.log("getDataDistritServiceedas",results);
     //console.log(results);
     return results;
   } catch (error) {
@@ -554,7 +561,7 @@ const getgrafico2Services = async (data) => {
   //console.log("getTotSemIrasEstService", data);
   try {
     const query = `
-     SELECT weeks.num AS SEMANA, COALESCE(sum(COALESCE(edas.DAA_C1, 0) + COALESCE(edas.DAA_C1_4, 0) + COALESCE(edas.DAA_C5, 0) + COALESCE(edas.DAA_C5_11, 0) + COALESCE(edas.DAA_C12_17, 0) + COALESCE(edas.DAA_C18_29, 0) + COALESCE(edas.DAA_C30_59, 0) + COALESCE(edas.DAA_C60, 0)), 0) AS cantidad_registros
+     SELECT weeks.num AS SEMANA, SUM(COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) AS cantidad_registros
 FROM (
     SELECT 
         ones.num + tens.num * 10 + hundreds.num * 100 AS num
@@ -592,7 +599,7 @@ const getgrafico3Services = async (data) => {
     const query = `
       SELECT 
       SEMANA, 
-      COALESCE(sum(COALESCE(edas.DAA_C1, 0) + COALESCE(edas.DAA_C1_4, 0) + COALESCE(edas.DAA_C5, 0) + COALESCE(edas.DAA_C5_11, 0) + COALESCE(edas.DAA_C12_17, 0) + COALESCE(edas.DAA_C18_29, 0) + COALESCE(edas.DAA_C30_59, 0) + COALESCE(edas.DAA_C60, 0)), 0) AS Total_IRA
+      SUM(COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) AS Total_IRA
       from edas as e inner join provicional as prov on prov.COD_EST=e.E_SALUD
       where prov.Distrit=? and e.ANO=?
     `;
@@ -615,7 +622,7 @@ const getgrafico4Services = async (data) => {
   ////console.log("getTotSemIrasEstService", data);
   try {
     const query = `
-      SELECT weeks.num AS SEMANA, COALESCE(sum(COALESCE(edas.DAA_C1, 0) + COALESCE(edas.DAA_C1_4, 0) + COALESCE(edas.DAA_C5, 0) + COALESCE(edas.DAA_C5_11, 0) + COALESCE(edas.DAA_C12_17, 0) + COALESCE(edas.DAA_C18_29, 0) + COALESCE(edas.DAA_C30_59, 0) + COALESCE(edas.DAA_C60, 0)), 0) AS cantidad_registros
+      SELECT weeks.num AS SEMANA, SUM(COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) AS cantidad_registros
       FROM (
           SELECT 
               ones.num + tens.num * 10 + hundreds.num * 100 AS num
@@ -649,6 +656,187 @@ const getgrafico4Services = async (data) => {
   }
 };
 
+const endemicoIrasServices = async (annio) => {
+  console.log("endemicoIrasServices", annio.annio);
+  try {
+    const query = `
+SELECT 
+    AVG(de_ic.logn) AS promedio,
+    STDDEV_POP(de_ic.logn) AS ln_de, 
+    SQRT(COUNT(de_ic.SEMANA)) AS ic_inf,
+    SQRT(COUNT(de_ic.SEMANA)) AS ic_sup,
+    COUNT(de_ic.SEMANA) AS contara,
+    (SELECT SUM(pobl.men_5) 
+     FROM poblacion AS pobl 
+     INNER JOIN annios_endemicos_edas AS iend 
+     ON iend.nom_annio_endemico = pobl.ano
+     WHERE pobl.disa = "TACNA" 
+     AND pobl.ano = (SELECT MAX(nom_annio_endemico) FROM annios_endemicos_edas)
+     GROUP BY pobl.ano 
+     ORDER BY pobl.ano) AS max_poblacion
+FROM (
+    SELECT
+        i.ANO, 
+        i.SEMANA, 
+        SUM(
+            COALESCE(i.DAA_C1, 0) + COALESCE(i.DAA_C1_4, 0) + COALESCE(i.DAA_C5, 0) + 
+            COALESCE(i.DAA_C5_11, 0) + COALESCE(i.DAA_C12_17, 0) + COALESCE(i.DAA_C18_29, 0) +
+            COALESCE(i.DAA_C30_59, 0) + COALESCE(i.DAA_C60, 0)
+        ) AS casos, 
+        pobl.poblacion, 
+        (SUM(
+            COALESCE(i.DAA_C1, 0) + COALESCE(i.DAA_C1_4, 0) + COALESCE(i.DAA_C5, 0) + 
+            COALESCE(i.DAA_C5_11, 0) + COALESCE(i.DAA_C12_17, 0) + COALESCE(i.DAA_C18_29, 0) +
+            COALESCE(i.DAA_C30_59, 0) + COALESCE(i.DAA_C60, 0)
+        ) / pobl.poblacion * 100000) + 1 AS tasa_i,
+        LN((SUM(
+            COALESCE(i.DAA_C1, 0) + COALESCE(i.DAA_C1_4, 0) + COALESCE(i.DAA_C5, 0) + 
+            COALESCE(i.DAA_C5_11, 0) + COALESCE(i.DAA_C12_17, 0) + COALESCE(i.DAA_C18_29, 0) +
+            COALESCE(i.DAA_C30_59, 0) + COALESCE(i.DAA_C60, 0)
+        ) / pobl.poblacion * 100000) + 1) AS logn
+    FROM edas AS i 
+    INNER JOIN annios_endemicos_edas AS iend 
+    ON i.ANO = iend.nom_annio_endemico
+    INNER JOIN (
+        SELECT pobl.ano, SUM(pobl.men_5) AS poblacion 
+        FROM poblacion AS pobl 
+        WHERE pobl.disa = "TACNA" 
+        GROUP BY pobl.ano 
+        ORDER BY pobl.ano
+    ) AS pobl 
+    ON pobl.ano = iend.nom_annio_endemico
+    WHERE i.SEMANA <= 52 
+    AND iend.nom_annio_endemico < ?
+    GROUP BY i.ANO, i.SEMANA 
+    ORDER BY i.ANO, i.SEMANA
+) AS de_ic 
+GROUP BY de_ic.SEMANA;
+
+    `;
+    const studentsWithDetails = await Sequelize.query(query, {
+      type: Sequelize.QueryTypes.SELECT,
+      replacements: [annio.annio],
+    });
+    console.log("endemicoIrasServices: ", studentsWithDetails);
+    const cal_student = studentsWithDetails.map((item) => ({
+      ...item,
+      ic_inf:
+        item.promedio -
+        (jStat.studentt.inv(0.975, item.contara) * item.ln_de) / item.ic_inf,
+      ic_sup:
+        item.promedio +
+        (jStat.studentt.inv(0.975, item.contara) * item.ln_de) / item.ic_sup,
+    }));
+    console.log("cal_student", cal_student);
+    let bloque_5 = [];
+    cal_student.forEach((item) => {
+      bloque_5.push({
+        ic_inf_tasa: Math.exp(item.ic_inf) - 1,
+        media_tasa: Math.exp(item.promedio) - 1,
+        ic_sup_tasa: Math.exp(item.ic_sup) - 1,
+        ic_inf_casos:
+          ((Math.exp(item.ic_inf) - 1) * item.max_poblacion) / 100000,
+        media_casos:
+          ((Math.exp(item.promedio) - 1) * item.max_poblacion) / 100000,
+        ic_sup_casos:
+          ((Math.exp(item.ic_sup) - 1) * item.max_poblacion) / 100000,
+      });
+    });
+    let bloque_6 = [];
+    bloque_5.forEach((item) => {
+      bloque_6.push({
+        ic_inf: parseFloat(item.ic_inf_casos.toFixed(2)),
+        media_ic_inf: parseFloat(
+          (item.media_casos - item.ic_inf_casos).toFixed(2)
+        ),
+        media_ic_sup: parseFloat(
+          (item.ic_sup_casos - item.media_casos).toFixed(2)
+        ),
+      });
+    });
+
+    if (bloque_6.length > 0) {
+      bloque_6.unshift({
+        ic_inf: bloque_6[0].ic_inf,
+        media_ic_inf: bloque_6[0].media_ic_inf,
+        media_ic_sup: bloque_6[0].media_ic_sup,
+      });
+    } else {
+      console.error(
+        "Error: bloque_6 está vacío, no se puede agregar el elemento inicial."
+      );
+    }
+
+    return bloque_6;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+
+const getAnnioIrasService = async (annio) => {
+  try {
+    console.log("getAnnioIrasService123", annio.annio);
+    const query = `
+      WITH weeks AS (
+            SELECT num AS SEMANA
+            FROM (
+                SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+                UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+                UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+                UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+                UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+                UNION SELECT 51 UNION SELECT 52
+            ) AS all_weeks
+        )
+        SELECT 
+            weeks.SEMANA,
+            SUM(COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) AS casos
+        FROM weeks
+        LEFT JOIN edas 
+            ON weeks.SEMANA = edas.SEMANA 
+            AND edas.ANO = ?
+        GROUP BY weeks.SEMANA
+        ORDER BY weeks.SEMANA;
+
+  `;
+    studentsWithDetails = await Sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+      replacements: [annio.annio],
+    });
+
+    return studentsWithDetails;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+
+const distritoonemapService = async (data) => {
+  try {
+    console.log("distritoonemapService",data);
+    const query = `
+      SELECT IFNULL(prov.N_EESS, 'Sin nombre') AS N_EESS,
+       IFNULL(SUM(COALESCE(e.DAA_C1, 0) + COALESCE(e.DAA_C1_4, 0) + COALESCE(e.DAA_C5, 0)+ COALESCE(e.DAA_C5_11, 0)+ COALESCE(e.DAA_C12_17, 0)+ COALESCE(e.DAA_C18_29, 0)+ COALESCE(e.DAA_C30_59, 0)+ COALESCE(e.DAA_C60, 0)), 0) AS casos
+        FROM provicional AS prov
+        LEFT JOIN edas AS e ON e.E_SALUD = prov.COD_EST
+          AND e.SEMANA = ?
+          AND e.ANO = ?
+        WHERE prov.Distrit = ?
+        GROUP BY prov.N_EESS
+        ORDER BY prov.N_EESS;
+  `;
+    studentsWithDetails = await Sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+      replacements: [data.semana,data.annio,data.distrito],
+    });
+    console.log("distritoonemapService_ress",studentsWithDetails)
+    return studentsWithDetails;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
 
 module.exports = {
   getIrasSemanasServices,
@@ -666,4 +854,7 @@ module.exports = {
   getCasosDistritSemServices,
   getgrafico2Services,
   getgrafico4Services,
+  endemicoIrasServices,
+  getAnnioIrasService,
+  distritoonemapService,
 };

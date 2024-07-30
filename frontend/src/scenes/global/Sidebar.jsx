@@ -18,6 +18,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import { GiStomach } from "react-icons/gi";
 import { FaHeadSideCough } from "react-icons/fa";
+import { FaLungs } from "react-icons/fa";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -127,6 +128,15 @@ const Sidebar = () => {
               title="E.D.A.S."
               to="/edas"
               icon={<GiStomach />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+          </Box>
+          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+            <Item
+              title="NEUMONIA"
+              to="/neu"
+              icon={<FaLungs />}
               selected={selected}
               setSelected={setSelected}
             />

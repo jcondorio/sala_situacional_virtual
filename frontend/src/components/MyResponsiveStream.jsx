@@ -51,13 +51,13 @@ const MyResponsiveStream = ({ datosEnd }) => {
             <ResponsiveStream
                 data={datosEnd}
                 keys={['ic_inf', 'media_ic_inf', 'media_ic_sup']}
-                margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+                margin={{ top: 50, right: 95, bottom: 50, left: 60 }}
                 axisTop={null}
                 axisRight={null}
                 enableGridX={false}
                 enableGridY={false}
                 offsetType="diverging"
-                colors={{ scheme: 'nivo' }}
+                colors={['white', 'green', 'yellow']}
                 fillOpacity={0.85}
                 curve="linear"
                 borderColor={{ theme: 'background' }}
