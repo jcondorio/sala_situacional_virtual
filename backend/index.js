@@ -25,14 +25,7 @@ app.use(cors({
         'Authorization'
     ]
 }));
-
-app.use("/api/import", require("./src/routes/importRoutes"));
-app.use("/api/iras",require("./src/routes/irasRoutes"));
-app.use("/api/edas",require("./src/routes/edasRoutes"));
-app.use("/api/otros",require("./src/routes/otrosRoutes"));
-app.use("/api/poblacion",require("./src/routes/poblacionRoutes"));
-app.use("/api/login",require("./src/routes/userRoutes"));
-app.use("/api/neu",require("./src/routes/neuRoutes"));
+app.use("/api/user", require("./src/routes/userRoutes"));
 
 
 app.listen(port,"0.0.0.0", () => {
