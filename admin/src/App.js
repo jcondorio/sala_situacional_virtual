@@ -17,6 +17,7 @@ import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
 import Login from "./scenes/login/Login.jsx";
 import AuthProvider, { useAuth } from "./auth/authProvider.jsx";
+import Signup from "./components/login/Signup.jsx";
 
 function App() {
 
@@ -74,6 +75,7 @@ function AppContent() {
               <div >
                 <Routes>
                   <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
                   <Route path="/*" element={<Navigate to="/login" />} />
                 </Routes>
               </div>
