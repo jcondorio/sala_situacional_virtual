@@ -319,7 +319,7 @@ const activarSetDistritoOne = async(distrito) =>{
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="I.R.A.S. con personas menores a 5 años años D.E.E.P.I. - TACNA" />
+        <Header title="DASHBOARD" subtitle="E.D.A.S. - D.E.E.P.I. - TACNA" />
       </Box>
 
       {/* GRID & CHARTS */}
@@ -352,7 +352,7 @@ const activarSetDistritoOne = async(distrito) =>{
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                Grafico de tendencia en I.R.A.S con personas menores a 5 años.
+                Grafico de tendencia en E.D.A.S..
               </Typography>
             </Box>
             <Box>
@@ -468,7 +468,7 @@ const activarSetDistritoOne = async(distrito) =>{
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                Canal Endémico de I.R.A.S. con personas menores a 5 años, en el año {annio}
+                Canal Endémico de E.D.A.S. en el año {annio}
               </Typography>
             <Box
                 position="relative"
@@ -518,7 +518,7 @@ const activarSetDistritoOne = async(distrito) =>{
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                casos totales I.R.A.S. en el año {annio}
+                casos totales E.D.A.S. en el año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -558,7 +558,7 @@ const activarSetDistritoOne = async(distrito) =>{
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                Casos total I.R.A.S. en la semana {semana} del año {annio}
+                Casos total E.D.A.S. en la semana {semana} del año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -591,7 +591,7 @@ const activarSetDistritoOne = async(distrito) =>{
             fontWeight="600"
             sx={{ marginBottom: "15px" }}
           >
-            T.I.A. de I.R.A.S. menores a 5 años x 1000 semana {semana} y año {annio}
+            T.I.A. de E.D.A.S. menores a 5 años x 1000 semana {semana} y año {annio}
           </Typography>
           <Box
           >

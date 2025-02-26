@@ -68,7 +68,7 @@ const AuthProvider = ({ children }) => {
                 navigate("/login");
             }
         } else {
-            navigate("/login");
+            //navigate("/login");
         }
     }, [navigate]);
 
@@ -124,6 +124,7 @@ const AuthProvider = ({ children }) => {
                     navigate("/login");
                 }
             } else {
+                console.error();
                 navigate("/login");
             }
         setIsAuthenticated(true);

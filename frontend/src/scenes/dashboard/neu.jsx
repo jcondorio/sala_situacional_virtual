@@ -318,7 +318,7 @@ import {
       <Box m="20px">
         {/* HEADER */}
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Header title="DASHBOARD" subtitle="I.R.A.S. con personas menores a 5 años años D.E.E.P.I. - TACNA" />
+          <Header title="DASHBOARD" subtitle="NEUMONIAS GRAVES Y NO GRAVES D.E.E.P.I. - TACNA" />
         </Box>
   
         {/* GRID & CHARTS */}
@@ -351,7 +351,7 @@ import {
                   fontWeight="bold"
                   color={colors.greenAccent[500]}
                 >
-                  Grafico de tendencia en I.R.A.S con personas menores a 5 años.
+                  Grafico de tendencia en NEUMONIAS GRAVES Y NO GRAVES.
                 </Typography>
               </Box>
               <Box>
@@ -467,7 +467,7 @@ import {
                   textAlign="center"
                   sx={{ animation: "fadeIn 1s" }}
                 >
-                  Canal Endémico de I.R.A.S. con personas menores a 5 años, en el año {annio}
+                  Canal Endémico EN NEUMONIAS GRAVES Y NO GRAVES en el año {annio}
                 </Typography>
               <Box
                   position="relative"
@@ -517,7 +517,7 @@ import {
                   textAlign="center"
                   sx={{ animation: "fadeIn 1s" }}
                 >
-                  casos totales I.R.A.S. en el año {annio}
+                  casos totales de NEUMONIAS GRAVES Y NO GRAVES en el año {annio}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
@@ -557,7 +557,7 @@ import {
                   textAlign="center"
                   sx={{ animation: "fadeIn 1s" }}
                 >
-                  Casos total I.R.A.S. en la semana {semana} del año {annio}
+                  Casos total en NEUMONIAS GRAVES Y NO GRAVES en la semana {semana} del año {annio}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
@@ -590,7 +590,7 @@ import {
               fontWeight="600"
               sx={{ marginBottom: "15px" }}
             >
-              T.I.A. de I.R.A.S. menores a 5 años x 1000 semana {semana} y año {annio}
+              T.I.A. en NEUMONIAS GRAVES Y NO GRAVES x 1000 semana {semana} y año {annio}
             </Typography>
             <Box
             >
