@@ -708,28 +708,34 @@ const endemicoIrasServices = async (annio) => {
     let bloque_6 = [];
     bloque_5.forEach((item) => {
       bloque_6.push({
-        ic_inf: parseFloat(item.ic_inf_casos.toFixed(2)),
-        media_ic_inf: parseFloat(
+        zona_exitosa: parseFloat(item.ic_inf_casos.toFixed(2)),
+        zona_segura: parseFloat(
           (item.media_casos - item.ic_inf_casos).toFixed(2)
         ),
-        media_ic_sup: parseFloat(
+        zona_alarma: parseFloat(
           (item.ic_sup_casos - item.media_casos).toFixed(2)
         ),
+        zona_epidemia: 1200-(parseFloat(item.ic_inf_casos.toFixed(2))+parseFloat(
+          (item.media_casos - item.ic_inf_casos).toFixed(2)
+        )+parseFloat(
+          (item.ic_sup_casos - item.media_casos).toFixed(2)
+        )),
       });
     });
 
     if (bloque_6.length > 0) {
       bloque_6.unshift({
-        ic_inf: bloque_6[0].ic_inf,
-        media_ic_inf: bloque_6[0].media_ic_inf,
-        media_ic_sup: bloque_6[0].media_ic_sup,
+        zona_exitosa: bloque_6[0].zona_exitosa,
+        zona_segura: bloque_6[0].zona_segura,
+        zona_alarma: bloque_6[0].zona_alarma,
+        zona_epidemia:1200-bloque_6[0].zona_exitosa-bloque_6[0].zona_segura-bloque_6[0].zona_alarma,
       });
     } else {
       console.error(
         "Error: bloque_6 está vacío, no se puede agregar el elemento inicial."
       );
     }
-
+console.log(bloque_6);
     return bloque_6;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);

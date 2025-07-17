@@ -180,7 +180,7 @@ const MapaTacnaConProvincias = ({ annio, semana, distritoOne1 }) => {
                             .map((item, idx) => (
                               <React.Fragment key={idx}>
                                 <br />
-                                <strong>Tasa:</strong> {item.tia}
+                                <strong>Tasa:</strong> {item.tia.toFixed(2)}
                               </React.Fragment>
                             ))}
                         </>

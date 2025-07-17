@@ -10,30 +10,31 @@ const getAnnioIrasServices = async () => {
   try {
     const response = await Iras.findAll({
       attributes: [
-        [sequelize.fn("DISTINCT", Sequelize.col('ANO')), 'ANO']
-      ]
+        [sequelize.fn("DISTINCT", Sequelize.col("ANO")), "ANO"]
+      ],
+      order: [[Sequelize.col("ANO"), "DESC"]] // Ordenar ascendentemente por ANO
     });
 
     console.log("getAnnioIrasServices: ", response);
     return response;
   } catch (error) {
     console.error("Error al ejecutar la consulta:", error);
-    throw error; // Puedes relanzar el error para manejarlo en otro lugar si es necesario
+    throw error; // Relanza el error para manejarlo aguas arriba
   }
 };
+
 const getAnnioEdasServices = async () => {
-  ////console.log("importDataServices: ");
   try {
-    response = await Edas.findAll(
-      {
-        attributes: [[sequelize.fn("DISTINCT", Sequelize.col('ANO')), 'ANO']],
-      }
-    )
+    const response = await Edas.findAll({
+      attributes: [[sequelize.fn("DISTINCT", Sequelize.col("ANO")), "ANO"]],
+      order: [[Sequelize.col("ANO"), "DESC"]], // Ordenar por ANO ascendente
+    });
     return response;
   } catch (error) {
     console.error("Error al ejecutar la consulta:", error);
   }
 };
+
 
 const getCheckedIrasServices = async () => {
   try {

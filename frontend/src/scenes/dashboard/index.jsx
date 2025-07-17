@@ -33,6 +33,7 @@ import MyGroupedBarChart from "../../prototips/MyGroupedBarChart";
 import MapaTacnaConProvincias10k from "../../components/MapaTacnaConProvincias10k";
 import CombinedChart from "../../components/CombinedChart ";
 import { distritoOneService, endemicoIrasService, semanasIrasService } from "../../services/irasServices";
+import BarSimpleChartEndemico from "../../components/BarSimpleChartEndemico";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -492,7 +493,7 @@ const activarSetDistritoOne = async(distrito) =>{
                     bottom={0}
                     zIndex={2} // Asegúrate de que esté encima
                 >
-                    {dataSemanas && <BarSimpleChart data={dataSemanas} />}
+                    {dataSemanas && <BarSimpleChartEndemico data={dataSemanas} />}
                 </Box>
             </Box>
         </Box>

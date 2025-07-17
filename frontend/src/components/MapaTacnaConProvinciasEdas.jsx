@@ -15,26 +15,27 @@ const MapaTacnaConProvinciasEdas = ({ annio, semana, distritoOne1 }) => {
   const [quartiles, setQuartiles] = useState({ q1: 0, q2: 0, q3: 0 });
   const [tiaDistrit, setTiaDistrit] = useState();
   const [datadistrit, setDataDistrit] = useState();
-
-  const pobDistritosxAnnioSemana = async ({ annio = "", semana = "" } = {}) => {
-    try {
-      console.log("pobDistritosxAnnioSemana1", annio, "--", semana);
-      const response = await axios.get(
-        `${API_URL}/poblacion/distritedas/${annio}/${semana}`
+const pobDistritosxAnnioSemana = async ({ annio = "", semana = "" } = {}) => {
+  try {
+    console.log("pobDistritosxAnnioSemana1", annio, "--", semana);
+    const response = await axios.get(
+      `${API_URL}/poblacion/distritedas/${annio}/${semana}`
+    );
+    setDataDistrit(response.data.data);
+    console.log("pobDistritosxAnnioSemana2", response.data.data);
+    if (response.data.data.length > 0) {
+      const tiaValues = response.data.data.map((item) =>
+        parseFloat(item.tia.toFixed(2))
       );
-      setDataDistrit(response.data.data);
-      console.log("pobDistritosxAnnioSemana2", response.data.data);
-      if (response.data.data.length > 0) {
-        const tiaValues = response.data.data.map((item) => item.tia);
-        const calculatedQuartiles = calculateQuartiles(tiaValues);
-        console.log("pobDistritosxAnnioSemana3", calculatedQuartiles);
-        setQuartiles(calculatedQuartiles);
-      }
-      setTiaDistrit(response.data.data);
-    } catch (error) {
-      console.error("erroraso", error);
+      const calculatedQuartiles = calculateQuartiles(tiaValues);
+      console.log("pobDistritosxAnnioSemana3", calculatedQuartiles);
+      setQuartiles(calculatedQuartiles);
     }
-  };
+    setTiaDistrit(response.data.data);
+  } catch (error) {
+    console.error("erroraso", error);
+  }
+};
 
   const calculateQuartiles = (data) => {
     const sortedData = data.slice().sort((a, b) => a - b);
@@ -180,7 +181,7 @@ const MapaTacnaConProvinciasEdas = ({ annio, semana, distritoOne1 }) => {
                             .map((item, idx) => (
                               <React.Fragment key={idx}>
                                 <br />
-                                <strong>Tasa:</strong> {item.tia}
+                                <strong>Tasa:</strong> {item.tia.toFixed(2)}
                               </React.Fragment>
                             ))}
                         </>

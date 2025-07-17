@@ -12,7 +12,7 @@ const getPobDistritServices = async (data) => {
     try {
       // Obtener la población de los distritos
       const resultPobl = await Poblacion.findAll({
-        attributes: ['distrito', 'men_5'],
+        attributes: ['distrito', 'pobtot'],
         where: {
           ano: data.annio,
           cod_disa: 23
@@ -47,7 +47,7 @@ const getPobDistritServices = async (data) => {
           if (poblacion.distrito === casos.get('Distrit')) {
             completeData.push({
               distrito: poblacion.distrito,
-              tia: ((casos.get('total_registros') / poblacion.men_5) * 1000),
+              tia: ((casos.get('total_registros') / poblacion.pobtot) * 1000),
             });
           }
         });
@@ -62,7 +62,7 @@ const getPobDistritServices = async (data) => {
   };
   
   const getPobDistritEdasServices = async (data) => {
-    //console.log("getPobDistritServices: ", data);
+    
     try {
       // Obtener la población de los distritos
       const resultPobl = await Poblacion.findAll({
@@ -72,8 +72,8 @@ const getPobDistritServices = async (data) => {
           cod_disa: 23
         }
       });
-  
-      // Obtener los casos de IRA desde la semana 1 hasta la semana proporcionada
+  console.log("datadeedas: ", resultPobl);
+      // Obtener los casos de EDAS desde la semana 1 hasta la semana proporcionada
       const regultCasosPobl = await Edas.findAll({
         attributes: [
           [Sequelize.col("provicional.Distrit"), "Distrit"],
@@ -107,7 +107,7 @@ const getPobDistritServices = async (data) => {
         });
       });
   
-      //console.log("completeData", completeData);
+      console.log("completo edas", completeData);
       return completeData;
     } catch (error) {
       console.error("Error al ejecutar la consulta:", error);
