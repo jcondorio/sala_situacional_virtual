@@ -58,7 +58,7 @@ const BarSimpleChartEndemico = ({ data }) => {
                 groupMode="grouped"
                 valueScale={{ type: "linear", min: 0, max: maxY }}
                 indexScale={{ type: "band", round: true }}
-                colors={{ scheme: "nivo" }}
+                colors={() => "#102c54"}
                 borderColor={{ from: "color", modifiers: [["darker", "1.6"]] }}
                 axisTop={null}
                 axisRight={null}

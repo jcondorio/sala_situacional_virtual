@@ -72,13 +72,28 @@ const getPobDistritServices = async (data) => {
           cod_disa: 23
         }
       });
-  console.log("datadeedas: ", resultPobl);
+  
       // Obtener los casos de EDAS desde la semana 1 hasta la semana proporcionada
       const regultCasosPobl = await Edas.findAll({
         attributes: [
           [Sequelize.col("provicional.Distrit"), "Distrit"],
-          [Sequelize.fn("SUM", Sequelize.literal("DAA_C1 + DAA_C1_4 + DAA_C5 + DAA_C5_11 + DAA_C12_17 + DAA_C18_29 + DAA_C30_59 + DAA_C60")), "total_registros"],
-        ],
+    [
+  Sequelize.fn(
+    "SUM",
+    Sequelize.literal(`
+      COALESCE(DAA_C1, 0) +
+      COALESCE(DAA_C1_4, 0) +
+      COALESCE(DAA_C5, 0) +
+      COALESCE(DAA_C5_11, 0) +
+      COALESCE(DAA_C12_17, 0) +
+      COALESCE(DAA_C18_29, 0) +
+      COALESCE(DAA_C30_59, 0) +
+      COALESCE(DAA_C60, 0)
+    `)
+  ),
+  "total_registros"
+],
+ ],
         include: [
           {
             model: Provicional,
@@ -94,6 +109,7 @@ const getPobDistritServices = async (data) => {
         },
         group: ["provicional.Distrit"],
       });
+      console.log("datadeedas: ", resultPobl);
   
       const completeData = [];
       resultPobl.forEach((poblacion) => {
