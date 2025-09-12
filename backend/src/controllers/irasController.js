@@ -1,4 +1,4 @@
-const { getIrasSemanasServices, getcasesemanadistritServices, getgrafico2Services, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices, getCasosDistritSemServices, getgrafico4Services, endemicoIrasServices, getAnnioIrasService, distritoonemapService } = require("../services/irasServices");
+const { getLineBarServices, getIrasSemanasServices, getcasesemanadistritServices, getgrafico2Services, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices, getCasosDistritSemServices, getgrafico4Services, endemicoIrasServices, getAnnioIrasService, distritoonemapService } = require("../services/irasServices");
 const getIrasSemanasController = async (req, res) => {
     ////console.log("en el controlador::")
     try {
@@ -191,6 +191,31 @@ const distritoonemapController = async (req,res) => {
     }
 };
 
+
+
+const getLineBarController = async (req,res) => {
+    console.log("getLineBarController",req.params)
+    try {
+        const getIras = await getLineBarServices(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const getLineBarEdadIrasController = async (req,res) => {
+    console.log("getLineBarController",req.params)
+    try {
+        const getIras = await getLineBarEdadIrasServices(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
 module.exports = { 
     getIrasSemanasController, 
     getIrasUltimaSemanaDistritController, 
@@ -210,4 +235,6 @@ module.exports = {
     endemicoIrasController,
     getAnnioIrasController,
     distritoonemapController,
+    getLineBarController,
+    getLineBarEdadIrasController,
 };

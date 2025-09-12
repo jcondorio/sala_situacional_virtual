@@ -806,6 +806,41 @@ const distritoonemapService = async (data) => {
     throw error;
   }
 };
+
+
+const getLineBarServices = async () => {
+  try {
+    const result = await Provicional.findAll({
+      attributes: ["COD_EST", "N_EESS"],
+      where: {
+        Dpto: "TACNA",
+      },
+    });
+    //console.log("getTotalEstService", result);
+
+    return result;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+
+const getLineBarEdadIrasServices = async () => {
+  try {
+    const result = await Provicional.findAll({
+      attributes: ["COD_EST", "N_EESS"],  
+      where: {
+        Dpto: "TACNA",
+      },
+    });
+    //console.log("getTotalEstService", result);
+
+    return result;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
 module.exports = {
   getIrasSemanasServices,
   getIrasUltimaSemanaDistrit,
@@ -825,4 +860,6 @@ module.exports = {
   endemicoIrasServices,
   getAnnioIrasService,
   distritoonemapService,
+  getLineBarServices,
+  getLineBarEdadIrasServices,
 };

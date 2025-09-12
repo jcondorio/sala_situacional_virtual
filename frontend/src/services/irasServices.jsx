@@ -6,7 +6,7 @@ export const endemicoIrasService = async (ano) => {
     try {
         console.log("Intentando obtener datos endémicos de IRAS");
         const response = await axios(`${API_URL}/iras/endemico/${ano}`);
-        console.log("asdasd",response.data.data);
+        console.log("asdasd", response.data.data);
 
         return response.data.data;
     } catch (error) {
@@ -19,7 +19,7 @@ export const endemicoIrasService = async (ano) => {
 export const semanasIrasService = async (ano) => {
     try {
         const response = await axios(`${API_URL}/iras/semannioiras/${ano}`);
-        console.log("aver::",response.data.data)
+        console.log("aver::", response.data.data)
         return response.data.data;
     } catch (error) {
         console.error("Error al obtener semanas de IRAS:", error);
@@ -36,6 +36,17 @@ export const distritoOneService = async (data) => {
         return response.data.data;
     } catch (error) {
         console.error("Error presentado:", error);
+        throw error;
+    }
+};
+
+export const lineBarEdadIras = async (ano) => {
+    try {
+        const response = await axios(`${API_URL}/iras/lineBarEdadIras/${ano}`);
+        console.log("lineBarEdadIras::", response.data.data)
+        return response.data.data;
+    } catch (error) {
+        console.error("lineBarEdadIras de IRAS:", error);
         throw error;
     }
 };

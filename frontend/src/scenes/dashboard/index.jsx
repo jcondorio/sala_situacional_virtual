@@ -34,6 +34,7 @@ import MapaTacnaConProvincias10k from "../../components/MapaTacnaConProvincias10
 import CombinedChart from "../../components/CombinedChart ";
 import { distritoOneService, endemicoIrasService, semanasIrasService } from "../../services/irasServices";
 import BarSimpleChartEndemico from "../../components/BarSimpleChartEndemico";
+import LineBar from "../../components/LineBar";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -495,6 +496,44 @@ const activarSetDistritoOne = async(distrito) =>{
                 >
                     {dataSemanas && <BarSimpleChartEndemico data={dataSemanas} />}
                 </Box>
+            </Box>
+        </Box>
+        <Box
+            gridColumn="span 12"
+            gridRow="span 3"
+            backgroundColor={colors.primary[400]}
+            padding="30px"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            position="relative"
+            style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
+        >
+            <Typography
+                color={colors.greenAccent[500]}
+                variant="h5"
+                fontWeight="600"
+                textAlign="center"
+                sx={{ animation: "fadeIn 1s" }}
+              >
+                Episodios por semana, en el año {annio} - {annio-1} - {annio-2}
+              </Typography>
+            <Box
+                position="relative"
+                height="100%"
+                width="100%"
+            >
+                <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    zIndex={1} // Asegúrate de que esté detrás
+                >
+                    <LineBar data={dataSemanas}  />
+                </Box>
+                
             </Box>
         </Box>
         <Box
