@@ -825,19 +825,111 @@ const getLineBarServices = async () => {
   }
 };
 
-const getLineBarEdadIrasServices = async () => {
+
+const getLineBarEdadIrasServices = async ({ annio }) => {
   try {
-    const result = await Provicional.findAll({
-      attributes: ["COD_EST", "N_EESS"],  
-      where: {
-        Dpto: "TACNA",
+    const year = Number(annio);
+    const years = {
+      before2: year - 2,
+      before1: year - 1,
+      current: year,
+    };
+
+    const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN iras i
+        ON w.SEMANA = i.SEMANA
+       AND i.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+    const rows = await Sequelize.query(query, {
+      replacements: {
+        year_before2: years.before2,
+        year_before1: years.before1,
+        year_current: years.current,
       },
     });
-    //console.log("getTotalEstService", result);
 
-    return result;
+    const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+    const data = rs.map(r => ({
+      semana: String(r.SEMANA),
+      annioantes2: Number(r.annio_antes2) || 0,
+      annioantes: Number(r.annio_antes1) || 0,
+      annio: Number(r.annio_actual) || 0,
+    }));
+
+    return data;
   } catch (error) {
-    console.error("Error al obtener el total de registros:", error);
+    console.error('Error al obtener el total de registros:', error);
+    throw error;
+  }
+};
+
+const microRedService = async (data) => {
+  console.log(data);
+  try {
+    const result = await Provicional.findAll({
+      attributes: [
+        [Sequelize.fn('DISTINCT', Sequelize.col('N_Micro_RED')), 'N_Micro_RED']
+      ],
+      where: {
+        N_RED: data.data
+      },
+      raw: true // devuelve objetos planos {N_Micro_RED: ...}
+    });
+
+    // opcional: solo array de strings
+    // const microRedes = result.map(r => r.N_Micro_RED);
+    // return microRedes;
+
+    return result; // [{N_Micro_RED: '...'}, {N_Micro_RED: '...'}]
+  } catch (error) {
+    console.error('Error al obtener las micro redes:', error);
+    throw error;
+  }
+};
+
+const EstablecimientosService = async (data) => {
+  console.log(data);
+  try {
+    const result = await Provicional.findAll({
+      attributes: [
+        [Sequelize.fn('DISTINCT', Sequelize.col('N_EESS')), 'N_EESS']
+      ],
+      where: {
+        N_RED: data.data,
+        N_Micro_RED:data.data2,
+        Dpto:"TACNA",
+      },
+      raw: true // devuelve objetos planos {N_Micro_RED: ...}
+    });
+
+    // opcional: solo array de strings
+    // const microRedes = result.map(r => r.N_Micro_RED);
+    // return microRedes;
+
+    return result; // [{N_Micro_RED: '...'}, {N_Micro_RED: '...'}]
+  } catch (error) {
+    console.error('Error al obtener las micro redes:', error);
     throw error;
   }
 };
@@ -862,4 +954,6 @@ module.exports = {
   distritoonemapService,
   getLineBarServices,
   getLineBarEdadIrasServices,
+  microRedService,
+  EstablecimientosService,
 };

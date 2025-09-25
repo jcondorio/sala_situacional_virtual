@@ -179,9 +179,7 @@ const CombinedChart = () => {
                     colors={{ scheme: 'nivo' }}
                     lineWidth={2}
                     enablePoints={false}
-                    pointSize={10}
                     pointColor={{ theme: 'background' }}
-                    pointBorderWidth={2}
                     pointBorderColor={{ from: 'serieColor' }}
                     pointLabelYOffset={-12}
                     useMesh={true}

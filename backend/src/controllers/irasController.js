@@ -1,4 +1,4 @@
-const { getLineBarServices, getIrasSemanasServices, getcasesemanadistritServices, getgrafico2Services, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices, getCasosDistritSemServices, getgrafico4Services, endemicoIrasServices, getAnnioIrasService, distritoonemapService } = require("../services/irasServices");
+const { getLineBarEdadIrasServices, getLineBarServices, getIrasSemanasServices, getcasesemanadistritServices, getgrafico2Services, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices, getCasosDistritSemServices, getgrafico4Services, endemicoIrasServices, getAnnioIrasService, distritoonemapService, microRedService, EstablecimientosService } = require("../services/irasServices");
 const getIrasSemanasController = async (req, res) => {
     ////console.log("en el controlador::")
     try {
@@ -215,6 +215,30 @@ const getLineBarEdadIrasController = async (req,res) => {
     }
 };
 
+const microRedController = async (req,res) => {
+    console.log("getLineBarController",req.params)
+    try {
+        const getIras = await microRedService(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const EstablecimientosController = async (req,res) => {
+    console.log("getLineBarController",req.params)
+    try {
+        const getIras = await EstablecimientosService(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+
 
 module.exports = { 
     getIrasSemanasController, 
@@ -237,4 +261,6 @@ module.exports = {
     distritoonemapController,
     getLineBarController,
     getLineBarEdadIrasController,
+    microRedController,
+    EstablecimientosController,
 };

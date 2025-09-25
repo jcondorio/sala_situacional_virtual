@@ -32,9 +32,10 @@ import MyResponsiveStream from "../../components/MyResponsiveStream";
 import MyGroupedBarChart from "../../prototips/MyGroupedBarChart";
 import MapaTacnaConProvincias10k from "../../components/MapaTacnaConProvincias10k";
 import CombinedChart from "../../components/CombinedChart ";
-import { distritoOneService, endemicoIrasService, semanasIrasService } from "../../services/irasServices";
+import { distritoOneService, endemicoIrasService, lineBarEdadIras, semanasIrasService } from "../../services/irasServices";
 import BarSimpleChartEndemico from "../../components/BarSimpleChartEndemico";
 import LineBar from "../../components/LineBar";
+import FiltrosEpidemiologicos from "../../components/SelectLineBar";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -60,19 +61,22 @@ const Dashboard = () => {
   const [distritos, setDistritos] = useState();
   const [dataEndemicoIras, setDataEndemicoIras] = useState();
   const [dataSemanas, setDataSemanas] = useState();
-  const [dataEESS,setDataEESS] = useState();
+  const [dataEESS, setDataEESS] = useState();
+  const [dataAnniosSemana, setDataAnniosSemana] = useState(
 
-const activarSetDistritoOne = async(distrito) =>{
-  console.log("distritoOne",distrito,semana,annio);
-  const data={
-    distrito:distrito,
-    semana:semana,
-    annio:annio
-  }
-  const response = await distritoOneService(data);
-  console.log("activarSetDistritoOne",response);
-  setDataEESS(response);
-};
+  );
+
+  const activarSetDistritoOne = async (distrito) => {
+    console.log("distritoOne", distrito, semana, annio);
+    const data = {
+      distrito: distrito,
+      semana: semana,
+      annio: annio
+    }
+    const response = await distritoOneService(data);
+    console.log("activarSetDistritoOne", response);
+    setDataEESS(response);
+  };
   const fetchDistritos = async () => {
     try {
       const response = await axios.get(`${API_URL}/iras/distrit`);
@@ -85,7 +89,7 @@ const activarSetDistritoOne = async(distrito) =>{
 
   const endemicoIras = async (ano) => {
     try {
-      console.log("ano1",ano)
+      console.log("ano1", ano)
       const response = await endemicoIrasService(ano);
       setDataEndemicoIras(response);
       console.log("endemicoIras:", response)
@@ -95,10 +99,13 @@ const activarSetDistritoOne = async(distrito) =>{
   }
   const anniosemanaIras = async (ano) => {
     try {
-      console.log("ano2",ano)
+      console.log("ano2", ano)
       const response = await semanasIrasService(ano);
       setDataSemanas(response);
-      console.log("anniosemanaIras:", response)
+      console.log("consultaEpi:", consultaEpi);
+      const response2 = await lineBarEdadIras(ano);
+      setDataAnniosSemana(response2);
+      console.log("lineBarEdadIras:", response2);
     } catch (error) {
       console.error(error);
     }
@@ -293,6 +300,23 @@ const activarSetDistritoOne = async(distrito) =>{
     }
 
   };
+
+
+  const [consultaEpi, setConsultaEpi] = useState(
+    {
+      diris: "...",
+      establecimiento: "...",
+      indicador: "...",
+      microred: "...",
+      red: "...",
+    }
+  );
+
+  // Esta función recibirá datos del hijo
+  const recibirDatoDelHijo = (dato) => {
+    console.log("Dato recibido del hijo:", dato);
+    setConsultaEpi(dato);
+  };
   useEffect(() => {
     getIras();
     getUltimaSemanaIras();
@@ -303,7 +327,7 @@ const activarSetDistritoOne = async(distrito) =>{
     getTotEst2024();
     getAnnioIra();
     fetchDistritos();
- 
+
   }, []);
   useEffect(() => {
     actualizarDatosGenerales();
@@ -452,90 +476,116 @@ const activarSetDistritoOne = async(distrito) =>{
           </Grid>
         </Box>
         <Box
-            gridColumn="span 12"
-            gridRow="span 3"
-            backgroundColor={colors.primary[400]}
-            padding="30px"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            position="relative"
-            style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
+          gridColumn="span 12"
+          gridRow="span 3"
+          backgroundColor={colors.primary[400]}
+          padding="30px"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          position="relative"
+          style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
         >
-            <Typography
-                color={colors.greenAccent[500]}
-                variant="h5"
-                fontWeight="600"
-                textAlign="center"
-                sx={{ animation: "fadeIn 1s" }}
-              >
-                Canal Endémico de I.R.A.S. con personas menores a 5 años, en el año {annio}
-              </Typography>
+          <Typography
+            color={colors.greenAccent[500]}
+            variant="h5"
+            fontWeight="600"
+            textAlign="center"
+            sx={{ animation: "fadeIn 1s" }}
+          >
+            Canal Endémico de I.R.A.S. con personas menores a 5 años, en el año {annio}
+          </Typography>
+          <Box
+            position="relative"
+            height="100%"
+            width="100%"
+          >
             <Box
-                position="relative"
-                height="100%"
-                width="100%"
+              position="absolute"
+              top={0}
+              left={0}
+              right={0}
+              bottom={0}
+              zIndex={1} // Asegúrate de que esté detrás
             >
-                <Box
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    bottom={0}
-                    zIndex={1} // Asegúrate de que esté detrás
-                >
-                    {dataEndemicoIras && <MyResponsiveStream datosEnd={dataEndemicoIras} />}
-                </Box>
-                <Box
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    bottom={0}
-                    zIndex={2} // Asegúrate de que esté encima
-                >
-                    {dataSemanas && <BarSimpleChartEndemico data={dataSemanas} />}
-                </Box>
+              {dataEndemicoIras && <MyResponsiveStream datosEnd={dataEndemicoIras} />}
             </Box>
+            <Box
+              position="absolute"
+              top={0}
+              left={0}
+              right={0}
+              bottom={0}
+              zIndex={2} // Asegúrate de que esté encima
+            >
+              {dataSemanas && <BarSimpleChartEndemico data={dataSemanas} />}
+            </Box>
+          </Box>
         </Box>
         <Box
-            gridColumn="span 12"
-            gridRow="span 3"
-            backgroundColor={colors.primary[400]}
-            padding="30px"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            position="relative"
-            style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
+          gridColumn="span 3"
+          gridRow="span 3"
+          backgroundColor={colors.primary[400]}
+          padding="30px"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          position="relative"
+          style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
         >
-            <Typography
-                color={colors.greenAccent[500]}
-                variant="h5"
-                fontWeight="600"
-                textAlign="center"
-                sx={{ animation: "fadeIn 1s" }}
-              >
-                Episodios por semana, en el año {annio} - {annio-1} - {annio-2}
-              </Typography>
-            <Box
-                position="relative"
-                height="100%"
-                width="100%"
-            >
-                <Box
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    bottom={0}
-                    zIndex={1} // Asegúrate de que esté detrás
-                >
-                    <LineBar data={dataSemanas}  />
-                </Box>
-                
-            </Box>
+          <FiltrosEpidemiologicos
+            weekLabel="2025 - SE 37"
+            initial={{
+              diris: "TACNA",
+              red: "DIRESA TACNA",
+              microred: "ESSALUD",
+              establecimiento: "C.A.P. I LOCUMBA",
+              indicador: "EDA < 5 años",
+            }}
+            onChange={recibirDatoDelHijo}
+          />
         </Box>
+        <Box
+          gridColumn="span 9"
+          gridRow="span 3"
+          backgroundColor={colors.primary[400]}
+          padding="30px"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          position="relative"
+          style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
+        >
+          <Typography
+            color={colors.greenAccent[500]}
+            variant="h5"
+            fontWeight="600"
+            textAlign="center"
+            sx={{ animation: "fadeIn 1s" }}
+          >
+            Episodios por semana, en el año {annio} - {annio - 1} - {annio - 2}
+          </Typography>
+          <Box
+            position="relative"
+            height="100%"
+            width="100%"
+          >
+            <Box
+              position="absolute"
+              top={0}
+              left={0}
+              right={0}
+              bottom={0}
+              zIndex={1} // Asegúrate de que esté detrás
+            >
+              <LineBar data={dataAnniosSemana} currentYear={annio} />
+            </Box>
+
+          </Box>
+        </Box>
+
+
+
         <Box
           gridColumn="span 2"
           backgroundColor={colors.primary[400]}
@@ -917,7 +967,7 @@ const activarSetDistritoOne = async(distrito) =>{
             {datosGraf4 && <BarSimpleChart data={datosGraf4} />}
           </Box>
         </Box>
-        
+
       </Box>
     </Box>
   );

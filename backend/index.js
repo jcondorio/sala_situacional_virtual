@@ -27,7 +27,7 @@ app.use(cors({
 }));
 
 app.use("/api/import", require("./src/routes/importRoutes"));
-app.use("/api/iras",require("./src/routes/irasRoutes"));
+    app.use("/api/iras",require("./src/routes/irasRoutes"));
 app.use("/api/edas",require("./src/routes/edasRoutes"));
 app.use("/api/otros",require("./src/routes/otrosRoutes"));
 app.use("/api/poblacion",require("./src/routes/poblacionRoutes"));

@@ -78,9 +78,7 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
       }}
       enableGridX={false}
       enableGridY={false}
-      pointSize={8}
       pointColor={{ theme: "background" }}
-      pointBorderWidth={2}
       pointBorderColor={{ from: "serieColor" }}
       pointLabelYOffset={-12}
       useMesh={true}

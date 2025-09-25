@@ -50,3 +50,26 @@ export const lineBarEdadIras = async (ano) => {
         throw error;
     }
 };
+
+export const serviceMicroRed = async (data) => {
+    try {
+        const response = await axios(`${API_URL}/iras/microred/${data}`);
+        console.log("serviceRed::", response.data.data)
+        return response.data.data;
+    } catch (error) {
+        console.error("lineBarEdadIras de serviceRed:", error);
+        throw error;
+    }
+};
+
+export const serviceEstrablecimientos = async (red,microred) => {
+    try {
+        const response = await axios(`${API_URL}/iras/establecimiento/${red}/${microred}`);
+        console.log("serviceRed::", response.data.data)
+        return response.data.data;
+    } catch (error) {
+        console.error("lineBarEdadIras de serviceRed:", error);
+        throw error;
+    }
+};
+
