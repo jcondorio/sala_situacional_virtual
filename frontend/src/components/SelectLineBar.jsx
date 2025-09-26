@@ -103,7 +103,8 @@ const FiltrosEpidemiologicos = ({
 
 
     return (
-        <Box width="250px">
+        <>
+        <Box width="170px">
             {/* Tarjeta Semana */}
             <Box
                 sx={{
@@ -189,25 +190,15 @@ const FiltrosEpidemiologicos = ({
                         value={form.indicador}
                         onChange={(e) => handleChange("indicador", e.target.value)}
                     >
-                        <MenuItem value="IRA_M2">IRAS {"<"} 2 meses</MenuItem>
-                        <MenuItem value="IRA_2_11">IRAS {"<"} 1 año</MenuItem>
-                        <MenuItem value="IRA_1_4A">IRA {"<"} 5 años</MenuItem>
+                        <MenuItem value="IRA_M2">IRAs {"<"} 2 meses</MenuItem>
+                        <MenuItem value="IRA_2_11">IRAs {"<"} 1 año</MenuItem>
+                        <MenuItem value="IRA_1_4A">IRAs 1 A 4 años</MenuItem>
+                        <MenuItem value="<5A">IRAs {"<"} 5 años</MenuItem>
                     </Select>
                 </FormControl>
-
-                <Button
-                    variant="contained"
-                    sx={{
-                        mt: 1,
-                        bgcolor: colors.blueAccent[500],
-                        "&:hover": { bgcolor: colors.blueAccent[700] },
-                    }}
-                    onClick={() => onChange?.(form)}
-                >
-                    Actualizar
-                </Button>
             </Box>
         </Box>
+        </>
     );
 };
 

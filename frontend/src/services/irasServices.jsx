@@ -73,3 +73,13 @@ export const serviceEstrablecimientos = async (red,microred) => {
     }
 };
 
+export const serviceActializarConsulta = async (data) => {
+    try {
+        const response = await axios.get(`${API_URL}/iras/consultairas`, { params: data });
+        console.log("serviceRed::", response.data.data)
+        return response.data.data;
+    } catch (error) {
+        console.error("lineBarEdadIras de serviceRed:", error);
+        throw error;
+    }
+};

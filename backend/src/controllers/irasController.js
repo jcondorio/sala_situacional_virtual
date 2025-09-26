@@ -1,4 +1,4 @@
-const { getLineBarEdadIrasServices, getLineBarServices, getIrasSemanasServices, getcasesemanadistritServices, getgrafico2Services, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices, getCasosDistritSemServices, getgrafico4Services, endemicoIrasServices, getAnnioIrasService, distritoonemapService, microRedService, EstablecimientosService } = require("../services/irasServices");
+const {ConsultaIrasServices, getLineBarEdadIrasServices, getLineBarServices, getIrasSemanasServices, getcasesemanadistritServices, getgrafico2Services, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices, getCasosDistritSemServices, getgrafico4Services, endemicoIrasServices, getAnnioIrasService, distritoonemapService, microRedService, EstablecimientosService } = require("../services/irasServices");
 const getIrasSemanasController = async (req, res) => {
     ////console.log("en el controlador::")
     try {
@@ -237,6 +237,17 @@ const EstablecimientosController = async (req,res) => {
     }
 };
 
+const ConsultaIrasController = async (req,res) => {
+    console.log("ConsultaIrasController",req.query)
+    try {
+        const getIras = await ConsultaIrasServices(req.query);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 
 
 
@@ -263,4 +274,5 @@ module.exports = {
     getLineBarEdadIrasController,
     microRedController,
     EstablecimientosController,
+    ConsultaIrasController,
 };

@@ -32,7 +32,7 @@ import MyResponsiveStream from "../../components/MyResponsiveStream";
 import MyGroupedBarChart from "../../prototips/MyGroupedBarChart";
 import MapaTacnaConProvincias10k from "../../components/MapaTacnaConProvincias10k";
 import CombinedChart from "../../components/CombinedChart ";
-import { distritoOneService, endemicoIrasService, lineBarEdadIras, semanasIrasService } from "../../services/irasServices";
+import { distritoOneService, endemicoIrasService, lineBarEdadIras, semanasIrasService, serviceActializarConsulta } from "../../services/irasServices";
 import BarSimpleChartEndemico from "../../components/BarSimpleChartEndemico";
 import LineBar from "../../components/LineBar";
 import FiltrosEpidemiologicos from "../../components/SelectLineBar";
@@ -309,14 +309,24 @@ const Dashboard = () => {
       indicador: "...",
       microred: "...",
       red: "...",
+      anni:annio,
     }
   );
 
-  // Esta función recibirá datos del hijo
-  const recibirDatoDelHijo = (dato) => {
-    console.log("Dato recibido del hijo:", dato);
-    setConsultaEpi(dato);
-  };
+
+
+  const recibirDatoDelHijo = async (data) => {
+    try {
+      data.annio=annio;
+      console.log("recibirDatoDelHijo", data)
+      const response = await serviceActializarConsulta(data);
+      setDataAnniosSemana(response);
+      console.log("recibirDatoDelHijo:", response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
   useEffect(() => {
     getIras();
     getUltimaSemanaIras();
@@ -534,7 +544,6 @@ const Dashboard = () => {
           style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
         >
           <FiltrosEpidemiologicos
-            weekLabel="2025 - SE 37"
             initial={{
               diris: "TACNA",
               red: "DIRESA TACNA",
