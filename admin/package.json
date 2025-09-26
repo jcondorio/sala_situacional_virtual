@@ -28,6 +28,7 @@
     "csv-reader": "^1.0.12",
     "formik": "^2.2.9",
     "leaflet": "^1.9.4",
+    "qrcode.react": "^4.0.1",
     "react": "^18.2.0",
     "react-chartjs-2": "^4.3.1",
     "react-csv-reader": "^4.0.0",
