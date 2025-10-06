@@ -1,4 +1,4 @@
-const { getIrasSemanasServices, getcasesemanadistritServices, getgrafico2Services, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices, getCasosDistritSemServices, getgrafico4Services, distritoonemapService, getAnnioIrasService, endemicoIrasServices } = require("../services/edasServices");
+const { getIrasSemanasServices, getcasesemanadistritServices, getgrafico2Services, getIrasUltimaSemanaDistrit, getTotalCasosIrasAnualService, getTotalCasosIrasUltimaSemana, getTotalDistritosCasosUltimaSemana, getTotalEstService, getTotalEstrablecimientosCasosUltimaSemana, getTotSemIrasEstService, getDataDistritService, getDatosGeneralesServices, getCasosDistritUltSemServices, getCasosDistritSemServices, getgrafico4Services, distritoonemapService, getAnnioIrasService, endemicoIrasServices, EstablecimientosEdasService, microRedEdasService, ConsultaEdasServices } = require("../services/edasServices");
 const getIrasSemanasController = async (req, res) => {
     //console.log("en el controlador::")
     try {
@@ -190,6 +190,52 @@ const distritoonemapController = async (req,res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
+const getLineBarEdadEdasController = async (req,res) => {
+    console.log("getLineBarController",req.params)
+    try {
+        const getIras = await getLineBarEdadIrasServices(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const microRedEdasController = async (req,res) => {
+    console.log("getLineBarController",req.params)
+    try {
+        const getIras = await microRedEdasService(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const EstablecimientosEdasController = async (req,res) => {
+    console.log("getLineBarController",req.params)
+    try {
+        const getIras = await EstablecimientosEdasService(req.params);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const ConsultaEdasController = async (req,res) => {
+    console.log("ConsultaIrasController",req.query)
+    try {
+        const getIras = await ConsultaEdasServices(req.query);
+        res.status(200).json({ message: 'User created successfully', data: getIras });
+    } catch (error) {
+        console.error('Error importing data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 module.exports = { 
     getIrasSemanasController, 
     getIrasUltimaSemanaDistritController, 
@@ -209,4 +255,9 @@ module.exports = {
     endemicoIrasController,
     getAnnioIrasController,
     distritoonemapController,
+    ConsultaEdasController,
+    EstablecimientosEdasController,
+    microRedEdasController,
+    getLineBarEdadEdasController,
+    
 };

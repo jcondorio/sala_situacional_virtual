@@ -36,6 +36,7 @@ import { distritoOneService, endemicoIrasService, lineBarEdadIras, semanasIrasSe
 import BarSimpleChartEndemico from "../../components/BarSimpleChartEndemico";
 import LineBar from "../../components/LineBar";
 import FiltrosEpidemiologicos from "../../components/SelectLineBar";
+import html2canvas from "html2canvas";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -66,15 +67,28 @@ const Dashboard = () => {
 
   );
 
+
+  const handleDownload = (chartId) => {
+    const chartElement = document.getElementById(chartId); // Selecciona el contenedor del gráfico
+
+    html2canvas(chartElement).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = "chart.png"; // Nombre del archivo de la imagen
+      link.href = canvas.toDataURL(); // Convierte el canvas a una URL de imagen
+      link.click(); // Inicia la descarga
+    });
+  };
+
+
   const activarSetDistritoOne = async (distrito) => {
-    console.log("distritoOne", distrito, semana, annio);
+    //console.log("distritoOne", distrito, semana, annio);
     const data = {
       distrito: distrito,
       semana: semana,
       annio: annio
     }
     const response = await distritoOneService(data);
-    console.log("activarSetDistritoOne", response);
+    //console.log("activarSetDistritoOne", response);
     setDataEESS(response);
   };
   const fetchDistritos = async () => {
@@ -89,23 +103,23 @@ const Dashboard = () => {
 
   const endemicoIras = async (ano) => {
     try {
-      console.log("ano1", ano)
+      //console.log("ano1", ano)
       const response = await endemicoIrasService(ano);
       setDataEndemicoIras(response);
-      console.log("endemicoIras:", response)
+      //console.log("endemicoIras:", response)
     } catch (error) {
       console.error(error);
     }
   }
   const anniosemanaIras = async (ano) => {
     try {
-      console.log("ano2", ano)
+      //console.log("ano2", ano)
       const response = await semanasIrasService(ano);
       setDataSemanas(response);
-      console.log("consultaEpi:", consultaEpi);
+      //console.log("consultaEpi:", consultaEpi);
       const response2 = await lineBarEdadIras(ano);
       setDataAnniosSemana(response2);
-      console.log("lineBarEdadIras:", response2);
+      //console.log("lineBarEdadIras:", response2);
     } catch (error) {
       console.error(error);
     }
@@ -115,7 +129,7 @@ const Dashboard = () => {
   const getAnnioIra = async () => {
     try {
       const response = await axios(`${API_URL}/otros/annioIras`);
-      console.log("getAnnioIra: ", response.data.data);
+      // console.log("getAnnioIra: ", response.data.data);
       const data = response.data.data;
       setAnniosIras(data);
       // Encontrar el año más alto en los datos
@@ -156,7 +170,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras`);
       const datoConvertido = transformData(response.data.data);
-      console.log("getIras:", response.data.data);
+      //console.log("getIras:", response.data.data);
 
       setDataInsidencias(datoConvertido);
       //console.log("responseiras:", datoConvertido);
@@ -176,7 +190,7 @@ const Dashboard = () => {
   const getTotIrasSemana = async () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totsemana`);
-      console.log("getTotIrasSemana:", response.data.data);
+      //console.log("getTotIrasSemana:", response.data.data);
       setTotIrasSem(response.data.data.total_casos);
       //console.log("getTotIrasSemana:", response.data.data);
     } catch (error) {
@@ -186,7 +200,7 @@ const Dashboard = () => {
   const getTotDistritSemana = async () => {
     try {
       const response = await axios.get(`${API_URL}/iras/totdist`);
-      console.log("getTotDistritSemana:", response.data.data);
+      //console.log("getTotDistritSemana:", response.data.data);
       setTotIrasDistSem(response.data.data);
       //console.log("getTotDistritSemana:", response.data.data);
     } catch (error) {
@@ -209,7 +223,7 @@ const Dashboard = () => {
     try {
       const response = await axios.get(`${API_URL}/iras/ultimasemana`);
       setDataUltimaSemana(response.data.data);
-      console.log("getUltimaSemanaIras", response.data.data);
+      //console.log("getUltimaSemanaIras", response.data.data);
     } catch (error) { }
   };
 
@@ -309,7 +323,7 @@ const Dashboard = () => {
       indicador: "...",
       microred: "...",
       red: "...",
-      anni:annio,
+      anni: annio,
     }
   );
 
@@ -317,16 +331,16 @@ const Dashboard = () => {
 
   const recibirDatoDelHijo = async (data) => {
     try {
-      data.annio=annio;
-      console.log("recibirDatoDelHijo", data)
+      data.annio = annio;
+      //console.log("recibirDatoDelHijo", data)
       const response = await serviceActializarConsulta(data);
       setDataAnniosSemana(response);
-      console.log("recibirDatoDelHijo:", response);
+      //console.log("recibirDatoDelHijo:", response);
     } catch (error) {
       console.error(error);
     }
   }
-  
+
   useEffect(() => {
     getIras();
     getUltimaSemanaIras();
@@ -392,12 +406,14 @@ const Dashboard = () => {
             </Box>
             <Box>
               <IconButton></IconButton>
+              <Button onClick={() => handleDownload("graficoIRAS")}>Descargar Imagen</Button>
             </Box>
           </Box>
-          <Box height="250px" m="-20px 0 0 0">
+          <Box height="250px" m="-20px 0 0 0" id="graficoIRAS">
             {/* <LineChart isDashboard={true} /> */}
             <MyGroupedBarChart data={dataInsidencias} />
             {/*{dataInsidencias && <BarSimpleChart data={dataInsidencias} />} */}
+             
           </Box>
         </Box>
         <Box

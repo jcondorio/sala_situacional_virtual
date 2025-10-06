@@ -27,7 +27,7 @@ const getIrasSemanasServices = async () => {
       attributes: [
         "SEMANA",
         "ANO",
-        [Sequelize.literal("SUM(IRA_M2 + IRA_2_11 + IRA_1_4A)"), "Total_IRA"],
+        [Sequelize.literal("SUM(COALESCE(IRA_M2,0) + COALESCE(IRA_2_11,0) + COALESCE(IRA_1_4A,0))"), "Total_IRA"],
       ],
       group: ["SEMANA", "ANO"],
       raw: true,
@@ -111,7 +111,7 @@ const getTotalCasosIrasAnualService = async () => {
         [
           sequelize.fn(
             "SUM",
-            sequelize.literal("IRA_M2 + IRA_2_11 + IRA_1_4A")
+            sequelize.literal("(COALESCE(IRA_M2,0) + COALESCE(IRA_2_11,0) + COALESCE(IRA_1_4A,0))")
           ),
           "total_registros",
         ],
@@ -145,7 +145,7 @@ const getTotalCasosIrasUltimaSemana = async () => {
         [
           sequelize.fn(
             "SUM",
-            sequelize.literal("IRA_M2 + IRA_2_11 + IRA_1_4A")
+            sequelize.literal("(COALESCE(IRA_M2,0) + COALESCE(IRA_2_11,0) + COALESCE(IRA_1_4A,0))")
           ),
           "total_casos",
         ],
@@ -199,7 +199,7 @@ const getTotalDistritosCasosUltimaSemana = async () => {
         SEMANA: {
           [Op.eq]: sequelize.literal("(SELECT MAX(SEMANA) FROM iras)"),
         },
-        [Op.and]: sequelize.literal("(IRA_M2 + IRA_2_11 + IRA_1_4A) > 0"),
+        [Op.and]: sequelize.literal("(COALESCE(IRA_M2,0) + COALESCE(IRA_2_11,0) + COALESCE(IRA_1_4A,0))> 0"),
       },
       raw: true,
     });
@@ -242,7 +242,7 @@ const getTotalEstrablecimientosCasosUltimaSemana = async () => {
             `(SELECT MAX(SEMANA) FROM iras WHERE ANO=${maxAno})`
           ),
         },
-        [Op.and]: sequelize.literal("(IRA_M2 + IRA_2_11 + IRA_1_4A) > 0"),
+        [Op.and]: sequelize.literal("(COALESCE(IRA_M2,0) + COALESCE(IRA_2_11,0) + COALESCE(IRA_1_4A,0)) > 0"),
       },
       raw: true,
     });
@@ -279,7 +279,7 @@ const getTotSemIrasEstService = async (data) => {
       SELECT 
       all_years.ANO as ANO,
       weeks.num AS SEMANA, 
-      COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS Total_IRA
+      COALESCE(SUM(COALESCE(iras.IRA_M2,0) + COALESCE(iras.IRA_2_11,0) + COALESCE(iras.IRA_1_4A,0)), 0) AS Total_IRA
     
 FROM 
     (
@@ -327,7 +327,7 @@ const getDataDistritService = async () => {
       `
       SELECT 
           prov.Distrit,
-          COALESCE(SUM(i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A), 0) AS casos,
+          COALESCE(SUM(COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)), 0) AS casos,
           ${maxAno} AS maximoAno
       FROM 
           provicional AS prov
@@ -359,7 +359,7 @@ const getDatosGeneralesServices = async (annio) => {
 
     const resultTotIras = await Sequelize.query(
       `
-      Select sum(IRA_M2+IRA_2_11+IRA_1_4A) as result FROM iras where ANO=?
+      Select sum(COALESCE(IRA_M2,0) + COALESCE(IRA_2_11,0) + COALESCE(IRA_1_4A,0)) as result FROM iras where ANO=?
       `,
       {
         replacements: [maxAno],
@@ -368,7 +368,7 @@ const getDatosGeneralesServices = async (annio) => {
     );
     const resultTotUltimaSemana = await Sequelize.query(
       `
-      select sum(IRA_M2+IRA_2_11+IRA_1_4A) as result from iras where ANO=? and SEMANA=(select max(SEMANA) from iras where ANO=?)
+      select sum(COALESCE(IRA_M2,0) + COALESCE(IRA_2_11,0) + COALESCE(IRA_1_4A,0)) as result from iras where ANO=? and SEMANA=(select max(SEMANA) from iras where ANO=?)
      `,
       {
         replacements: [maxAno, maxAno],
@@ -428,7 +428,7 @@ const getcasesemanadistritServices = async (data) => {
 
     const resultTotUltimaSemana = await Sequelize.query(
       `
-      select sum(IRA_M2+IRA_2_11+IRA_1_4A) as result from iras where ANO=? and SEMANA=?
+      select sum(COALESCE(IRA_M2,0) + COALESCE(IRA_2_11,0) + COALESCE(IRA_1_4A,0)) as result from iras where ANO=? and SEMANA=?
      `,
       {
         replacements: [maxAno, data.semana],
@@ -488,7 +488,7 @@ const getCasosDistritUltSemServices = async (annio) => {
         [
           Sequelize.fn(
             "SUM",
-            Sequelize.literal("IRA_M2 + IRA_2_11 + IRA_1_4A")
+            Sequelize.literal("(COALESCE(IRA_M2,0) + COALESCE(IRA_2_11,0) + COALESCE(IRA_1_4A,0))")
           ),
           "total_registros",
         ],
@@ -528,7 +528,7 @@ const getCasosDistritSemServices = async (data) => {
         [
           Sequelize.fn(
             "SUM",
-            Sequelize.literal("IRA_M2 + IRA_2_11 + IRA_1_4A")
+            Sequelize.literal("(COALESCE(IRA_M2,0) + COALESCE(IRA_2_11,0) + COALESCE(IRA_1_4A,0))")
           ),
           "total_registros",
         ],
@@ -559,7 +559,7 @@ const getgrafico2Services = async (data) => {
   //console.log("getTotSemIrasEstService", data);
   try {
     const query = `
-     SELECT weeks.num AS SEMANA, COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS cantidad_registros
+     SELECT weeks.num AS SEMANA, COALESCE(SUM(COALESCE(iras.IRA_M2,0) + COALESCE(iras.IRA_2_11,0) + COALESCE(iras.IRA_1_4A,0)), 0) AS cantidad_registros
 FROM (
     SELECT 
         ones.num + tens.num * 10 + hundreds.num * 100 AS num
@@ -597,7 +597,7 @@ const getgrafico3Services = async (data) => {
     const query = `
       SELECT 
       SEMANA, 
-      COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS Total_IRA
+      COALESCE(SUM(COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)), 0) AS Total_IRA
       from iras as i inner join provicional as prov on prov.COD_EST=i.E_SALUD
       where prov.Distrit=? and i.ANO=?
     `;
@@ -619,7 +619,7 @@ const getgrafico4Services = async (data) => {
   //console.log("getTotSemIrasEstService", data);
   try {
     const query = `
-      SELECT weeks.num AS SEMANA, COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS cantidad_registros
+      SELECT weeks.num AS SEMANA, COALESCE(SUM(COALESCE(iras.IRA_M2,0) + COALESCE(iras.IRA_2_11,0) + COALESCE(iras.IRA_1_4A,0)), 0) AS cantidad_registros
       FROM (
           SELECT 
               ones.num + tens.num * 10 + hundreds.num * 100 AS num
@@ -665,7 +665,7 @@ const endemicoIrasServices = async (annio) => {
       from (
       select
       i.ANO, i.SEMANA, sum(i.IRA_M2+i.IRA_2_11+i.IRA_1_4A) as casos, pobl.poblacion, ((sum(i.IRA_M2+i.IRA_2_11+i.IRA_1_4A)/pobl.poblacion*100000)+1) tasa_i,
-      ln(((sum(i.IRA_M2+i.IRA_2_11+i.IRA_1_4A)/pobl.poblacion*100000)+1)) logn
+      ln(((sum(COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0))/pobl.poblacion*100000)+1)) logn
       from iras as i 
       inner join annios_endemicos_iras iend on i.ANO=iend.nom_annio_endemico
       inner join (select pobl.ano,sum(pobl.men_5) poblacion from poblacion as pobl 
@@ -760,7 +760,7 @@ const getAnnioIrasService = async (annio) => {
         )
         SELECT 
             weeks.SEMANA,
-            COALESCE(SUM(iras.IRA_M2 + iras.IRA_2_11 + iras.IRA_1_4A), 0) AS casos
+            COALESCE(SUM(COALESCE(iras.IRA_M2,0) + COALESCE(iras.IRA_2_11,0) + COALESCE(iras.IRA_1_4A,0)), 0) AS casos
         FROM weeks
         LEFT JOIN iras 
             ON weeks.SEMANA = iras.SEMANA 
@@ -849,9 +849,9 @@ const getLineBarEdadIrasServices = async ({ annio }) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -959,9 +959,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1012,9 +1012,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1068,9 +1068,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1126,9 +1126,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1178,9 +1178,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_2_11) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_2_11) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_2_11) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_2_11,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_2_11,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_2_11,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1230,9 +1230,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1282,9 +1282,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1340,9 +1340,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1396,9 +1396,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_2_11 ) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_2_11) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN ( i.IRA_2_11 ) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_2_11,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_2_11,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_2_11,0) ) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1452,9 +1452,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1508,9 +1508,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1543,7 +1543,7 @@ const ConsultaIrasServices = async (data) => {
         return result;
       }
       else {
-
+console.log("paso por aqui o no")
       }
     }
     else if (data.establecimiento == "..." || data.establecimiento == "") {
@@ -1569,9 +1569,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1626,9 +1626,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN ( i.IRA_2_11 ) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN ( i.IRA_2_11 ) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_2_11 ) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN ( COALESCE(i.IRA_2_11,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN ( COALESCE(i.IRA_2_11,0) ) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_2_11,0) ) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1683,9 +1683,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1740,9 +1740,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1798,9 +1798,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1856,9 +1856,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN ( i.IRA_2_11 ) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN ( i.IRA_2_11 ) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_2_11 ) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN ( COALESCE(i.IRA_2_11,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN ( COALESCE(i.IRA_2_11 ,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_2_11 ,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1915,9 +1915,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -1974,9 +1974,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -2037,9 +2037,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 ) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) ) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -2095,9 +2095,9 @@ const ConsultaIrasServices = async (data) => {
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN ( i.IRA_2_11 ) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN ( i.IRA_2_11 ) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_2_11 ) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN ( COALESCE(i.IRA_2_11,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN ( COALESCE(i.IRA_2_11,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_2_11,0) ) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -2154,9 +2154,9 @@ console.log(result)
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA
@@ -2213,9 +2213,9 @@ console.log(result)
       )
       SELECT
         w.SEMANA,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (i.IRA_M2 + i.IRA_2_11 + i.IRA_1_4A) ELSE 0 END), 0) AS annio_actual
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before2 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_before1 THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN i.ANO = :year_current THEN (COALESCE(i.IRA_M2,0) + COALESCE(i.IRA_2_11,0) + COALESCE(i.IRA_1_4A,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN iras i
         ON w.SEMANA = i.SEMANA

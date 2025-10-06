@@ -40,3 +40,46 @@ export const distritoOneService = async (data) => {
     }
 };
 
+export const lineBarEdadEdas = async (ano) => {
+    try {
+        const response = await axios(`${API_URL}/edas/lineBarEdadIras/${ano}`);
+        console.log("lineBarEdadIras::", response.data.data)
+        return response.data.data;
+    } catch (error) {
+        console.error("lineBarEdadIras de IRAS:", error);
+        throw error;
+    }
+};
+
+export const serviceMicroRedEdas = async (data) => {
+    try {
+        const response = await axios(`${API_URL}/edas/microred/${data}`);
+        console.log("serviceRed::", response.data.data)
+        return response.data.data;
+    } catch (error) {
+        console.error("lineBarEdadIras de serviceRed:", error);
+        throw error;
+    }
+};
+
+export const serviceEstrablecimientosEdas = async (red,microred) => {
+    try {
+        const response = await axios(`${API_URL}/edas/establecimiento/${red}/${microred}`);
+        console.log("serviceRed::", response.data.data)
+        return response.data.data;
+    } catch (error) {
+        console.error("lineBarEdadIras de serviceRed:", error);
+        throw error;
+    }
+};
+
+export const serviceActializarConsultaEdas = async (data) => {
+    try {
+        const response = await axios.get(`${API_URL}/edas/consultairas`, { params: data });
+        console.log("serviceRed::", response.data.data)
+        return response.data.data;
+    } catch (error) {
+        console.error("lineBarEdadIras de serviceRed:", error);
+        throw error;
+    }
+};

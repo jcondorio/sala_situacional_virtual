@@ -33,7 +33,7 @@ const getIrasSemanasServices = async () => {
       group: ["SEMANA", "ANO"],
       raw: true,
     });
-    console.log("resultedas",result)
+    console.log("resultedas", result)
     // Paso 4: Crear un mapa para acceder fácilmente a los resultados por año y semana
     const resultMap = {};
     result.forEach((row) => {
@@ -68,7 +68,7 @@ const getIrasSemanasServices = async () => {
 };
 
 const getIrasUltimaSemanaDistrit = async () => {
-  
+
   try {
     const result = await Edas.findAll({
       attributes: [
@@ -161,7 +161,7 @@ const getTotalCasosIrasUltimaSemana = async () => {
         SEMANA: {
           [Op.eq]: literal("(SELECT MAX(SEMANA) FROM edas where ANO= (SELECT MAX(ANO) FROM edas))"),
         },
-        ANO:{
+        ANO: {
           [Op.eq]: literal("(SELECT MAX(ANO) FROM edas)"),
 
         }
@@ -324,7 +324,7 @@ ORDER BY
 };
 
 const getDataDistritService = async () => {
- 
+
   try {
     const maxAno = await Edas.max("ANO");
     //console.log("maxAno: ", maxAno);
@@ -349,7 +349,7 @@ const getDataDistritService = async () => {
     `,
       { type: sequelize.QueryTypes.SELECT }
     );
-    console.log("getDataDistritServiceedas",results);
+    console.log("getDataDistritServiceedas", results);
     //console.log(results);
     return results;
   } catch (error) {
@@ -584,7 +584,7 @@ ORDER BY semana;
     // Ejecutar la consulta
     studentsWithDetails = await Sequelize.query(query, {
       type: sequelize.QueryTypes.SELECT,
-      replacements: [data.annio, data.estacion,data.annio],
+      replacements: [data.annio, data.estacion, data.annio],
     });
     //console.log("superconsulta:", studentsWithDetails);
     return studentsWithDetails;
@@ -646,7 +646,7 @@ const getgrafico4Services = async (data) => {
     // Ejecutar la consulta
     studentsWithDetails = await Sequelize.query(query, {
       type: sequelize.QueryTypes.SELECT,
-      replacements: [data.annio,data.annio, data.distrito],
+      replacements: [data.annio, data.annio, data.distrito],
     });
     //console.log("superconsulta:", studentsWithDetails);
     return studentsWithDetails;
@@ -752,9 +752,9 @@ GROUP BY de_ic.SEMANA;
         zona_alarma: parseFloat(
           (item.ic_sup_casos - item.media_casos).toFixed(2)
         ),
-        zona_epidemia: 750-(parseFloat(item.ic_inf_casos.toFixed(2))+parseFloat(
+        zona_epidemia: 750 - (parseFloat(item.ic_inf_casos.toFixed(2)) + parseFloat(
           (item.media_casos - item.ic_inf_casos).toFixed(2)
-        )+parseFloat(
+        ) + parseFloat(
           (item.ic_sup_casos - item.media_casos).toFixed(2)
         )),
       });
@@ -765,7 +765,7 @@ GROUP BY de_ic.SEMANA;
         zona_exitosa: bloque_6[0].zona_exitosa,
         zona_segura: bloque_6[0].zona_segura,
         zona_alarma: bloque_6[0].zona_alarma,
-        zona_epidemia:750-bloque_6[0].zona_exitosa-bloque_6[0].zona_segura-bloque_6[0].zona_alarma,
+        zona_epidemia: 750 - bloque_6[0].zona_exitosa - bloque_6[0].zona_segura - bloque_6[0].zona_alarma,
       });
     } else {
       console.error(
@@ -820,7 +820,7 @@ const getAnnioIrasService = async (annio) => {
 
 const distritoonemapService = async (data) => {
   try {
-    console.log("distritoonemapService",data);
+    console.log("distritoonemapService", data);
     const query = `
       SELECT IFNULL(prov.N_EESS, 'Sin nombre') AS N_EESS,
        IFNULL(SUM(COALESCE(e.DAA_C1, 0) + COALESCE(e.DAA_C1_4, 0) + COALESCE(e.DAA_C5, 0)+ COALESCE(e.DAA_C5_11, 0)+ COALESCE(e.DAA_C12_17, 0)+ COALESCE(e.DAA_C18_29, 0)+ COALESCE(e.DAA_C30_59, 0)+ COALESCE(e.DAA_C60, 0)), 0) AS casos
@@ -834,12 +834,2834 @@ const distritoonemapService = async (data) => {
   `;
     studentsWithDetails = await Sequelize.query(query, {
       type: sequelize.QueryTypes.SELECT,
-      replacements: [data.semana,data.annio,data.distrito],
+      replacements: [data.semana, data.annio, data.distrito],
     });
-    console.log("distritoonemapService_ress",studentsWithDetails)
+    console.log("distritoonemapService_ress", studentsWithDetails)
     return studentsWithDetails;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const getLineBarServices = async () => {
+  try {
+    const result = await Provicional.findAll({
+      attributes: ["COD_EST", "N_EESS"],
+      where: {
+        Dpto: "TACNA",
+      },
+    });
+    //console.log("getTotalEstService", result);
+
+    return result;
+  } catch (error) {
+    console.error("Error al obtener el total de registros:", error);
+    throw error;
+  }
+};
+
+
+const getLineBarEdadEdasServices = async ({ annio }) => {
+  try {
+    const year = Number(annio);
+    const years = {
+      before2: year - 2,
+      before1: year - 1,
+      current: year,
+    };
+
+    const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas 
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+    const rows = await Sequelize.query(query, {
+      replacements: {
+        year_before2: years.before2,
+        year_before1: years.before1,
+        year_current: years.current,
+      },
+    });
+
+    const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+    const result = rs.map(r => ({
+      semana: String(r.SEMANA),
+      annioantes2: Number(r.annio_antes2) || 0,
+      annioantes: Number(r.annio_antes1) || 0,
+      annio: Number(r.annio_actual) || 0,
+    }));
+
+    return result;
+  } catch (error) {
+    console.error('Error al obtener el total de registros:', error);
+    throw error;
+  }
+};
+
+const microRedEdasService = async (data) => {
+  console.log(data);
+  try {
+    const result = await Provicional.findAll({
+      attributes: [
+        [Sequelize.fn('DISTINCT', Sequelize.col('N_Micro_RED')), 'N_Micro_RED']
+      ],
+      where: {
+        N_RED: data.data
+      },
+      raw: true // devuelve objetos planos {N_Micro_RED: ...}
+    });
+
+    // opcional: solo array de strings
+    // const microRedes = result.map(r => r.N_Micro_RED);
+    // return microRedes;
+
+    return result; // [{N_Micro_RED: '...'}, {N_Micro_RED: '...'}]
+  } catch (error) {
+    console.error('Error al obtener las micro redes:', error);
+    throw error;
+  }
+};
+
+const EstablecimientosEdasService = async (data) => {
+  console.log("revisionde datos:::", data);
+  try {
+    const result = await Provicional.findAll({
+      attributes: [
+        [Sequelize.fn('DISTINCT', Sequelize.col('N_EESS')), 'N_EESS']
+      ],
+      where: {
+        N_RED: data.data,
+        N_Micro_RED: data.data2,
+        Dpto: "TACNA",
+      },
+      raw: true // devuelve objetos planos {N_Micro_RED: ...}
+    });
+
+    // opcional: solo array de strings
+    // const microRedes = result.map(r => r.N_Micro_RED);
+    // return microRedes;
+
+    return result; // [{N_Micro_RED: '...'}, {N_Micro_RED: '...'}]
+  } catch (error) {
+    console.error('Error al obtener las micro redes:', error);
+    throw error;
+  }
+};
+
+const ConsultaEdasServices = async (data) => {
+  console.log("ConsultaIrasServices", data.annio);
+  try {
+    if (data.red == "..." && data.indicador == "..." || data.red == "..." && data.indicador == "" || data.red == "" && data.indicador == "..." || data.red == "" && data.indicador == "") {
+      const year = Number(data.annio);
+      const years = {
+        before2: year - 2,
+        before1: year - 1,
+        current: year,
+      };
+
+      const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+      const rows = await Sequelize.query(query, {
+        replacements: {
+          year_before2: years.before2,
+          year_before1: years.before1,
+          year_current: years.current,
+        },
+      });
+
+      const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+      const result = rs.map(r => ({
+        semana: String(r.SEMANA),
+        annioantes2: Number(r.annio_antes2) || 0,
+        annioantes: Number(r.annio_antes1) || 0,
+        annio: Number(r.annio_actual) || 0,
+      }));
+
+      return result;
+    }
+    else if (data.microred == "..." && data.indicador == "..." || data.microred == "..." && data.indicador == "" || data.microred == "" && data.indicador == "..." || data.microred == "" && data.indicador == "") {
+      console.log("data anio:::", data.annio)
+      const year = Number(data.annio);
+      const years = {
+        before2: year - 2,
+        before1: year - 1,
+        current: year,
+      };
+
+      const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas 
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   -- ajusta la relación real entre iras y provicional
+      WHERE p.N_RED = :redtacna   -- aquí filtras según tu intención
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+      const rows = await Sequelize.query(query, {
+        replacements: {
+          year_before2: years.before2,
+          year_before1: years.before1,
+          year_current: years.current,
+          redtacna: data.red,
+        },
+      });
+
+      const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+      const result = rs.map(r => ({
+        semana: String(r.SEMANA),
+        annioantes2: Number(r.annio_antes2) || 0,
+        annioantes: Number(r.annio_antes1) || 0,
+        annio: Number(r.annio_actual) || 0,
+      }));
+
+      return result;
+    }
+    else if (data.establecimiento == "..." && data.indicador == "..." || data.establecimiento == "..." && data.indicador == "" || data.establecimiento == "" && data.indicador == "..." || data.establecimiento == "" && data.indicador == "") {
+      const year = Number(data.annio);
+      const years = {
+        before2: year - 2,
+        before1: year - 1,
+        current: year,
+      };
+
+      const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+      const rows = await Sequelize.query(query, {
+        replacements: {
+          year_before2: years.before2,
+          year_before1: years.before1,
+          year_current: years.current,
+          redtacna: data.red,
+          microredtacna: data.microred
+        },
+      });
+
+      const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+      const result = rs.map(r => ({
+        semana: String(r.SEMANA),
+        annioantes2: Number(r.annio_antes2) || 0,
+        annioantes: Number(r.annio_antes1) || 0,
+        annio: Number(r.annio_actual) || 0,
+      }));
+
+      return result;
+    }
+    else if (data.red == "..." || data.red == "") {
+      if (data.indicador == "DAA_C1") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+      else if (data.indicador == "DAA_C1_4") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1_4,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1_4,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1_4,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+      else if (data.indicador == "DAA_C5") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+      else if (data.indicador == "DAA_C5_11") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+ else if (data.indicador == "DAA_C12_17") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+       else if (data.indicador == "DAA_C18_29") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+      else if (data.indicador == "DAA_C30_59") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+      else if (data.indicador == "DAA_C60") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+      else if (data.indicador == "total edas") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+      else {
+
+      }
+
+    }
+    else if (data.microred == "..." || data.microred == "") {
+      if (data.indicador == "DAA_C1") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST  
+      WHERE p.N_RED = :redtacna   
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+      else if (data.indicador == "DAA_C1_4") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1_4,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1_4,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1_4,0) ) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   -- ajusta la relación real entre iras y provicional
+      WHERE p.N_RED = :redtacna   -- aquí filtras según tu intención
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+      else if (data.indicador == "DAA_C5") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   -- ajusta la relación real entre iras y provicional
+      WHERE p.N_RED = :redtacna   -- aquí filtras según tu intención
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+else if (data.indicador == "DAA_C5_11") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+ else if (data.indicador == "DAA_C12_17") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+       else if (data.indicador == "DAA_C18_29") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+      else if (data.indicador == "DAA_C30_59") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+      else if (data.indicador == "DAA_C60") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+
+      else if (data.indicador == "total edas") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   -- ajusta la relación real entre iras y provicional
+      WHERE p.N_RED = :redtacna   -- aquí filtras según tu intención
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+      else {
+
+      }
+    }
+    else if (data.establecimiento == "..." || data.establecimiento == "") {
+      if (data.indicador == "DAA_C1") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+            microredtacna: data.microred
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+      else if (data.indicador == "DAA_C1_4") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN ( COALESCE(edas.DAA_C1_4,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN ( COALESCE(edas.DAA_C1_4,0) ) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1_4,0) ) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+            microredtacna: data.microred
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+      else if (data.indicador == "DAA_C5") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+            microredtacna: data.microred
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+else if (data.indicador == "DAA_C5_11") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+ else if (data.indicador == "DAA_C12_17") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+       else if (data.indicador == "DAA_C18_29") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+      else if (data.indicador == "DAA_C30_59") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+      else if (data.indicador == "DAA_C60") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+      else if (data.indicador == "total edas") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+            microredtacna: data.microred
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+      else {
+        if (data.indicador == "DAA_C1") {
+          const year = Number(data.annio);
+          const years = {
+            before2: year - 2,
+            before1: year - 1,
+            current: year,
+          };
+
+          const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna and p.N_EESS=:establecimiento
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+          const rows = await Sequelize.query(query, {
+            replacements: {
+              year_before2: years.before2,
+              year_before1: years.before1,
+              year_current: years.current,
+              redtacna: data.red,
+              microredtacna: data.microred,
+              establecimiento: data.establecimiento,
+            },
+          });
+
+          const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+          const result = rs.map(r => ({
+            semana: String(r.SEMANA),
+            annioantes2: Number(r.annio_antes2) || 0,
+            annioantes: Number(r.annio_antes1) || 0,
+            annio: Number(r.annio_actual) || 0,
+          }));
+
+          return result;
+        }
+        else if (data.indicador == "DAA_C1_4") {
+          const year = Number(data.annio);
+          const years = {
+            before2: year - 2,
+            before1: year - 1,
+            current: year,
+          };
+
+          const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN ( COALESCE(edas.DAA_C1_4,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN ( COALESCE(edas.DAA_C1_4 ,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1_4 ,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna and p.N_EESS=:establecimiento
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+          const rows = await Sequelize.query(query, {
+            replacements: {
+              year_before2: years.before2,
+              year_before1: years.before1,
+              year_current: years.current,
+              redtacna: data.red,
+              microredtacna: data.microred,
+              establecimiento: data.establecimiento,
+
+            },
+          });
+
+          const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+          const result = rs.map(r => ({
+            semana: String(r.SEMANA),
+            annioantes2: Number(r.annio_antes2) || 0,
+            annioantes: Number(r.annio_antes1) || 0,
+            annio: Number(r.annio_actual) || 0,
+          }));
+
+          return result;
+        }
+        else if (data.indicador == "DAA_C5") {
+          const year = Number(data.annio);
+          const years = {
+            before2: year - 2,
+            before1: year - 1,
+            current: year,
+          };
+
+          const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna and p.N_EESS=:establecimiento
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+          const rows = await Sequelize.query(query, {
+            replacements: {
+              year_before2: years.before2,
+              year_before1: years.before1,
+              year_current: years.current,
+              redtacna: data.red,
+              microredtacna: data.microred,
+              establecimiento: data.establecimiento,
+
+            },
+          });
+
+          const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+          const result = rs.map(r => ({
+            semana: String(r.SEMANA),
+            annioantes2: Number(r.annio_antes2) || 0,
+            annioantes: Number(r.annio_antes1) || 0,
+            annio: Number(r.annio_actual) || 0,
+          }));
+
+          return result;
+        }
+
+
+        else if (data.indicador == "DAA_C5_11") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+ else if (data.indicador == "DAA_C12_17") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+       else if (data.indicador == "DAA_C18_29") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+      else if (data.indicador == "DAA_C30_59") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+      else if (data.indicador == "DAA_C60") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+        else if (data.indicador == "total edas") {
+          const year = Number(data.annio);
+          const years = {
+            before2: year - 2,
+            before1: year - 1,
+            current: year,
+          };
+
+          const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna and p.N_EESS=:establecimiento
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+          const rows = await Sequelize.query(query, {
+            replacements: {
+              year_before2: years.before2,
+              year_before1: years.before1,
+              year_current: years.current,
+              redtacna: data.red,
+              microredtacna: data.microred,
+              establecimiento: data.establecimiento,
+
+            },
+          });
+
+          const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+          const result = rs.map(r => ({
+            semana: String(r.SEMANA),
+            annioantes2: Number(r.annio_antes2) || 0,
+            annioantes: Number(r.annio_antes1) || 0,
+            annio: Number(r.annio_actual) || 0,
+          }));
+
+          return result;
+        }
+      }
+    }
+    else {
+      console.log("esta aqui en el ultimo else")
+      if (data.indicador == "DAA_C1") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) ) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna and p.N_EESS=:establecimiento
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+            microredtacna: data.microred,
+            establecimiento: data.establecimiento,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+      else if (data.indicador == "DAA_C1_4") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN ( COALESCE(edas.DAA_C1_4,0) ) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN ( COALESCE(edas.DAA_C1_4,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1_4,0) ) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna and p.N_EESS=:establecimiento
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+            microredtacna: data.microred,
+            establecimiento: data.establecimiento,
+
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+        console.log(result)
+        return result;
+      }
+      else if (data.indicador == "DAA_C5") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C5,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna and p.N_EESS=:establecimiento
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+            microredtacna: data.microred,
+            establecimiento: data.establecimiento,
+
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+      else if (data.indicador == "DAA_C5_11") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C5_11,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+ else if (data.indicador == "DAA_C12_17") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C12_17,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+       else if (data.indicador == "DAA_C18_29") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C18_29,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+      else if (data.indicador == "DAA_C30_59") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C30_59,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+      else if (data.indicador == "DAA_C60") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+
+
+      else if (data.indicador == "total edas") {
+        const year = Number(data.annio);
+        const years = {
+          before2: year - 2,
+          before1: year - 1,
+          current: year,
+        };
+
+        const query = `
+      WITH weeks AS (
+        SELECT num AS SEMANA
+        FROM (
+          SELECT 1 AS num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+          UNION SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+          UNION SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+          UNION SELECT 31 UNION SELECT 32 UNION SELECT 33 UNION SELECT 34 UNION SELECT 35 UNION SELECT 36 UNION SELECT 37 UNION SELECT 38 UNION SELECT 39 UNION SELECT 40
+          UNION SELECT 41 UNION SELECT 42 UNION SELECT 43 UNION SELECT 44 UNION SELECT 45 UNION SELECT 46 UNION SELECT 47 UNION SELECT 48 UNION SELECT 49 UNION SELECT 50
+          UNION SELECT 51 UNION SELECT 52
+        ) AS all_weeks
+      )
+      SELECT
+        w.SEMANA,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
+      FROM weeks w
+      LEFT JOIN edas
+        ON w.SEMANA = edas.SEMANA
+       AND edas.ANO IN (:year_before2, :year_before1, :year_current)
+      LEFT JOIN provicional p
+      ON edas.E_SALUD = p.COD_EST   
+      WHERE p.N_RED = :redtacna and p.N_Micro_RED= :microredtacna and p.N_EESS=:establecimiento
+      GROUP BY w.SEMANA
+      ORDER BY w.SEMANA;
+    `;
+
+        const rows = await Sequelize.query(query, {
+          replacements: {
+            year_before2: years.before2,
+            year_before1: years.before1,
+            year_current: years.current,
+            redtacna: data.red,
+            microredtacna: data.microred,
+            establecimiento: data.establecimiento,
+
+          },
+        });
+
+        const rs = Array.isArray(rows) ? rows[0] ?? rows : rows;
+
+        const result = rs.map(r => ({
+          semana: String(r.SEMANA),
+          annioantes2: Number(r.annio_antes2) || 0,
+          annioantes: Number(r.annio_antes1) || 0,
+          annio: Number(r.annio_actual) || 0,
+        }));
+
+        return result;
+      }
+    }
+  } catch (error) {
+    console.error('Error al obtener las micro redes:', error);
     throw error;
   }
 };
@@ -863,4 +3685,9 @@ module.exports = {
   endemicoIrasServices,
   getAnnioIrasService,
   distritoonemapService,
+  getLineBarServices,
+  ConsultaEdasServices,
+  EstablecimientosEdasService,
+  microRedEdasService,
+  getLineBarEdadEdasServices,
 };
