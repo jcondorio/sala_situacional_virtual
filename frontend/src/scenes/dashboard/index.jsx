@@ -32,11 +32,19 @@ import MyResponsiveStream from "../../components/MyResponsiveStream";
 import MyGroupedBarChart from "../../prototips/MyGroupedBarChart";
 import MapaTacnaConProvincias10k from "../../components/MapaTacnaConProvincias10k";
 import CombinedChart from "../../components/CombinedChart ";
-import { distritoOneService, endemicoIrasService, lineBarEdadIras, semanasIrasService, serviceActializarConsulta } from "../../services/irasServices";
+import DownloadIcon from "@mui/icons-material/Download";
+import {
+  distritoOneService,
+  endemicoIrasService,
+  lineBarEdadIras,
+  semanasIrasService,
+  serviceActializarConsulta,
+} from "../../services/irasServices";
 import BarSimpleChartEndemico from "../../components/BarSimpleChartEndemico";
 import LineBar from "../../components/LineBar";
 import FiltrosEpidemiologicos from "../../components/SelectLineBar";
 import html2canvas from "html2canvas";
+import { red } from "@mui/material/colors";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -63,10 +71,7 @@ const Dashboard = () => {
   const [dataEndemicoIras, setDataEndemicoIras] = useState();
   const [dataSemanas, setDataSemanas] = useState();
   const [dataEESS, setDataEESS] = useState();
-  const [dataAnniosSemana, setDataAnniosSemana] = useState(
-
-  );
-
+  const [dataAnniosSemana, setDataAnniosSemana] = useState();
 
   const handleDownload = (chartId) => {
     const chartElement = document.getElementById(chartId); // Selecciona el contenedor del gráfico
@@ -79,14 +84,13 @@ const Dashboard = () => {
     });
   };
 
-
   const activarSetDistritoOne = async (distrito) => {
     //console.log("distritoOne", distrito, semana, annio);
     const data = {
       distrito: distrito,
       semana: semana,
-      annio: annio
-    }
+      annio: annio,
+    };
     const response = await distritoOneService(data);
     //console.log("activarSetDistritoOne", response);
     setDataEESS(response);
@@ -110,7 +114,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
   const anniosemanaIras = async (ano) => {
     try {
       //console.log("ano2", ano)
@@ -123,8 +127,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error(error);
     }
-  }
-
+  };
 
   const getAnnioIra = async () => {
     try {
@@ -134,7 +137,7 @@ const Dashboard = () => {
       setAnniosIras(data);
       // Encontrar el año más alto en los datos
       if (Array.isArray(data) && data.length > 0) {
-        const maxYear = Math.max(...data.map(item => item.ANO));
+        const maxYear = Math.max(...data.map((item) => item.ANO));
         //console.log("getAnnioIra", maxYear)
         setAnnio(maxYear);
       }
@@ -213,7 +216,6 @@ const Dashboard = () => {
       setTotIrasEstSem(response.data.data.total_registros);
       //console.log("getTotEstSemana123:", response.data.data);
       updateSemanasSelect(response.data.data.max_semana);
-
     } catch (error) {
       console.error("Error fetching estudiantes data:", error);
     }
@@ -224,7 +226,7 @@ const Dashboard = () => {
       const response = await axios.get(`${API_URL}/iras/ultimasemana`);
       setDataUltimaSemana(response.data.data);
       //console.log("getUltimaSemanaIras", response.data.data);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const curvaEpidemiologica = async () => {
@@ -238,7 +240,7 @@ const Dashboard = () => {
       setDataCurvEpi(datoConvertido);
       // console.log("curvaEpidemiologica", response.data.data);
       //console.log("dataCirvaEpi;", dataCurvEpi)
-    } catch (error) { }
+    } catch (error) {}
   };
   const actualizarDatosGenerales = async () => {
     try {
@@ -254,7 +256,7 @@ const Dashboard = () => {
       setTotIras(response.data.data.totiras);
       updateSemanasSelect(response.data.data.cantidadSemanas);
       //setDataCurvEpi(datoConvertido);
-    } catch (error) { }
+    } catch (error) {}
   };
   const [semanas, setSemanas] = useState();
   const updateSemanasSelect = (ult_sem) => {
@@ -279,8 +281,12 @@ const Dashboard = () => {
   const casosDistritoSemana = async () => {
     try {
       //console.log("casosDistritoSemana", annio, "--", semana)
-      const response = await axios.get(`${API_URL}/iras/casesemanadistrit/${annio}/${semanadistrit}`);
-      const result = await axios.get(`${API_URL}/iras/updatedistritSem/${annio}/${semanadistrit}`);
+      const response = await axios.get(
+        `${API_URL}/iras/casesemanadistrit/${annio}/${semanadistrit}`
+      );
+      const result = await axios.get(
+        `${API_URL}/iras/updatedistritSem/${annio}/${semanadistrit}`
+      );
       //console.log("actualizarCasosDistrit:", response.data.data);
       setDataUltimaSemana(result.data.data);
       setTotIrasSem(response.data.data.totUltSemana);
@@ -295,39 +301,36 @@ const Dashboard = () => {
   const getDataGrafSemana = async () => {
     try {
       //console.log("getDataGrafSemana",annio,"---",estGrafico2)
-      const response = await axios.get(`${API_URL}/iras/grafico2/${annio}/${estGrafico2}`);
+      const response = await axios.get(
+        `${API_URL}/iras/grafico2/${annio}/${estGrafico2}`
+      );
       //console.log(response.data.data);
       setDatosGraf2(response.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-
   };
   const getDataGraf4Semana = async () => {
     try {
       //console.log("getDataGraf4Semana",annio,"---",distritGrafico4)
-      const response = await axios.get(`${API_URL}/iras/grafico4/${annio}/${distritGrafico4}`);
+      const response = await axios.get(
+        `${API_URL}/iras/grafico4/${annio}/${distritGrafico4}`
+      );
       //console.log(response.data.data);
       setDatosGraf4(response.data.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-
   };
 
-
-  const [consultaEpi, setConsultaEpi] = useState(
-    {
-      diris: "...",
-      establecimiento: "...",
-      indicador: "...",
-      microred: "...",
-      red: "...",
-      anni: annio,
-    }
-  );
-
-
+  const [consultaEpi, setConsultaEpi] = useState({
+    diris: "...",
+    establecimiento: "...",
+    indicador: "...",
+    microred: "...",
+    red: "...",
+    anni: annio,
+  });
 
   const recibirDatoDelHijo = async (data) => {
     try {
@@ -339,7 +342,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   useEffect(() => {
     getIras();
@@ -351,7 +354,6 @@ const Dashboard = () => {
     getTotEst2024();
     getAnnioIra();
     fetchDistritos();
-
   }, []);
   useEffect(() => {
     actualizarDatosGenerales();
@@ -368,7 +370,10 @@ const Dashboard = () => {
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="I.R.A.S. con personas menores a 5 años años D.E.E.P.I. - TACNA" />
+        <Header
+          title="DASHBOARD"
+          subtitle="I.R.A.S. con personas menores a 5 años años D.E.E.P.I. - TACNA"
+        />
       </Box>
 
       {/* GRID & CHARTS */}
@@ -382,6 +387,7 @@ const Dashboard = () => {
           gridColumn="span 12"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
+          id="graficoIrasAnnios"
         >
           <Box
             mt="25px"
@@ -404,22 +410,36 @@ const Dashboard = () => {
                 Grafico de tendencia en I.R.A.S con personas menores a 5 años.
               </Typography>
             </Box>
-            <Box>
-              <IconButton></IconButton>
-              <Button onClick={() => handleDownload("graficoIRAS")}>Descargar Imagen</Button>
+            <Box
+              sx={{
+                position: "relative", // se superpone
+                top: 10,
+                right: 10,
+                zIndex: 9999,
+                backgroundColor: "white",
+                borderRadius: "50%",
+                boxShadow: 3,
+              }}
+            >
+              <IconButton
+                color="primary"
+                onClick={() => handleDownload("graficoIrasAnnios")}
+              >
+                <DownloadIcon />
+              </IconButton>
             </Box>
           </Box>
-          <Box height="250px" m="-20px 0 0 0" id="graficoIRAS">
+          <Box height="250px" m="-40px 0 0 0">
             {/* <LineChart isDashboard={true} /> */}
             <MyGroupedBarChart data={dataInsidencias} />
             {/*{dataInsidencias && <BarSimpleChart data={dataInsidencias} />} */}
-             
           </Box>
         </Box>
         <Box
           gridColumn="span 12"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
+          id={"reportAnualSemanasIras"}
         >
           <Box height="250px" mt="-20px" margin={6}>
             <Grid container>
@@ -453,15 +473,40 @@ const Dashboard = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={1}></Grid>
-              <Grid item xs={2}>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 1,
+                }}
+              >
                 <Button
                   onClick={curvaEpidemiologica}
                   variant="contained"
                   color="secondary"
-                  style={{ height: "50px" }}
+                  sx={{ height: "50px" }}
                 >
                   Seleccionar
                 </Button>
+
+                <Box
+                  sx={{
+                    backgroundColor: "white",
+                    borderRadius: "50%",
+                    boxShadow: 3,
+                    zIndex: 9999,
+                  }}
+                >
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleDownload("reportAnualSemanasIras")}
+                  >
+                    <DownloadIcon />
+                  </IconButton>
+                </Box>
               </Grid>
             </Grid>
             <MyGroupedBarChart data={dataCurvEpi} />
@@ -510,7 +555,8 @@ const Dashboard = () => {
           flexDirection="column"
           alignItems="center"
           position="relative"
-          style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
+          style={{ height: "100%", width: "100%" }} // Asegúrate de que el contenedor tenga el tamaño adecuado
+          id={"canalEndemicoIras"}
         >
           <Typography
             color={colors.greenAccent[500]}
@@ -519,13 +565,28 @@ const Dashboard = () => {
             textAlign="center"
             sx={{ animation: "fadeIn 1s" }}
           >
-            Canal Endémico de I.R.A.S. con personas menores a 5 años, en el año {annio}
+            Canal Endémico de I.R.A.S. con personas menores a 5 años, en el año{" "}
+            {annio}
           </Typography>
           <Box
-            position="relative"
-            height="100%"
-            width="100%"
+            sx={{
+              position: "relative", // se superpone
+              top: 10,
+              right: 10,
+              zIndex: 9999,
+              backgroundColor: "white",
+              borderRadius: "50%",
+              boxShadow: 3,
+            }}
           >
+            <IconButton
+              color="primary"
+              onClick={() => handleDownload("canalEndemicoIras")}
+            >
+              <DownloadIcon />
+            </IconButton>
+          </Box>
+          <Box position="relative" height="100%" width="100%">
             <Box
               position="absolute"
               top={0}
@@ -534,7 +595,9 @@ const Dashboard = () => {
               bottom={0}
               zIndex={1} // Asegúrate de que esté detrás
             >
-              {dataEndemicoIras && <MyResponsiveStream datosEnd={dataEndemicoIras} />}
+              {dataEndemicoIras && (
+                <MyResponsiveStream datosEnd={dataEndemicoIras} />
+              )}
             </Box>
             <Box
               position="absolute"
@@ -548,67 +611,65 @@ const Dashboard = () => {
             </Box>
           </Box>
         </Box>
-        <Box
-          gridColumn="span 3"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          position="relative"
-          style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
-        >
-          <FiltrosEpidemiologicos
-            initial={{
-              diris: "TACNA",
-              red: "DIRESA TACNA",
-              microred: "ESSALUD",
-              establecimiento: "C.A.P. I LOCUMBA",
-              indicador: "EDA < 5 años",
-            }}
-            onChange={recibirDatoDelHijo}
-          />
-        </Box>
-        <Box
-          gridColumn="span 9"
-          gridRow="span 3"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          position="relative"
-          style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
-        >
-          <Typography
-            color={colors.greenAccent[500]}
-            variant="h5"
-            fontWeight="600"
-            textAlign="center"
-            sx={{ animation: "fadeIn 1s" }}
-          >
-            Episodios por semana, en el año {annio} - {annio - 1} - {annio - 2}
-          </Typography>
-          <Box
-            position="relative"
-            height="100%"
-            width="100%"
-          >
-            <Box
-              position="absolute"
-              top={0}
-              left={0}
-              right={0}
-              bottom={0}
-              zIndex={1} // Asegúrate de que esté detrás
-            >
-              <LineBar data={dataAnniosSemana} currentYear={annio} />
-            </Box>
+        <Box display="flex" gridColumn="span 12" gridRow="span 3" width="100%">
+  {/* 🟦 Filtro: ocupa 4 partes */}
+  <Box
+    flex={4}
+    backgroundColor={colors.primary[400]}
+    padding="30px"
+    display="flex"
+    flexDirection="column"
+    alignItems="center"
+    position="relative"
+    sx={{ height: "100%", width: "100%" }}
+  >
+    <FiltrosEpidemiologicos
+      initial={{
+        diris: "TACNA",
+        red: "DIRESA TACNA",
+        microred: "ESSALUD",
+        establecimiento: "C.A.P. I LOCUMBA",
+        indicador: "EDA < 5 años",
+      }}
+      onChange={recibirDatoDelHijo}
+    />
+  </Box>
 
-          </Box>
-        </Box>
+  {/* 🟩 Gráfico: ocupa 8 partes */}
+  <Box
+    flex={8}
+    backgroundColor={colors.primary[400]}
+    padding="30px"
+    display="flex"
+    flexDirection="column"
+    alignItems="center"
+    position="relative"
+    sx={{ height: "100%", width: "100%" }}
+  >
+    <Typography
+      color={colors.greenAccent[500]}
+      variant="h5"
+      fontWeight="600"
+      textAlign="center"
+      sx={{ animation: "fadeIn 1s" }}
+    >
+      Episodios por semana, en el año {annio} - {annio - 1} - {annio - 2}
+    </Typography>
 
+    <Box position="relative" height="100%" width="100%">
+      <Box
+        position="absolute"
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        zIndex={1}
+      >
+        <LineBar data={dataAnniosSemana} currentYear={annio} />
+      </Box>
+    </Box>
+  </Box>
+</Box>
 
 
         <Box
@@ -705,11 +766,15 @@ const Dashboard = () => {
             fontWeight="600"
             sx={{ marginBottom: "15px" }}
           >
-            T.I.A. de I.R.A.S. menores a 5 años x 1000 semana {semana} y año {annio}
+            T.I.A. de I.R.A.S. menores a 5 años x 1000 semana {semana} y año{" "}
+            {annio}
           </Typography>
-          <Box
-          >
-            <MapaTacnaConProvincias annio={annio} semana={semana} distritoOne1={activarSetDistritoOne} />
+          <Box>
+            <MapaTacnaConProvincias
+              annio={annio}
+              semana={semana}
+              distritoOne1={activarSetDistritoOne}
+            />
           </Box>
         </Box>
         <Box
@@ -736,7 +801,8 @@ const Dashboard = () => {
                   align="center"
                   padding={2}
                 >
-                  Establecimientos con casos segun al distrito seleccionado en el mapa en la semana {semana} del año {annio}
+                  Establecimientos con casos segun al distrito seleccionado en
+                  el mapa en la semana {semana} del año {annio}
                 </Typography>
               </Grid>
             </Grid>
@@ -869,14 +935,12 @@ const Dashboard = () => {
               </Box>
             ))}
           <Typography>
-            *Los distritos que no aparezcan es porque no tienen casos en la semana seleccionada
+            *Los distritos que no aparezcan es porque no tienen casos en la
+            semana seleccionada
           </Typography>
         </Box>
 
-
         {/* ROW 3 */}
-
-
 
         <Box
           gridColumn="span 6"
@@ -992,7 +1056,6 @@ const Dashboard = () => {
             {datosGraf4 && <BarSimpleChart data={datosGraf4} />}
           </Box>
         </Box>
-
       </Box>
     </Box>
   );
