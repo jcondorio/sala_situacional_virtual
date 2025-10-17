@@ -83,7 +83,7 @@ const Dashboard = () => {
       link.click(); // Inicia la descarga
     });
   };
-
+const [distrit_,setDistrit_]=useState("");
   const activarSetDistritoOne = async (distrito) => {
     //console.log("distritoOne", distrito, semana, annio);
     const data = {
@@ -91,8 +91,10 @@ const Dashboard = () => {
       semana: semana,
       annio: annio,
     };
+    setDistrit_(data.distrito);
     const response = await distritoOneService(data);
     //console.log("activarSetDistritoOne", response);
+    console.log("quierosaber::",response)
     setDataEESS(response);
   };
   const fetchDistritos = async () => {
@@ -226,7 +228,7 @@ const Dashboard = () => {
       const response = await axios.get(`${API_URL}/iras/ultimasemana`);
       setDataUltimaSemana(response.data.data);
       //console.log("getUltimaSemanaIras", response.data.data);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const curvaEpidemiologica = async () => {
@@ -240,7 +242,7 @@ const Dashboard = () => {
       setDataCurvEpi(datoConvertido);
       // console.log("curvaEpidemiologica", response.data.data);
       //console.log("dataCirvaEpi;", dataCurvEpi)
-    } catch (error) {}
+    } catch (error) { }
   };
   const actualizarDatosGenerales = async () => {
     try {
@@ -256,7 +258,7 @@ const Dashboard = () => {
       setTotIras(response.data.data.totiras);
       updateSemanasSelect(response.data.data.cantidadSemanas);
       //setDataCurvEpi(datoConvertido);
-    } catch (error) {}
+    } catch (error) { }
   };
   const [semanas, setSemanas] = useState();
   const updateSemanasSelect = (ult_sem) => {
@@ -611,65 +613,92 @@ const Dashboard = () => {
             </Box>
           </Box>
         </Box>
-        <Box display="flex" gridColumn="span 12" gridRow="span 3" width="100%">
-  {/* 🟦 Filtro: ocupa 4 partes */}
-  <Box
-    flex={4}
-    backgroundColor={colors.primary[400]}
-    padding="30px"
-    display="flex"
-    flexDirection="column"
-    alignItems="center"
-    position="relative"
-    sx={{ height: "100%", width: "100%" }}
-  >
-    <FiltrosEpidemiologicos
-      initial={{
-        diris: "TACNA",
-        red: "DIRESA TACNA",
-        microred: "ESSALUD",
-        establecimiento: "C.A.P. I LOCUMBA",
-        indicador: "EDA < 5 años",
-      }}
-      onChange={recibirDatoDelHijo}
-    />
-  </Box>
+        <Box display="flex" gridColumn="span 12" gridRow="span 3" width="100%" id="consultaSemana">
+          {/* 🟦 Filtro: ocupa 4 partes */}
+          <Box
+            flex={4}
+            backgroundColor={colors.primary[400]}
+            padding="30px"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            position="relative"
+            sx={{ height: "100%", width: "100%" }}
+          >
+            <FiltrosEpidemiologicos
+              initial={{
+                diris: "TACNA",
+                red: "DIRESA TACNA",
+                microred: "ESSALUD",
+                establecimiento: "C.A.P. I LOCUMBA",
+                indicador: "EDA < 5 años",
+              }}
+              onChange={recibirDatoDelHijo}
+            />
+          </Box>
 
-  {/* 🟩 Gráfico: ocupa 8 partes */}
-  <Box
-    flex={8}
-    backgroundColor={colors.primary[400]}
-    padding="30px"
-    display="flex"
-    flexDirection="column"
-    alignItems="center"
-    position="relative"
-    sx={{ height: "100%", width: "100%" }}
-  >
-    <Typography
-      color={colors.greenAccent[500]}
-      variant="h5"
-      fontWeight="600"
-      textAlign="center"
-      sx={{ animation: "fadeIn 1s" }}
-    >
-      Episodios por semana, en el año {annio} - {annio - 1} - {annio - 2}
-    </Typography>
+          {/* 🟩 Gráfico: ocupa 8 partes */}
+          <Box
+            flex={8}
+            backgroundColor={colors.primary[400]}
+            padding="30px"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            position="relative"
+            sx={{ height: "100%", width: "100%" }}
+          >
+            {/* 🟨 Título + botón */}
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              sx={{ animation: "fadeIn 1s" }}
+            >
+              <Typography
+                color={colors.greenAccent[500]}
+                variant="h5"
+                fontWeight="600"
+                textAlign="center"
+              >
+                Episodios por semana, en el año {annio} - {annio - 1} - {annio - 2}
+              </Typography>
 
-    <Box position="relative" height="100%" width="100%">
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        zIndex={1}
-      >
-        <LineBar data={dataAnniosSemana} currentYear={annio} />
-      </Box>
-    </Box>
-  </Box>
-</Box>
+              <IconButton
+                color="primary"
+                onClick={() => handleDownload("consultaSemana")}
+                sx={{
+                  ml: 2,
+                  backgroundColor: "white",
+                  borderRadius: "50%",
+                  boxShadow: 3,
+                }}
+              >
+                <DownloadIcon />
+              </IconButton>
+            </Box>
+
+            {/* 🟧 Contenedor del gráfico */}
+            <Box position="relative" height="100%" width="100%">
+              <Box
+                position="absolute"
+                top={0}
+                left={0}
+                right={0}
+                bottom={0}
+                zIndex={1}
+                sx={{
+                  p: 2, // margen interno general
+                  pb: 6, // espacio inferior extra (sube el gráfico)
+                  boxSizing: "border-box",
+                }}
+              >
+                <LineBar data={dataAnniosSemana} currentYear={annio} />
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+
 
 
         <Box
@@ -802,7 +831,7 @@ const Dashboard = () => {
                   padding={2}
                 >
                   Establecimientos con casos segun al distrito seleccionado en
-                  el mapa en la semana {semana} del año {annio}
+                  el mapa en la semana {semana} del año {annio} en el distrito {distrit_}
                 </Typography>
               </Grid>
             </Grid>

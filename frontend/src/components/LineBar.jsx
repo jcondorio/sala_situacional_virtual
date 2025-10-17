@@ -94,7 +94,7 @@ export default function LineTriple({ data = [], currentYear }) {
     <div style={{ height: 420 }}>
       <ResponsiveLine
         data={lineData}
-        margin={{ top: 20, right: 120, bottom: 50, left: 60 }}
+        margin={{ top: 20, right: 120, bottom: 120, left: 60 }}
         xScale={{ type: 'point' }}
         yScale={{ type: 'linear', min: 0, max: 'auto', stacked: false }}
         axisBottom={{ legend: 'Semana', legendOffset: 36, legendPosition: 'middle', tickValues }}
