@@ -38,7 +38,7 @@ export default function Login() {
     const handleSubmit = (event) => {
         event.preventDefault();
         // Aquí puedes manejar la lógica de envío del formulario, como autenticación
-        console.log({
+        //console.log({
             email,
             password,
         });

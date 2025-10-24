@@ -75,7 +75,7 @@ function App() {
         const response = await axios.post(`${API_URL}/import`, csvData);
       }
       else {
-        console.log("datosCSV vacio")
+        //console.log("datosCSV vacio")
       }
     } catch (error) {
 

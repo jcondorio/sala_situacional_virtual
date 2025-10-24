@@ -160,7 +160,7 @@ const getgrafico4Controller = async (req,res) => {
     }
 };
 const endemicoIrasController = async (req,res) => {
-    console.log("endemicoIrasController",req.params)
+    //console.log("endemicoIrasController",req.params)
     try {
         const getIras = await endemicoIrasServices(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -170,7 +170,7 @@ const endemicoIrasController = async (req,res) => {
     }
 };
 const getAnnioIrasController = async (req,res) => {
-    console.log("getAnnioIrasController",req.params)
+    //console.log("getAnnioIrasController",req.params)
     try {
         const getIras = await getAnnioIrasService(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -194,7 +194,7 @@ const distritoonemapController = async (req,res) => {
 
 
 const getLineBarController = async (req,res) => {
-    console.log("getLineBarController",req.params)
+    //console.log("getLineBarController",req.params)
     try {
         const getIras = await getLineBarServices(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -205,7 +205,7 @@ const getLineBarController = async (req,res) => {
 };
 
 const getLineBarEdadIrasController = async (req,res) => {
-    console.log("getLineBarController",req.params)
+    //console.log("getLineBarController",req.params)
     try {
         const getIras = await getLineBarEdadIrasServices(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -216,7 +216,7 @@ const getLineBarEdadIrasController = async (req,res) => {
 };
 
 const microRedController = async (req,res) => {
-    console.log("getLineBarController",req.params)
+    //console.log("getLineBarController",req.params)
     try {
         const getIras = await microRedService(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -227,7 +227,7 @@ const microRedController = async (req,res) => {
 };
 
 const EstablecimientosController = async (req,res) => {
-    console.log("getLineBarController",req.params)
+    //console.log("getLineBarController",req.params)
     try {
         const getIras = await EstablecimientosService(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -238,7 +238,7 @@ const EstablecimientosController = async (req,res) => {
 };
 
 const ConsultaIrasController = async (req,res) => {
-    console.log("ConsultaIrasController",req.query)
+    //console.log("ConsultaIrasController",req.query)
     try {
         const getIras = await ConsultaIrasServices(req.query);
         res.status(200).json({ message: 'User created successfully', data: getIras });

@@ -4,9 +4,9 @@ import axios from "axios";
 // Servicio para obtener datos endémicos de IRAS
 export const endemicoIrasService = async (ano) => {
     try {
-        console.log("Intentando obtener datos endémicos de IRAS");
+        //console.log("Intentando obtener datos endémicos de IRAS");
         const response = await axios(`${API_URL}/iras/endemico/${ano}`);
-        console.log("asdasd", response.data.data);
+        //console.log("asdasd", response.data.data);
 
         return response.data.data;
     } catch (error) {
@@ -19,7 +19,7 @@ export const endemicoIrasService = async (ano) => {
 export const semanasIrasService = async (ano) => {
     try {
         const response = await axios(`${API_URL}/iras/semannioiras/${ano}`);
-        console.log("aver::", response.data.data)
+        //console.log("aver::", response.data.data)
         return response.data.data;
     } catch (error) {
         console.error("Error al obtener semanas de IRAS:", error);
@@ -32,7 +32,7 @@ export const distritoOneService = async (data) => {
         const response = await axios.get(`${API_URL}/iras/distritoonemap`, {
             params: data // Aquí es donde se envían los parámetros de consulta
         });
-        console.log("distritoOneService", response.data.data);
+        //console.log("distritoOneService", response.data.data);
         return response.data.data;
     } catch (error) {
         console.error("Error presentado:", error);
@@ -43,7 +43,7 @@ export const distritoOneService = async (data) => {
 export const lineBarEdadIras = async (ano) => {
     try {
         const response = await axios(`${API_URL}/iras/lineBarEdadIras/${ano}`);
-        console.log("lineBarEdadIras::", response.data.data)
+        //console.log("lineBarEdadIras::", response.data.data)
         return response.data.data;
     } catch (error) {
         console.error("lineBarEdadIras de IRAS:", error);
@@ -54,7 +54,7 @@ export const lineBarEdadIras = async (ano) => {
 export const serviceMicroRed = async (data) => {
     try {
         const response = await axios(`${API_URL}/iras/microred/${data}`);
-        console.log("serviceRed::", response.data.data)
+        //console.log("serviceRed::", response.data.data)
         return response.data.data;
     } catch (error) {
         console.error("lineBarEdadIras de serviceRed:", error);
@@ -65,7 +65,7 @@ export const serviceMicroRed = async (data) => {
 export const serviceEstrablecimientos = async (red,microred) => {
     try {
         const response = await axios(`${API_URL}/iras/establecimiento/${red}/${microred}`);
-        console.log("serviceRed::", response.data.data)
+        //console.log("serviceRed::", response.data.data)
         return response.data.data;
     } catch (error) {
         console.error("lineBarEdadIras de serviceRed:", error);
@@ -76,7 +76,7 @@ export const serviceEstrablecimientos = async (red,microred) => {
 export const serviceActializarConsulta = async (data) => {
     try {
         const response = await axios.get(`${API_URL}/iras/consultairas`, { params: data });
-        console.log("serviceRed::", response.data.data)
+        //console.log("serviceRed::", response.data.data)
         return response.data.data;
     } catch (error) {
         console.error("lineBarEdadIras de serviceRed:", error);

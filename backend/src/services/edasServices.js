@@ -33,7 +33,7 @@ const getIrasSemanasServices = async () => {
       group: ["SEMANA", "ANO"],
       raw: true,
     });
-    console.log("resultedas", result)
+    //console.log("resultedas", result)
     // Paso 4: Crear un mapa para acceder fácilmente a los resultados por año y semana
     const resultMap = {};
     result.forEach((row) => {
@@ -657,7 +657,7 @@ const getgrafico4Services = async (data) => {
 };
 
 const endemicoIrasServices = async (annio) => {
-  console.log("endemicoIrasServices", annio.annio);
+  //console.log("endemicoIrasServices", annio.annio);
   try {
     const query = `
 SELECT 
@@ -717,7 +717,7 @@ GROUP BY de_ic.SEMANA;
       type: Sequelize.QueryTypes.SELECT,
       replacements: [annio.annio],
     });
-    console.log("endemicoIrasServices: ", studentsWithDetails);
+    //console.log("endemicoIrasServices: ", studentsWithDetails);
     const cal_student = studentsWithDetails.map((item) => ({
       ...item,
       ic_inf:
@@ -727,7 +727,7 @@ GROUP BY de_ic.SEMANA;
         item.promedio +
         (jStat.studentt.inv(0.975, item.contara) * item.ln_de) / item.ic_sup,
     }));
-    console.log("cal_student", cal_student);
+    //console.log("cal_student", cal_student);
     let bloque_5 = [];
     cal_student.forEach((item) => {
       bloque_5.push({
@@ -782,7 +782,7 @@ GROUP BY de_ic.SEMANA;
 
 const getAnnioIrasService = async (annio) => {
   try {
-    console.log("getAnnioIrasService123", annio.annio);
+    //console.log("getAnnioIrasService123", annio.annio);
     const query = `
       WITH weeks AS (
             SELECT num AS SEMANA
@@ -820,7 +820,7 @@ const getAnnioIrasService = async (annio) => {
 
 const distritoonemapService = async (data) => {
   try {
-    console.log("distritoonemapService", data);
+    //console.log("distritoonemapService", data);
     const query = `
       SELECT IFNULL(prov.N_EESS, 'Sin nombre') AS N_EESS,
        IFNULL(SUM(COALESCE(e.DAA_C1, 0) + COALESCE(e.DAA_C1_4, 0) + COALESCE(e.DAA_C5, 0)+ COALESCE(e.DAA_C5_11, 0)+ COALESCE(e.DAA_C12_17, 0)+ COALESCE(e.DAA_C18_29, 0)+ COALESCE(e.DAA_C30_59, 0)+ COALESCE(e.DAA_C60, 0)), 0) AS casos
@@ -836,7 +836,7 @@ const distritoonemapService = async (data) => {
       type: sequelize.QueryTypes.SELECT,
       replacements: [data.semana, data.annio, data.distrito],
     });
-    console.log("distritoonemapService_ress", studentsWithDetails)
+    //console.log("distritoonemapService_ress", studentsWithDetails)
     return studentsWithDetails;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
@@ -946,7 +946,7 @@ const getLineBarEdadEdasServices = async ({ annio }) => {
 };
 
 const microRedEdasService = async (data) => {
-  console.log(data);
+  //console.log(data);
   try {
     const result = await Provicional.findAll({
       attributes: [
@@ -970,7 +970,7 @@ const microRedEdasService = async (data) => {
 };
 
 const EstablecimientosEdasService = async (data) => {
-  console.log("revisionde datos:::", data);
+  //console.log("revisionde datos:::", data);
   try {
     const result = await Provicional.findAll({
       attributes: [
@@ -996,7 +996,7 @@ const EstablecimientosEdasService = async (data) => {
 };
 
 const ConsultaEdasServices = async (data) => {
-  console.log("ConsultaIrasServices", data.annio);
+  //console.log("ConsultaIrasServices", data.annio);
   try {
     if (data.red == "..." && data.indicador == "..." || data.red == "..." && data.indicador == "" || data.red == "" && data.indicador == "..." || data.red == "" && data.indicador == "") {
       const year = Number(data.annio);
@@ -1051,7 +1051,7 @@ const ConsultaEdasServices = async (data) => {
       return result;
     }
     else if (data.microred == "..." && data.indicador == "..." || data.microred == "..." && data.indicador == "" || data.microred == "" && data.indicador == "..." || data.microred == "" && data.indicador == "") {
-      console.log("data anio:::", data.annio)
+      //console.log("data anio:::", data.annio)
       const year = Number(data.annio);
       const years = {
         before2: year - 2,
@@ -3153,7 +3153,7 @@ else if (data.indicador == "DAA_C5_11") {
       }
     }
     else {
-      console.log("esta aqui en el ultimo else")
+      //console.log("esta aqui en el ultimo else")
       if (data.indicador == "DAA_C1") {
         const year = Number(data.annio);
         const years = {
@@ -3268,7 +3268,7 @@ else if (data.indicador == "DAA_C5_11") {
           annioantes: Number(r.annio_antes1) || 0,
           annio: Number(r.annio_actual) || 0,
         }));
-        console.log(result)
+        //console.log(result)
         return result;
       }
       else if (data.indicador == "DAA_C5") {

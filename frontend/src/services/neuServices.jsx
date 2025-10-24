@@ -4,7 +4,7 @@ import axios from "axios";
 // Servicio para obtener datos endémicos de IRAS
 export const endemicoIrasService = async (ano) => {
     try {
-        console.log("Intentando obtener datos endémicos de IRAS");
+        //console.log("Intentando obtener datos endémicos de IRAS");
         const response = await axios(`${API_URL}/neu/endemico/${ano}`);
         console.log("asdasd",response.data.data);
 
@@ -19,7 +19,7 @@ export const endemicoIrasService = async (ano) => {
 export const semanasIrasService = async (ano) => {
     try {
         const response = await axios(`${API_URL}/neu/semannioiras/${ano}`);
-        console.log("aver::",response.data.data)
+        //console.log("aver::",response.data.data)
         return response.data.data;
     } catch (error) {
         console.error("Error al obtener semanas de IRAS:", error);
@@ -32,7 +32,7 @@ export const distritoOneService = async (data) => {
         const response = await axios.get(`${API_URL}/neu/distritoonemap`, {
             params: data // Aquí es donde se envían los parámetros de consulta
         });
-        console.log("distritoOneService", response.data.data);
+        //console.log("distritoOneService", response.data.data);
         return response.data.data;
     } catch (error) {
         console.error("Error presentado:", error);

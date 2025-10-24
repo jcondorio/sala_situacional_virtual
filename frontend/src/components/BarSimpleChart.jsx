@@ -8,7 +8,7 @@ const BarSimpleChart = ({ data }) => {
     const colors = tokens(theme.palette.mode);
 
     useEffect(() => {
-        console.log("pum;", data[0].SEMANA);
+        //console.log("pum;", data[0].SEMANA);
     }, [data]);
 
     if (!data) {

@@ -17,9 +17,9 @@ const ImportButton = ({ csvData, colors, token }) => {
             }
           }
         );
-        console.log("Data imported successfully:", response.data);
+        //console.log("Data imported successfully:", response.data);
       } else {
-        console.log("csvData is empty");
+        //console.log("csvData is empty");
       }
     } catch (error) {
       console.error("Error importing data:", error);

@@ -160,7 +160,7 @@ const getgrafico4Controller = async (req,res) => {
     }
 };
 const endemicoIrasController = async (req,res) => {
-    console.log("endemicoIrasController",req.params)
+    //console.log("endemicoIrasController",req.params)
     try {
         const getIras = await endemicoIrasServices(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -170,7 +170,7 @@ const endemicoIrasController = async (req,res) => {
     }
 };
 const getAnnioIrasController = async (req,res) => {
-    console.log("getAnnioIrasController",req.params)
+    //console.log("getAnnioIrasController",req.params)
     try {
         const getIras = await getAnnioIrasService(req.params);
         res.status(200).json({ message: 'User created successfully', data: getIras });
@@ -181,7 +181,7 @@ const getAnnioIrasController = async (req,res) => {
 };
 
 const distritoonemapController = async (req,res) => {
-    console.log("distritoonemapController",req.query)
+    //console.log("distritoonemapController",req.query)
     try {
         const getIras = await distritoonemapService(req.query);
         res.status(200).json({ message: 'User created successfully', data: getIras });

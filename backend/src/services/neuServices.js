@@ -655,7 +655,7 @@ const getgrafico4Services = async (data) => {
 };
 
 const endemicoIrasServices = async (annio) => {
-  console.log("endemicoIrasServices", annio.annio);
+  //console.log("endemicoIrasServices", annio.annio);
   try {
     const query = `
      select avg(de_ic.logn) as promedio,STDDEV_POP(de_ic.logn) as ln_de, 
@@ -681,7 +681,7 @@ const endemicoIrasServices = async (annio) => {
       type: Sequelize.QueryTypes.SELECT,
       replacements: [annio.annio],
     });
-    console.log("endemicoIrasServices: ", studentsWithDetails);
+    //console.log("endemicoIrasServices: ", studentsWithDetails);
     const cal_student = studentsWithDetails.map((item) => ({
       ...item,
       ic_inf:
@@ -691,7 +691,7 @@ const endemicoIrasServices = async (annio) => {
         item.promedio +
         (jStat.studentt.inv(0.975, item.contara) * item.ln_de) / item.ic_sup,
     }));
-    console.log("cal_student", cal_student);
+    //console.log("cal_student", cal_student);
     let bloque_5 = [];
     cal_student.forEach((item) => {
       bloque_5.push({
@@ -740,7 +740,7 @@ const endemicoIrasServices = async (annio) => {
 
 const getAnnioIrasService = async (annio) => {
   try {
-    console.log("getAnnioIrasService123", annio.annio);
+    //console.log("getAnnioIrasService123", annio.annio);
     const query = `
       WITH weeks AS (
             SELECT num AS SEMANA
@@ -778,7 +778,7 @@ const getAnnioIrasService = async (annio) => {
 
 const distritoonemapService = async (data) => {
   try {
-    console.log("distritoonemapService",data);
+    //console.log("distritoonemapService",data);
     const query = `
       SELECT IFNULL(prov.N_EESS, 'Sin nombre') AS N_EESS,
        IFNULL(SUM(COALESCE(i.NEU_2_11, 0) + COALESCE(i.NEU_1_4A, 0) + COALESCE(i.NEU_5_9A, 0) + COALESCE(i.NEU_10_19, 0) + COALESCE(i.NEU_20_59, 0) + COALESCE(i.NEU_60A, 0) + COALESCE(i.NGR_M2, 0) + COALESCE(i.NGR_2_11, 0) + COALESCE(i.NGR_1_4A, 0) + COALESCE(i.NGR_5_9A, 0) + COALESCE(i.NGR_60A, 0)), 0) AS casos
@@ -794,7 +794,7 @@ const distritoonemapService = async (data) => {
       type: sequelize.QueryTypes.SELECT,
       replacements: [data.semana,data.annio,data.distrito],
     });
-    console.log("distritoonemapService_ress",studentsWithDetails)
+    //console.log("distritoonemapService_ress",studentsWithDetails)
     return studentsWithDetails;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);

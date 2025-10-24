@@ -52,7 +52,7 @@ const validateE_SALUD = async (e_saludValue) => {
 
 const importDataServices = async (data, blockSize = 5) => {
   try {
-    console.log("importDataServices", data);
+    //console.log("importDataServices", data);
     const year = data[0].ANO; // Se asume que todos los registros tienen el mismo año
     await deleteIrasRecordsByYear(year); // Elimina los registros del año específico
 
@@ -186,12 +186,12 @@ const importDataServices = async (data, blockSize = 5) => {
       }));
 
       insertedCount += block.length;
-      console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
+      //console.log(`Registros insertados: ${insertedCount}/${totalRecords}`);
     }
 
-    console.log("Operación de importación de datos completada.");
+    //console.log("Operación de importación de datos completada.");
     if (failedRecords.length > 0) {
-      console.log("Registros que fallaron:", failedRecords);
+      //console.log("Registros que fallaron:", failedRecords);
       // Puedes manejar los registros fallidos aquí según sea necesario
     }
   } catch (error) {

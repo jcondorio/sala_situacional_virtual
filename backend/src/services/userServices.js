@@ -7,7 +7,7 @@ const Usuario = require("../models/usuarioModel");
 
 const loginService = async (userName, password) => {
     try {
-      console.log("loginService",userName,password)
+      //console.log("loginService",userName,password)
       if (!userName || !password) {
         return {
           status: 400,
@@ -18,7 +18,7 @@ const loginService = async (userName, password) => {
       }
   
       const user = await Usuario.findOne({ where: { usuario: userName } });
-  console.log("user",user);
+  //console.log("user",user);
       const validPassword = await bcrypt.compare(password, user.psw);
   
       if (!validPassword) {

@@ -4,7 +4,7 @@ const { JWT_SECRET } = require('../config');
 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  console.log("Authorization Header:", authHeader);
+  //console.log("Authorization Header:", authHeader);
 
   if (!authHeader) {
     return res.status(403).send({ message: 'No token provided.' });
@@ -16,7 +16,7 @@ const verifyToken = (req, res, next) => {
   }
 
   const token = parts[1];
-  console.log("Token:", token);
+  //console.log("Token:", token);
 
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) {

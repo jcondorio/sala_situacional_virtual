@@ -33,11 +33,11 @@ const Contacts = () => {
   const getAnniosIra = async () => {
     try {
       const data = await getAnniosIras();
-      console.log("getAnnioIra", data);
+      //console.log("getAnnioIra", data);
       setChecked(data);
 
       const dataTrue = data.filter(item => item.estado === 1);
-      console.log("dataTrue", dataTrue.map(item => String(item.ano)));
+      //console.log("dataTrue", dataTrue.map(item => String(item.ano)));
 
       setDataChecked(dataTrue.map(item => String(item.ano)));
     } catch (error) {
@@ -46,18 +46,18 @@ const Contacts = () => {
   };
   const handleCheckedIras = (event) => {
     const { value, checked } = event.target;
-    console.log(value, checked)
+    //console.log(value, checked)
     if (checked) {
       setDataChecked([...datachecked, value]);
     }
     else {
       setDataChecked(datachecked.filter(item => item !== value));
     }
-    console.log(datachecked);
+    //console.log(datachecked);
   };
   const postDateCanalEndemico = async () => {
     try {
-      console.log("datachecked: ", datachecked);
+      //console.log("datachecked: ", datachecked);
       const response = await postDateService(datachecked);
       //setDataChecked(response);
     } catch (error) {

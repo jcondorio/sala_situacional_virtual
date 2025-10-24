@@ -654,7 +654,7 @@ const getgrafico4Services = async (data) => {
 };
 
 const endemicoIrasServices = async (annio) => {
-  console.log("endemicoIrasServices", annio.annio);
+  //console.log("endemicoIrasServices", annio.annio);
   try {
     const query = `
             select avg(de_ic.logn) as promedio,STDDEV_POP(de_ic.logn) as ln_de, 
@@ -680,7 +680,7 @@ const endemicoIrasServices = async (annio) => {
       type: Sequelize.QueryTypes.SELECT,
       replacements: [annio.annio],
     });
-    console.log("endemicoIrasServices: ", studentsWithDetails);
+    //console.log("endemicoIrasServices: ", studentsWithDetails);
     const cal_student = studentsWithDetails.map((item) => ({
       ...item,
       ic_inf:
@@ -690,7 +690,7 @@ const endemicoIrasServices = async (annio) => {
         item.promedio +
         (jStat.studentt.inv(0.975, item.contara) * item.ln_de) / item.ic_sup,
     }));
-    console.log("cal_student", cal_student);
+    //console.log("cal_student", cal_student);
     let bloque_5 = [];
     cal_student.forEach((item) => {
       bloque_5.push({
@@ -735,7 +735,7 @@ const endemicoIrasServices = async (annio) => {
         "Error: bloque_6 está vacío, no se puede agregar el elemento inicial."
       );
     }
-    console.log(bloque_6);
+    //console.log(bloque_6);
     return bloque_6;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
@@ -745,7 +745,7 @@ const endemicoIrasServices = async (annio) => {
 
 const getAnnioIrasService = async (annio) => {
   try {
-    console.log("getAnnioIrasService123", annio.annio);
+    //console.log("getAnnioIrasService123", annio.annio);
     const query = `
       WITH weeks AS (
             SELECT num AS SEMANA
@@ -783,7 +783,7 @@ const getAnnioIrasService = async (annio) => {
 
 const distritoonemapService = async (data) => {
   try {
-    console.log("distritoonemapService", data);
+    //console.log("distritoonemapService", data);
     const query = `
       SELECT IFNULL(prov.N_EESS, 'Sin nombre') AS N_EESS,
        IFNULL(SUM(COALESCE(i.IRA_M2, 0) + COALESCE(i.IRA_2_11, 0) + COALESCE(i.IRA_1_4A, 0)), 0) AS casos
@@ -799,7 +799,7 @@ const distritoonemapService = async (data) => {
       type: sequelize.QueryTypes.SELECT,
       replacements: [data.semana, data.annio, data.distrito],
     });
-    console.log("distritoonemapService_ress", studentsWithDetails)
+    //console.log("distritoonemapService_ress", studentsWithDetails)
     return studentsWithDetails;
   } catch (error) {
     console.error("Error al obtener el total de registros:", error);
@@ -885,7 +885,7 @@ const getLineBarEdadIrasServices = async ({ annio }) => {
 };
 
 const microRedService = async (data) => {
-  console.log(data);
+  //console.log(data);
   try {
     const result = await Provicional.findAll({
       attributes: [
@@ -909,7 +909,7 @@ const microRedService = async (data) => {
 };
 
 const EstablecimientosService = async (data) => {
-  console.log("revisionde datos:::", data);
+  //console.log("revisionde datos:::", data);
   try {
     const result = await Provicional.findAll({
       attributes: [
@@ -935,7 +935,7 @@ const EstablecimientosService = async (data) => {
 };
 
 const ConsultaIrasServices = async (data) => {
-  console.log("ConsultaIrasServices", data.annio);
+ // console.log("ConsultaIrasServices", data.annio);
   try {
     if (data.red == "..." && data.indicador == "..." || data.red == "..." && data.indicador == "" || data.red == "" && data.indicador == "..." || data.red == "" && data.indicador == "") {
       const year = Number(data.annio);
@@ -990,7 +990,7 @@ const ConsultaIrasServices = async (data) => {
       return result;
     }
     else if (data.microred == "..." && data.indicador == "..." || data.microred == "..." && data.indicador == "" || data.microred == "" && data.indicador == "..." || data.microred == "" && data.indicador == "") {
-      console.log("data anio:::", data.annio)
+      //console.log("data anio:::", data.annio)
       const year = Number(data.annio);
       const years = {
         before2: year - 2,
@@ -1543,7 +1543,7 @@ const ConsultaIrasServices = async (data) => {
         return result;
       }
       else {
-console.log("paso por aqui o no")
+//console.log("paso por aqui o no")
       }
     }
     else if (data.establecimiento == "..." || data.establecimiento == "") {
@@ -2014,7 +2014,7 @@ console.log("paso por aqui o no")
       }
     }
     else {
-      console.log("esta aqui en el ultimo else")
+      //console.log("esta aqui en el ultimo else")
        if (data.indicador == "IRA_M2") {
           const year = Number(data.annio);
           const years = {
@@ -2129,7 +2129,7 @@ console.log("paso por aqui o no")
             annioantes: Number(r.annio_antes1) || 0,
             annio: Number(r.annio_actual) || 0,
           }));
-console.log(result)
+//console.log(result)
           return result;
         }
         else if (data.indicador == "IRA_1_4A") {

@@ -49,7 +49,7 @@ const LinebarEdas = ({
         // Actualiza el estado del form (usa el updated para notificar al parent)
         setForm(updated);
         onChange?.(updated);
-        console.log("form (updated):", updated);
+        //console.log("form (updated):", updated);
 
         // Ahora realizamos las llamadas asincrónicas según el field,
         // utilizando el `updated` local para obtener valores consistentes.
@@ -69,7 +69,7 @@ const LinebarEdas = ({
 
                 const uniqueNames = Array.from(new Set(names));
                 setMicrored(uniqueNames);
-                console.log("microredes normalizadas:", uniqueNames);
+                //console.log("microredes normalizadas:", uniqueNames);
             } catch (error) {
                 console.error("Error al cargar microredes:", error);
                 setMicrored([]);
@@ -91,7 +91,7 @@ const LinebarEdas = ({
 
                 const uniqueNames = Array.from(new Set(names));
                 setEstablecimientos(uniqueNames);
-                console.log("establecimientos normalizados:", uniqueNames);
+               // console.log("establecimientos normalizados:", uniqueNames);
             } catch (error) {
                 console.error("Error al cargar establecimientos:", error);
                 setEstablecimientos([]);

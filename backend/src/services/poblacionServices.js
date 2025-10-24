@@ -109,7 +109,7 @@ const getPobDistritServices = async (data) => {
         },
         group: ["provicional.Distrit"],
       });
-      console.log("datadeedas: ", resultPobl);
+      //console.log("datadeedas: ", resultPobl);
   
       const completeData = [];
       resultPobl.forEach((poblacion) => {
@@ -123,7 +123,7 @@ const getPobDistritServices = async (data) => {
         });
       });
   
-      console.log("completo edas", completeData);
+      //console.log("completo edas", completeData);
       return completeData;
     } catch (error) {
       console.error("Error al ejecutar la consulta:", error);

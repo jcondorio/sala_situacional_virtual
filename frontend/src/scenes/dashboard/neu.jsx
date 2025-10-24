@@ -61,14 +61,14 @@ import {
     const [dataEESS,setDataEESS] = useState();
   
   const activarSetDistritoOne = async(distrito) =>{
-    console.log("distritoOne",distrito,semana,annio);
+    //console.log("distritoOne",distrito,semana,annio);
     const data={
       distrito:distrito,
       semana:semana,
       annio:annio
     }
     const response = await distritoOneService(data);
-    console.log("activarSetDistritoOne",response);
+    //console.log("activarSetDistritoOne",response);
     setDataEESS(response);
   };
     const fetchDistritos = async () => {
@@ -83,20 +83,20 @@ import {
   
     const endemicoIras = async (ano) => {
       try {
-        console.log("ano1",ano)
+        //console.log("ano1",ano)
         const response = await endemicoIrasService(ano);
         setDataEndemicoIras(response);
-        console.log("endemicoIras:", response)
+        //console.log("endemicoIras:", response)
       } catch (error) {
         console.error(error);
       }
     }
     const anniosemanaIras = async (ano) => {
       try {
-        console.log("ano2",ano)
+        //console.log("ano2",ano)
         const response = await semanasIrasService(ano);
         setDataSemanas(response);
-        console.log("anniosemanaIras:", response)
+        //console.log("anniosemanaIras:", response)
       } catch (error) {
         console.error(error);
       }
@@ -106,7 +106,7 @@ import {
     const getAnnioIra = async () => {
       try {
         const response = await axios(`${API_URL}/otros/annioIras`);
-        console.log("getAnnioIra: ", response.data.data);
+        //console.log("getAnnioIra: ", response.data.data);
         const data = response.data.data;
         setAnniosIras(data);
         // Encontrar el año más alto en los datos
@@ -147,7 +147,7 @@ import {
       try {
         const response = await axios.get(`${API_URL}/neu`);
         const datoConvertido = transformData(response.data.data);
-        console.log("getIras:", response.data.data);
+        //console.log("getIras:", response.data.data);
   
         setDataInsidencias(datoConvertido);
         //console.log("responseiras:", datoConvertido);
@@ -167,7 +167,7 @@ import {
     const getTotIrasSemana = async () => {
       try {
         const response = await axios.get(`${API_URL}/neu/totsemana`);
-        console.log("getTotIrasSemana:", response.data.data);
+        //console.log("getTotIrasSemana:", response.data.data);
         setTotIrasSem(response.data.data.total_casos);
         //console.log("getTotIrasSemana:", response.data.data);
       } catch (error) {
@@ -177,7 +177,7 @@ import {
     const getTotDistritSemana = async () => {
       try {
         const response = await axios.get(`${API_URL}/neu/totdist`);
-        console.log("getTotDistritSemana:", response.data.data);
+        //console.log("getTotDistritSemana:", response.data.data);
         setTotIrasDistSem(response.data.data);
         //console.log("getTotDistritSemana:", response.data.data);
       } catch (error) {

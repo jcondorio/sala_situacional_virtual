@@ -15,15 +15,15 @@ const MapaTacnaConProvincias10k = ({ annio, semana }) => {
   const [tiaDistrit, setTiaDistrit] = useState();
   const pobDistritosxAnnioSemana = async ({ annio = "", semana = "" } = {}) => {
     try {
-      console.log("pobDistritosxAnnioSemana1", annio, "--", semana);
+      //console.log("pobDistritosxAnnioSemana1", annio, "--", semana);
       const response = await axios.get(
         `${API_URL}/poblacion/distrit/${annio}/${semana}`
       );
-      console.log("pobDistritosxAnnioSemana2", response.data.data);
+      //console.log("pobDistritosxAnnioSemana2", response.data.data);
       if (response.data.data.length > 0) {
         const tiaValues = response.data.data.map((item) => item.tia*10);
         const calculatedQuartiles = calculateQuartiles(tiaValues);
-        console.log("pobDistritosxAnnioSemana3", calculatedQuartiles);
+        //console.log("pobDistritosxAnnioSemana3", calculatedQuartiles);
         setQuartiles(calculatedQuartiles);
       }
       setTiaDistrit(response.data.data);
@@ -52,7 +52,7 @@ const MapaTacnaConProvincias10k = ({ annio, semana }) => {
         });
         setSumaTotalCasos(sumaTotal);
 
-        console.log("distritosSemana:", response.data.data);
+        //console.log("distritosSemana:", response.data.data);
       } catch (error) {
         console.error("Error fetching estudiantes data:", error);
       }

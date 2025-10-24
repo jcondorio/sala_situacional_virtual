@@ -18,16 +18,16 @@ const MapaTacnaConProvincias = ({ annio, semana, distritoOne1 }) => {
 
   const pobDistritosxAnnioSemana = async ({ annio = "", semana = "" } = {}) => {
     try {
-      console.log("pobDistritosxAnnioSemana1", annio, "--", semana);
+      //console.log("pobDistritosxAnnioSemana1", annio, "--", semana);
       const response = await axios.get(
         `${API_URL}/poblacion/distrit/${annio}/${semana}`
       );
       setDataDistrit(response.data.data);
-      console.log("pobDistritosxAnnioSemana2", response.data.data);
+      //console.log("pobDistritosxAnnioSemana2", response.data.data);
       if (response.data.data.length > 0) {
         const tiaValues = response.data.data.map((item) => item.tia);
         const calculatedQuartiles = calculateQuartiles(tiaValues);
-        console.log("pobDistritosxAnnioSemana3", calculatedQuartiles);
+        //console.log("pobDistritosxAnnioSemana3", calculatedQuartiles);
         setQuartiles(calculatedQuartiles);
       }
       setTiaDistrit(response.data.data);
@@ -57,7 +57,7 @@ const MapaTacnaConProvincias = ({ annio, semana, distritoOne1 }) => {
         });
         setSumaTotalCasos(sumaTotal);
 
-        console.log("distritosSemana:", response.data.data);
+        //console.log("distritosSemana:", response.data.data);
       } catch (error) {
         console.error("Error fetching estudiantes data:", error);
       }
@@ -107,7 +107,7 @@ const MapaTacnaConProvincias = ({ annio, semana, distritoOne1 }) => {
     return "#ffffff";
   };
   const probando = () => {
-    console.log("rarara");
+    //console.log("rarara");
   };
 
   return (

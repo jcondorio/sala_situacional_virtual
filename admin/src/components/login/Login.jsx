@@ -61,7 +61,7 @@ export default function Login() {
           const json = await response.json();
           if (json.body.accessToken && json.body.refreshToken) {
             auth.saveUser(json);
-            console.log("pasa por aquisdadas")
+            //console.log("pasa por aquisdadas")
             goTo('/contacts');
           }
         } else {

@@ -15,7 +15,7 @@ const getAnnioIrasServices = async () => {
       order: [[Sequelize.col("ANO"), "DESC"]] // Ordenar ascendentemente por ANO
     });
 
-    console.log("getAnnioIrasServices: ", response);
+    //console.log("getAnnioIrasServices: ", response);
     return response;
   } catch (error) {
     console.error("Error al ejecutar la consulta:", error);
@@ -73,7 +73,7 @@ const getCheckedIrasServices = async () => {
 
 const postDateEndemicoService = async (datos) => {
   try {
-    console.log("postDateEndemicoService: ", datos);
+    //console.log("postDateEndemicoService: ", datos);
 
     await Sequelize.transaction(async (transaction) => {
       await Sequelize.query(`
@@ -142,7 +142,7 @@ const getCheckedEdasService = async () => {
 
 const postDateEndemicoEdasService = async (datos) => {
   try {
-    console.log("postDateEndemicoService: ", datos);
+    //console.log("postDateEndemicoService: ", datos);
 
     await Sequelize.transaction(async (transaction) => {
       await Sequelize.query(`
