@@ -211,7 +211,7 @@ const MapaTacnaConProvincias = ({ annio, semana, distritoOne1 }) => {
           }}
         >
           <Typography variant="subtitle2">
-            <strong>T.I.A. x 1000 menor a 5 años</strong>
+            <strong>47udgf 565r a 5 años</strong>
           </Typography>
           <Box
             style={{

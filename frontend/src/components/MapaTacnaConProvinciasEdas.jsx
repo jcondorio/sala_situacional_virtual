@@ -212,7 +212,7 @@ const pobDistritosxAnnioSemana = async ({ annio = "", semana = "" } = {}) => {
           }}
         >
           <Typography variant="subtitle2">
-            <strong>T.I.A. x 1000 menor a 5 años</strong>
+            <strong>T.I.A. x 1000</strong>
           </Typography>
           <Box
             style={{

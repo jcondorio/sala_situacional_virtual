@@ -83,7 +83,7 @@ const Dashboard = () => {
       link.click(); // Inicia la descarga
     });
   };
-const [distrit_,setDistrit_]=useState("");
+  const [distrit_, setDistrit_] = useState("");
   const activarSetDistritoOne = async (distrito) => {
     //console.log("distritoOne", distrito, semana, annio);
     const data = {
@@ -94,7 +94,7 @@ const [distrit_,setDistrit_]=useState("");
     setDistrit_(data.distrito);
     const response = await distritoOneService(data);
     //console.log("activarSetDistritoOne", response);
-    console.log("quierosaber::",response)
+    console.log("quierosaber::", response)
     setDataEESS(response);
   };
   const fetchDistritos = async () => {
@@ -373,8 +373,8 @@ const [distrit_,setDistrit_]=useState("");
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
-          title="DASHBOARD"
-          subtitle="I.R.A.S. con personas menores a 5 años años D.E.E.P.I. - TACNA"
+          title="INFECCIONES RESPIRATORIAS AGUDAS (I.R.A.)"
+          subtitle="I.R.A. con personas menores a 5 años años D.E.E.P.I. - TACNA"
         />
       </Box>
 
@@ -409,7 +409,7 @@ const [distrit_,setDistrit_]=useState("");
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                Grafico de tendencia en I.R.A.S con personas menores a 5 años.
+                Grafico de tendencia en I.R.A. con personas menores a 5 años.
               </Typography>
             </Box>
             <Box
@@ -451,7 +451,7 @@ const [distrit_,setDistrit_]=useState("");
                   fontWeight="bold"
                   color={colors.greenAccent[500]}
                 >
-                  Reporte anual por semanas en Establecimiento
+                  Reporte anual I.R.A. por semanas en Establecimiento
                 </Typography>
               </Grid>
               <Grid item xs={1}></Grid>
@@ -567,7 +567,7 @@ const [distrit_,setDistrit_]=useState("");
             textAlign="center"
             sx={{ animation: "fadeIn 1s" }}
           >
-            Canal Endémico de I.R.A.S. con personas menores a 5 años, en el año{" "}
+            Canal Endémico de I.R.A. con personas menores a 5 años, en el año{" "}
             {annio}
           </Typography>
           <Box
@@ -661,7 +661,7 @@ const [distrit_,setDistrit_]=useState("");
                 fontWeight="600"
                 textAlign="center"
               >
-                Episodios por semana, en el año {annio} - {annio - 1} - {annio - 2}
+                Episodios I.R.A. por semana, en el año {annio} - {annio - 1} - {annio - 2}
               </Typography>
 
               <IconButton
@@ -722,7 +722,7 @@ const [distrit_,setDistrit_]=useState("");
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                casos totales I.R.A.S. en el año {annio}
+                casos totales I.R.A. en el año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -762,7 +762,7 @@ const [distrit_,setDistrit_]=useState("");
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                Casos total I.R.A.S. en la semana {semana} del año {annio}
+                Casos total I.R.A. en la semana {semana} del año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -781,6 +781,7 @@ const [distrit_,setDistrit_]=useState("");
             </Grid>
           </Grid>
         </Box>
+
         <Box
           gridColumn="span 4"
           gridRow="span 4"
@@ -795,7 +796,7 @@ const [distrit_,setDistrit_]=useState("");
             fontWeight="600"
             sx={{ marginBottom: "15px" }}
           >
-            T.I.A. de I.R.A.S. menores a 5 años x 1000 semana {semana} y año{" "}
+            Tasa de Insidencia Acumulada de I.R.A. menores a 5 años x 1000 semana {semana} y año{" "}
             {annio}
           </Typography>
           <Box>
@@ -807,6 +808,7 @@ const [distrit_,setDistrit_]=useState("");
           </Box>
         </Box>
         <Box
+          id="establecimientosIra"
           padding={3}
           gridColumn="span 4"
           gridRow="span 4"
@@ -814,6 +816,7 @@ const [distrit_,setDistrit_]=useState("");
           overflow="auto"
         >
           <Box
+
             display="flex"
             justifyContent="space-between"
             alignItems="center"
@@ -821,8 +824,25 @@ const [distrit_,setDistrit_]=useState("");
             colors={colors.grey[100]}
             p="15px"
           >
-            <Grid container justifyContent="center">
+            <Grid container justifyContent="center" >
               <Grid xs={12}>
+                <Box display="flex" justifyContent="center" mt={2}>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleDownload("establecimientosIra")}
+                    sx={{
+                      backgroundColor: "white",
+                      borderRadius: "50%",
+                      boxShadow: 3,
+                      '&:hover': {
+                        backgroundColor: "#f0f0f0",
+                      },
+                    }}
+                  >
+                    <DownloadIcon />
+                  </IconButton>
+                </Box>
+
                 <Typography
                   color={colors.grey[100]}
                   variant="h5"
@@ -830,9 +850,15 @@ const [distrit_,setDistrit_]=useState("");
                   align="center"
                   padding={2}
                 >
+
+
+
+
+
                   Establecimientos con casos segun al distrito seleccionado en
                   el mapa en la semana {semana} del año {annio} en el distrito {distrit_}
                 </Typography>
+
               </Grid>
             </Grid>
           </Box>
@@ -869,6 +895,7 @@ const [distrit_,setDistrit_]=useState("");
               </Box>
             ))}
         </Box>
+
 
         {/* ROW 2 */}
         <Box
@@ -972,16 +999,34 @@ const [distrit_,setDistrit_]=useState("");
         {/* ROW 3 */}
 
         <Box
+          id="reporteEstablecimiento"
           gridColumn="span 6"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
         >
+          <Box display="flex" justifyContent="center" mt={2}>
+            <IconButton
+              color="primary"
+              onClick={() => handleDownload("reporteEstablecimiento")}
+              sx={{
+                backgroundColor: "white",
+                borderRadius: "50%",
+                boxShadow: 3,
+                '&:hover': {
+                  backgroundColor: "#f0f0f0",
+                },
+              }}
+            >
+              <DownloadIcon />
+            </IconButton>
+          </Box>
           <Typography
             variant="h5"
             fontWeight="600"
             sx={{ padding: "30px 30px 0 30px" }}
           ></Typography>
           <Box height="250px" mt="-20px" padding={5}>
+
             <Grid container>
               <Grid item xs={3}>
                 <Typography
@@ -989,7 +1034,7 @@ const [distrit_,setDistrit_]=useState("");
                   fontWeight="bold"
                   color={colors.greenAccent[500]}
                 >
-                  Reporte semanal por establecimiento en el año {annio}
+                  Reporte semanal I.R.A. por establecimiento en el año {annio}
                 </Typography>
               </Grid>
               <Grid item xs={1}></Grid>
@@ -1029,10 +1074,27 @@ const [distrit_,setDistrit_]=useState("");
           </Box>
         </Box>
         <Box
+          id="reporteDistrito"
           gridColumn="span 6"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
         >
+          <Box display="flex" justifyContent="center" mt={2}>
+            <IconButton
+              color="primary"
+              onClick={() => handleDownload("reporteDistrito")}
+              sx={{
+                backgroundColor: "white",
+                borderRadius: "50%",
+                boxShadow: 3,
+                '&:hover': {
+                  backgroundColor: "#f0f0f0",
+                },
+              }}
+            >
+              <DownloadIcon />
+            </IconButton>
+          </Box>
           <Typography
             variant="h5"
             fontWeight="600"
@@ -1046,7 +1108,7 @@ const [distrit_,setDistrit_]=useState("");
                   fontWeight="bold"
                   color={colors.greenAccent[500]}
                 >
-                  Reporte semanal por distrito en el año {annio}
+                  Reporte semanal I.R.A.y por distrito en el año {annio}
                 </Typography>
               </Grid>
               <Grid item xs={1}></Grid>

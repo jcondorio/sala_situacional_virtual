@@ -1021,8 +1021,8 @@ const ConsultaEdasServices = async (data) => {
       SELECT
         w.SEMANA,
         COALESCE(SUM(CASE WHEN edas.ANO = :year_before2 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes2,
-        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) AS annio_antes1,
-        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) AS annio_actual
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_before1 THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_antes1,
+        COALESCE(SUM(CASE WHEN edas.ANO = :year_current THEN (COALESCE(edas.DAA_C1,0) + COALESCE(edas.DAA_C1_4,0) + COALESCE(edas.DAA_C5,0) + COALESCE(edas.DAA_C5_11,0) + COALESCE(edas.DAA_C12_17,0) + COALESCE(edas.DAA_C18_29,0) + COALESCE(edas.DAA_C30_59,0) + COALESCE(edas.DAA_C60,0)) ELSE 0 END), 0) AS annio_actual
       FROM weeks w
       LEFT JOIN edas
         ON w.SEMANA = edas.SEMANA

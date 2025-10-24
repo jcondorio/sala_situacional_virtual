@@ -39,6 +39,9 @@ import FiltrosEpidemiologicos from "../../components/SelectLineBar";
 import LineBar from "../../components/LineBar";
 import { serviceActializarConsultaEdas } from "../../services/edasServices";
 import LinebarEdas from "../../components/LinebarEdas";
+import DownloadIcon from "@mui/icons-material/Download";
+import html2canvas from "html2canvas";
+
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -65,14 +68,27 @@ const Dashboard = () => {
   const [dataEndemicoIras, setDataEndemicoIras] = useState();
   const [dataSemanas, setDataSemanas] = useState();
   const [dataEESS, setDataEESS] = useState();
+ const [distrit_, setDistrit_] = useState("");
 
+
+  const handleDownload = (chartId) => {
+    const chartElement = document.getElementById(chartId); // Selecciona el contenedor del gráfico
+
+    html2canvas(chartElement).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = "chart.png"; // Nombre del archivo de la imagen
+      link.href = canvas.toDataURL(); // Convierte el canvas a una URL de imagen
+      link.click(); // Inicia la descarga
+    });
+  };
   const activarSetDistritoOne = async (distrito) => {
     //console.log("distritoOne", distrito, semana, annio);
     const data = {
       distrito: distrito,
       semana: semana,
       annio: annio
-    }
+    };
+    setDistrit_(data.distrito);
     const response = await distritoOneService(data);
     //console.log("activarSetDistritoOne", response);
     setDataEESS(response);
@@ -352,7 +368,7 @@ const Dashboard = () => {
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="I.R.A.S. con personas menores a 5 años años D.E.E.P.I. - TACNA" />
+        <Header title="ENFERMEDADES DEARREICAS AGUDAS (E.D.A.)" subtitle="E.D.A. (Enfermedades Dearreicas Agudas) D.E.E.P.I. - TACNA" />
       </Box>
 
       {/* GRID & CHARTS */}
@@ -363,6 +379,7 @@ const Dashboard = () => {
         gap="20px"
       >
         <Box
+        id="graficoEdasAnnios"
           gridColumn="span 12"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
@@ -385,11 +402,26 @@ const Dashboard = () => {
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                Grafico de tendencia en I.R.A.S con personas menores a 5 años.
+                Grafico de tendencia en E.D.A.
               </Typography>
             </Box>
-            <Box>
-              <IconButton></IconButton>
+            <Box
+              sx={{
+                position: "relative", // se superpone
+                top: 10,
+                right: 10,
+                zIndex: 9999,
+                backgroundColor: "white",
+                borderRadius: "50%",
+                boxShadow: 3,
+              }}
+            >
+              <IconButton
+                color="primary"
+                onClick={() => handleDownload("graficoEdasAnnios")}
+              >
+                <DownloadIcon />
+              </IconButton>
             </Box>
           </Box>
           <Box height="250px" m="-20px 0 0 0">
@@ -399,6 +431,7 @@ const Dashboard = () => {
           </Box>
         </Box>
         <Box
+        id="reportAnualSemanasEdas"
           gridColumn="span 12"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
@@ -411,7 +444,7 @@ const Dashboard = () => {
                   fontWeight="bold"
                   color={colors.greenAccent[500]}
                 >
-                  Reporte anual por semanas en Establecimiento
+                  Reporte anual E.D.A. por semanas en Establecimiento
                 </Typography>
               </Grid>
               <Grid item xs={1}></Grid>
@@ -435,7 +468,16 @@ const Dashboard = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={1}></Grid>
-              <Grid item xs={2}>
+              <Grid
+                item
+                xs={2}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 1,
+                }}
+              >
                 <Button
                   onClick={curvaEpidemiologica}
                   variant="contained"
@@ -444,6 +486,21 @@ const Dashboard = () => {
                 >
                   Seleccionar
                 </Button>
+                <Box
+                  sx={{
+                    backgroundColor: "white",
+                    borderRadius: "50%",
+                    boxShadow: 3,
+                    zIndex: 9999,
+                  }}
+                >
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleDownload("reportAnualSemanasEdas")}
+                  >
+                    <DownloadIcon />
+                  </IconButton>
+                </Box>
               </Grid>
             </Grid>
             <MyGroupedBarChart data={dataCurvEpi} />
@@ -484,6 +541,7 @@ const Dashboard = () => {
           </Grid>
         </Box>
         <Box
+        id="canalEndemicoEdas"
           gridColumn="span 12"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
@@ -501,8 +559,26 @@ const Dashboard = () => {
             textAlign="center"
             sx={{ animation: "fadeIn 1s" }}
           >
-            Canal Endémico de I.R.A.S. con personas menores a 5 años, en el año {annio}
+            Canal Endémico de E.D.A. en el año {annio}
           </Typography>
+          <Box
+            sx={{
+              position: "relative", // se superpone
+              top: 10,
+              right: 10,
+              zIndex: 9999,
+              backgroundColor: "white",
+              borderRadius: "50%",
+              boxShadow: 3,
+            }}
+          >
+            <IconButton
+              color="primary"
+              onClick={() => handleDownload("canalEndemicoEdas")}
+            >
+              <DownloadIcon />
+            </IconButton>
+          </Box>
           <Box
             position="relative"
             height="100%"
@@ -529,76 +605,95 @@ const Dashboard = () => {
               {dataSemanas && <BarSimpleChartEndemico data={dataSemanas} />}
             </Box>
           </Box>
-
-
-
-
-
-
-
-
         </Box>
-        <Box
-                  gridColumn="span 3"
-                  gridRow="span 3"
-                  backgroundColor={colors.primary[400]}
-                  padding="30px"
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  position="relative"
-                  style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
-                >
-                  <LinebarEdas
-                    initial={{
-                      diris: "TACNA",
-                      red: "DIRESA TACNA",
-                      microred: "ESSALUD",
-                      establecimiento: "C.A.P. I LOCUMBA",
-                      indicador: "EDA < 5 años",
-                    }}
-                    onChange={recibirDatoDelHijo}
-                  />
-                </Box>
-                <Box
-                  gridColumn="span 9"
-                  gridRow="span 3"
-                  backgroundColor={colors.primary[400]}
-                  padding="30px"
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  position="relative"
-                  style={{ height: '100%', width: '100%' }} // Asegúrate de que el contenedor tenga el tamaño adecuado
-                >
-                  <Typography
-                    color={colors.greenAccent[500]}
-                    variant="h5"
-                    fontWeight="600"
-                    textAlign="center"
-                    sx={{ animation: "fadeIn 1s" }}
-                  >
-                    Episodios por semana, en el año {annio} - {annio - 1} - {annio - 2}
-                  </Typography>
-                  <Box
-                    position="relative"
-                    height="100%"
-                    width="100%"
-                  >
-                    <Box
-                      position="absolute"
-                      top={0}
-                      left={0}
-                      right={0}
-                      bottom={0}
-                      zIndex={1} // Asegúrate de que esté detrás
-                    >
-                      <LineBar data={dataAnniosSemana} currentYear={annio} />
-                    </Box>
-        
-                  </Box>
-                </Box>
-        
+        <Box id="consultaSemanaEdas" display="flex" gridColumn="span 12" gridRow="span 3" width="100%" id="consultaSemana">
+          {/* 🟦 Filtro: ocupa 4 partes */}
+          <Box
+            flex={4}
+            backgroundColor={colors.primary[400]}
+            padding="30px"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            position="relative"
+            sx={{ height: "100%", width: "100%" }}
+          >
+            <LinebarEdas
+              initial={{
+                diris: "TACNA",
+                red: "DIRESA TACNA",
+                microred: "ESSALUD",
+                establecimiento: "C.A.P. I LOCUMBA",
+                indicador: "EDA < 5 años",
+              }}
+              onChange={recibirDatoDelHijo}
+            />
+          </Box>
+
+          {/* 🟩 Gráfico: ocupa 8 partes */}
+          <Box
+            flex={8}
+            backgroundColor={colors.primary[400]}
+            padding="30px"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            position="relative"
+            sx={{ height: "100%", width: "100%" }}
+          >
+            {/* 🟨 Título + botón */}
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              sx={{ animation: "fadeIn 1s" }}
+            >
+              <Typography
+                color={colors.greenAccent[500]}
+                variant="h5"
+                fontWeight="600"
+                textAlign="center"
+              >
+                Episodios por semana E.D.A., en el año {annio} - {annio - 1} - {annio - 2}
+              </Typography>
+
+              <IconButton
+                color="primary"
+                onClick={() => handleDownload("consultaSemanaEdas")}
+                sx={{
+                  ml: 2,
+                  backgroundColor: "white",
+                  borderRadius: "50%",
+                  boxShadow: 3,
+                }}
+              >
+                <DownloadIcon />
+              </IconButton>
+            </Box>
+
+            {/* 🟧 Contenedor del gráfico */}
+            <Box position="relative" height="100%" width="100%">
+              <Box
+                position="absolute"
+                top={0}
+                left={0}
+                right={0}
+                bottom={0}
+                zIndex={1}
+                sx={{
+                  p: 2, // margen interno general
+                  pb: 6, // espacio inferior extra (sube el gráfico)
+                  boxSizing: "border-box",
+                }}
+              >
+                <LineBar data={dataAnniosSemana} currentYear={annio} />
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+
+
+
         <Box
           gridColumn="span 2"
           backgroundColor={colors.primary[400]}
@@ -620,7 +715,7 @@ const Dashboard = () => {
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                casos totales I.R.A.S. en el año {annio}
+                casos totales E.D.A. en el año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -660,7 +755,7 @@ const Dashboard = () => {
                 textAlign="center"
                 sx={{ animation: "fadeIn 1s" }}
               >
-                Casos total I.R.A.S. en la semana {semana} del año {annio}
+                Casos total E.D.A. en la semana {semana} del año {annio}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -693,7 +788,7 @@ const Dashboard = () => {
             fontWeight="600"
             sx={{ marginBottom: "15px" }}
           >
-            T.I.A. de I.R.A.S. menores a 5 años x 1000 semana {semana} y año {annio}
+            Taza de Incidencia Acumulada "T.I.A." de E.D.A. x 1000 semana {semana} y año {annio}
           </Typography>
           <Box
           >
@@ -716,6 +811,22 @@ const Dashboard = () => {
             p="15px"
           >
             <Grid container justifyContent="center">
+              <Box display="flex" justifyContent="center" mt={2}>
+                <IconButton
+                  color="primary"
+                  onClick={() => handleDownload("establecimientosIra")}
+                  sx={{
+                    backgroundColor: "white",
+                    borderRadius: "50%",
+                    boxShadow: 3,
+                    '&:hover': {
+                      backgroundColor: "#f0f0f0",
+                    },
+                  }}
+                >
+                  <DownloadIcon />
+                </IconButton>
+              </Box>
               <Grid xs={12}>
                 <Typography
                   color={colors.grey[100]}
@@ -724,7 +835,7 @@ const Dashboard = () => {
                   align="center"
                   padding={2}
                 >
-                  Establecimientos con casos segun al distrito seleccionado en el mapa en la semana {semana} del año {annio}
+                  Establecimientos con casos segun al distrito seleccionado en el mapa en la semana {semana} del año {annio} en el distrito {distrit_}
                 </Typography>
               </Grid>
             </Grid>
@@ -871,6 +982,22 @@ const Dashboard = () => {
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
         >
+          <Box display="flex" justifyContent="center" mt={2}>
+            <IconButton
+              color="primary"
+              onClick={() => handleDownload("establecimientosIra")}
+              sx={{
+                backgroundColor: "white",
+                borderRadius: "50%",
+                boxShadow: 3,
+                '&:hover': {
+                  backgroundColor: "#f0f0f0",
+                },
+              }}
+            >
+              <DownloadIcon />
+            </IconButton>
+          </Box>
           <Typography
             variant="h5"
             fontWeight="600"
@@ -884,7 +1011,7 @@ const Dashboard = () => {
                   fontWeight="bold"
                   color={colors.greenAccent[500]}
                 >
-                  Reporte semanal por establecimiento en el año {annio}
+                  Reporte semanal E.D.A. por establecimiento en el año {annio}
                 </Typography>
               </Grid>
               <Grid item xs={1}></Grid>
@@ -928,6 +1055,22 @@ const Dashboard = () => {
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
         >
+          <Box display="flex" justifyContent="center" mt={2}>
+            <IconButton
+              color="primary"
+              onClick={() => handleDownload("establecimientosIra")}
+              sx={{
+                backgroundColor: "white",
+                borderRadius: "50%",
+                boxShadow: 3,
+                '&:hover': {
+                  backgroundColor: "#f0f0f0",
+                },
+              }}
+            >
+              <DownloadIcon />
+            </IconButton>
+          </Box>
           <Typography
             variant="h5"
             fontWeight="600"
@@ -941,7 +1084,7 @@ const Dashboard = () => {
                   fontWeight="bold"
                   color={colors.greenAccent[500]}
                 >
-                  Reporte semanal por distrito en el año {annio}
+                  Reporte semanal E.D.A. por distrito en el año {annio}
                 </Typography>
               </Grid>
               <Grid item xs={1}></Grid>
