@@ -143,7 +143,7 @@ npm start
 Ingresar a la carpeta:
 
 ```bash
-cd client
+cd frontend
 ```
 
 Instalar dependencias:
